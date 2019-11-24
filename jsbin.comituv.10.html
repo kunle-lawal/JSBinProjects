@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/comituv/10/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+@import url(https://fonts.googleapis.com/css?family=Maven+Pro);
+
+*{
+    transition:all 0.7s;
+	font-family: 'Maven Pro', sans-serif;
+	user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body{
+    background-color:#222222;
+    z-index:-10;
+    color:white;
+}
+
+.game_area_container{
+	border:5px solid white;
+	left:0;
+	right:0;
+	margin:auto;
+}
+
+.game_area{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	text-align:center;
+}
+
+.finds_container{
+	background-color:#333333;
+	height:60px;
+	padding:17px;
+	text-align:center;
+}
+
+.finds{
+    font-size:22px;
+	width:200px;
+	padding:10px;
+	display:inline-block;
+	margin-left:50px;
+	margin-right:50px;
+	margin-top:5px;
+	border-radius:10px;
+}
+
+.game_elements{
+	border:1px solid none;
+	width:80%;
+	height:80%;
+	position:absolute;
+	top:50px;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	text-align:center;
+}
+
+.time{
+	width:100px;
+    height:15px;
+    padding:5px;
+    text-align:center;
+    font-size:13px;
+    transition:all 0.1s;
+	margin-left:30%;
+	margin-bottom:10px;
+	
+    border:2px solid rgb(100, 100, 205);
+    border-radius:0px;
+    background-color:rgb(100, 100, 225);
+    color:white;
+    font-weight:900;
+    box-shadow:0px 5px 1px rgb(100, 0, 255);
+}
+
+.button_container{
+    border:1px solid none;
+    width:300px;
+    height:87px;
+	padding:4px;
+	text-align:center;
+	display:inline-block;
+	margin-top:20px;
+	margin-bottom:40px;
+	margin-left:140px;
+	margin-right:110px;
+	cursor:pointer;
+	opacity:1;
+}
+
+.button{
+    width:277px;
+    height:25px;
+    padding:10px;
+    text-align:center;
+    font-size:23px;
+    border-radius:10px;
+    transition:all 0.1s;
+	
+    border:2px solid rgb(225, 70, 90);
+    border-radius:0px;
+    background-color:rgb(225, 60, 60);
+    color:white;
+    font-weight:900;
+    box-shadow:0px 5px 1px rgb(225, 0, 00);
+}
+
+.clicked{
+	padding:9px;
+	font-size:21px;
+}
+
+.sub{
+    background-color:none;
+    width:300px;
+    margin-left:0px;
+    margin-top:0px;
+    text-align:center;
+}
+
+.sub_buttons{
+    display:inline-block;
+    text-align:center;
+    margin:10px;
+	
+    color:white;
+    width:44px;
+    padding:5px;
+    font-size:9px;
+	border-radius:4px;
+    border:2px solid rgb(225, 70, 90);
+    transform:rotatex(10deg);
+    box-shadow:0px 7px 4px rgb(225, 0, 0);
+    background-color:white;
+    color:rgb(225, 60, 60);
+    box-shadow:0px 5px 1px white;
+}
+
+.deactivated{
+	opacity:0.1;
+	cursor:default;
+}
+
+.active{
+    border:2px solid rgb(225, 70, 90);
+    border-radius:0px;
+    background-color:rgb(225, 60, 60);
+    color:white;
+    font-weight:900;
+    box-shadow:0px 5px 1px rgb(225, 0, 00);
+}
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+    <div class="game_area_container">
+      <div class="game_area">
+          <div class="tabs">
+           
+          </div>
+          <div class="finds_container">
+              <div class="points">
+                <div id="energy" class="finds">0e</div>
+                <div id="parts" class="finds">0p</div>
+              </div>
+          </div>
+          
+          <div class="game_elements">
+              <div class="button_container">
+				  <div id="batteries_time" class="time">Time</div>
+                  <div id="batteries" class="button">
+                      Batteries
+                  </div> 
+                  <div class="sub">
+                      <div id="bLF" class=" lookFor sub_buttons active">Look For</div>
+                      <div id="bH" class="harvest sub_buttons">Harvest</div>
+                  </div>
+              </div>
+			  
+			  <div class="button_container deactivated">
+				  <div id="wires_time" class="time">Time</div>
+                  <div id="wires" class="button">
+                      Wires
+                  </div> 
+                  <div class="sub">
+                      <div id="wLF" class="lookFor sub_buttons active">Look For</div>
+                      <div id="wH" class="harvest sub_buttons harvest">Harvest</div>
+                  </div>
+              </div>
+			  
+			  <div class="button_container deactivated">
+				  <div id="bulb_time" class="time">Time</div>
+                  <div id="bulb" class="button">
+                      Lightbulb
+                  </div> 
+                  <div class="sub">
+                      <div id="lLF" class="lookFor sub_buttons active">Look For</div>
+                      <div id="lH" class="harvest sub_buttons">Harvest</div>
+                  </div>
+              </div>
+			  
+			  <div class="button_container deactivated">
+				  <div id="generator_time" class="time">Time</div>
+                  <div id="generator" class="button">
+                      Generator
+                  </div> 
+                  <div class="sub">
+                      <div id="gH" class="harvest sub_buttons">Harvest</div>
+                  </div>
+              </div>
+			  
+			  <div class="button_container deactivated">
+				  <div id="charger_time" class="time">Time</div>
+                  <div id="charger" class="button">
+                      Charger
+                  </div> 
+                  <div class="sub">
+                      <div id="cH" class="harvest sub_buttons active">Harvest</div>
+                  </div>
+              </div>
+			  
+			  <div class="button_container deactivated">
+				  <div id="heat_time" class="time">Time</div>
+                  <div id="heat" class="button">
+                      Heat
+                  </div> 
+                  <div class="sub"> 
+                      <div id="hH" class="harvest sub_buttons active">Harvest</div>
+                  </div>
+              </div>
+			  
+			  <div class="button_container deactivated">
+				  <div id="solar_time" class="time">Time</div>
+                  <div id="solar" class="button">
+                      Solar
+                  </div> 
+                  <div class="sub">
+                      <div id="sLF" class="lookFor sub_buttons active">Look For</div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+<script id="jsbin-javascript">
+//Random number Generator
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+//Getting elements by ID for UI/UX
+function GID(id){
+  return document.getElementById(id);
+}
+
+var batteries = {
+	name:"batteries",
+	amount: 100,
+    E_produced: 0.1,
+	searching:false,
+	looking: true, 
+	harvest: false,
+	open:true,
+	bot: {
+	  ctf: randNum(0, 3),
+    },
+	display:0,
+};
+
+var wires = {
+	name:"wires",
+	amount: 0,
+    E_produced: 0.5,
+	searching:false,
+	looking: true,
+	harvest: false,
+	open:false,
+	bot: {
+	  ctf: randNum(0, 4),
+    },
+	display:0,
+};
+
+var lightbulb = {
+	name:"lightbulb",
+	amount: 0,
+    E_produced: 1,
+	searching:false,
+	looking: true,
+	harvest: false,
+	open:false,
+	bot: {
+	  ctf: randNum(0, 5),
+    },
+	display:0,
+};
+
+var generator = {
+	name:"generator",
+	amount: 0,
+    E_produced: 4,
+	harvest: false,
+	open:false,
+	display:0,
+};
+
+var charger = {
+	name:"charger",
+	amount: 0,
+    E_produced: 6,
+	harvest: true,
+	open:false,
+	display:0,
+};
+
+var heat = {
+	name:"heat",
+	amount: 0,
+    E_produced: 10,
+	harvest: true,
+	open:false,
+	display:0,
+};
+
+var solar = {
+	name:"solar",
+	amount: 0,
+    E_produced: 50,
+	looking: true,
+	open:false,
+	display:0,
+};
+
+var energy = {
+	name: "energy",
+	enrg:0,
+};
+
+var parts = {
+	name: "parts",
+	amount:0,
+    type:["Thrust", ""],	
+};
+
+var ship = {
+	energy: 0,
+	parts: {
+		
+	},
+    batteries: 0,
+	wires: 0,
+	bulbs: 0,
+	generators: 0,
+	heat: 0,
+	solar: 0,
+	launch: false,
+};
+
+function lookFor(item){
+	if(item.open){
+		var rand = randNum(0, 5);
+	    item.searching = true;
+        if(rand < 3){
+	        item.amount += Math.round(randNum(0, 5));
+        } else {
+            parts.amount += 1;
+		}
+		item.searching = false;
+	}
+}
+
+function harvest(item){
+	window.setTimeout(function(){
+		if(item.open){
+		var x = 0;
+	    if(item.amount > 0){
+		    item.amount--;
+		    x = Number(energy.enrg);
+	        energy.enrg = x + (item.E_produced);
+		    energy.enrg = (energy.enrg).toFixed(2);
+		    x += item.E_produced;
+	    }
+	} else {
+		
+	}
+	}, 1000); 
+}
+
+var clicked = false;
+$(".button").click(function(){
+    if(!clicked){
+		$(this).addClass("clicked");
+		clicked = true;
+	}
+	
+	window.setTimeout(function(){
+		$(".button").removeClass("clicked");
+		clicked = false;
+	}, 100);
+});
+
+$(".sub_buttons").click(function(){
+    $(this).toggleClass("active");
+});
+
+$("#batteries").click(function(){
+	console.log(batteries.looking);
+	if(batteries.looking && !batteries.searching){
+		lookFor(batteries);
+	}
+});
+
+$("#wires").click(function(){
+	console.log(wires.looking);
+	if(wires.looking && !wires.searching){
+		lookFor(wires);
+	}
+	
+	if(wires.harvest){
+		harvest(wires);
+	}
+});
+
+$("#bulb").click(function(){
+	console.log(batteries.looking);
+	if(batteries.looking && !batteries.searching){
+		lookFor(batteries);
+	}
+	
+	if(batteries.harvest){
+		harvest(batteries);
+	}
+});
+
+$("#generator").click(function(){
+	console.log(batteries.looking);
+	if(batteries.looking && !batteries.searching){
+		lookFor(batteries);
+	}
+	
+	if(batteries.harvest){
+		harvest(batteries);
+	}
+});
+
+$("#charger").click(function(){
+	console.log(batteries.looking);
+	if(batteries.looking && !batteries.searching){
+		lookFor(batteries);
+	}
+	
+	if(batteries.harvest){
+		harvest(batteries);
+	}
+});
+
+function update(){
+	if(batteries.harvest){
+		harvest(batteries);
+	}
+	
+	
+}
+
+$(".lookFor").click(function(){
+	var id = this.id;
+	console.log(id);
+	if(id[0] == "b"){
+		batteries.looking = !batteries.looking;
+	} else if(id[0] == "w"){
+		wires.looking = !wires.looking;
+	} else if(id[0] == "l"){
+		lightbulb.looking = !lightbulb.looking;
+	} else if(id[0] == "s"){
+		solar.looking = !solar.looking;
+	}
+});
+
+$(".harvest").click(function(){
+	var id = this.id;
+	if(id[0] == "b"){
+		batteries.harvest = !batteries.harvest;
+	} else if(id[0] == "w"){
+		wires.harvest = !wires.harvest;
+	} else if(id[0] == "l"){
+		lightbulb.harvest = !lightbulb.harvest;
+	} else if(id[0] == "g"){
+		solar.harvest = !solar.harvest;
+	} else if(id[0] == "c"){
+		solar.harvest = !solar.harvest;
+	} else if(id[0] == "h"){
+		solar.harvest = !solar.harvest;
+	} 
+}); 
+
+window.setInterval(function(){
+	update();
+	GID("batteries").innerHTML = batteries.amount + " <span style=\"font-size:10px;\">b<span>";
+	GID("wires").innerHTML = wires.amount + " <span style=\"font-size:10px;\">w<span>";
+	GID("bulb").innerHTML = lightbulb.amount + " <span style=\"font-size:10px;\">l<span>";
+	GID("generator").innerHTML = generator.amount + " <span style=\"font-size:10px;\">g<span>";
+	GID("charger").innerHTML = charger.amount + " <span style=\"font-size:10px;\">c<span>";
+	GID("heat").innerHTML = heat.amount + " <span style=\"font-size:10px;\">h<span>";
+	 
+	GID("energy").innerHTML = (energy.enrg)/1 + "e";
+	GID("parts").innerHTML = parts.amount + "p";
+}, 1000/50);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

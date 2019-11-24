@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/xoqeri/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+canvas{
+	background-color: gray; 
+	position: absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	border:1px solid transparent;
+    z-index:-1;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+<script id="jsbin-javascript">
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+
+var mw = cw * 2;
+var mh = ch * 2;
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+var player = {
+	x: cw/2,
+	y: ch/2,
+    r: 5,
+    m: 1,
+	color: "rgba(255, 255, 255, 0.8)",
+	vx: 0,
+	vy: 0,
+	f:0.71,
+    max_speed:5,
+    speedX:3,
+    speedY:3,
+	draw: function(){
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+		ctx.fillStyle = player.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+        
+        this.speedX += 0.004;
+        this.speedY += 0.004;
+        
+        //dx = this.x - x;
+        //dy = this.y - y;
+        
+        //angle = return_angle(this.x, this.y, x, y);
+        
+        /*var mouse_d = return_distance(this.x, this.y, x, y);
+        var bot_d = return_distance(this.x, this.y, bot.x, bot.y);
+		if(mouse_d >= 20){
+            this.vx = (Math.cos(angle)) * this.speed;
+            this.vy = (Math.sin(angle)) * this.speed; 
+        } else {
+            this.vx *= 0.3;
+            this.vy *= 0.3;
+        }*/
+        
+       /* GID("player").innerHTML = "Player Mass: " + this.m; 
+        
+        if(player.speedX > player.max_speed){
+            player.speedX = 3;
+        }
+        
+        if(player.speedY > player.max_speed){
+            player.speedY = 3;
+        }*/
+        
+        if ((this.x - this.r) < 0 ) {
+            this.x = this.r;
+            this.vx = -this.vx;
+        } 
+        if ((this.x + this.r) > cw ) {
+            this.x = cw - this.r; 
+            this.vx = -this.vx;
+        }
+        if ((this.y - this.r) < 0) {
+            this.y = this.r;
+            this.vy = -this.vy;
+        }
+        if ((this.y + this.r) > ch ) {
+            this.y = ch - this.r;
+            this.vy = -this.vy;
+        }
+	},
+};
+
+//Key functions for player block
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault();      
+       if(keyPressed[37]){
+          player.vx = -player.speedX;
+       }
+       
+       if(keyPressed[38]){
+		  player.vy = -player.speedY;
+       }
+       
+       if(keyPressed[39]){
+	   	  player.vx = player.speedX;
+       }
+		
+	   if(keyPressed[40]){
+		  player.vy = player.speedY;
+	   }
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 37){
+           player.vx *= 0;
+           player.speedX = 3;
+       }
+        
+       if(code === 38){
+       	   player.vy *= 0;
+           player.speedY = 3;
+       }
+     
+       if(code === 39){ 
+       	   player.vx *= 0;
+           player.speedX = 3;
+       } 
+        
+       if(code === 40){
+           player.vy *= 0;
+           player.speedY = 3;
+       }
+   };
+
+var gems = [];
+for(var i = 0; i < 100; i++){
+    var m = Math.ceil(randNum(2, 7));
+    gems.push({
+        x:randNum(30, mw), 
+        y:randNum(30, mh),
+        color:"red",
+        r:this.m,
+        pos:i,
+        vx:0,
+        vy:0,
+    });
+} 
+
+
+//var bot_player_collide = false;
+function draw_gems(){
+    for(var i = 0; i < gems.length; i++){
+        var gem = gems[i];
+        ctx.beginPath();
+        ctx.arc(gem.x, gem.y, gem.r, 0, (2 * Math.PI));
+        ctx.fillStyle = gem.color;
+        ctx.fill();
+        
+        gem.x += gem.vx;
+        gem.y += gem.vy;
+    }
+}
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+
+function start(){
+	window.requestAnimFrame(start);
+	
+	ctx.clearRect(0,0,cw, ch); 
+    
+    draw_gems();
+    //draw_gems2();
+
+    //bot.draw();  
+	//bot.update();
+    
+    player.draw();  
+	player.update();
+}  
+
+start();
+
+</script>
+</body>
+</html>

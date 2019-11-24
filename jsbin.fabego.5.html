@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fabego/5/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width = 400px"
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:white;
+  /*overflow:hidden;*/
+  color:#000000;
+  font-family: 'Hoefler Text', 'Baskerville Old Face', Garamond, 'Times New Roman', serif;
+  opacity:0.9;
+}
+
+
+#mouse{
+  z-index:1;
+  position:absolute;
+}
+
+
+#title{
+  margin-bottom:-5.8%;
+  text-align:center;
+  font-size:40px;
+}
+
+
+
+
+#month{
+  border:1px solid none;
+  width:826px;
+  margin-left:-1%;
+  margin-top:7%;
+  margin-bottom:-9%;
+  text-align:center;
+  font-size:30px;
+  color:#00f0f0
+}
+
+
+#days{
+  border:1px solid none;
+  width:976px;
+  margin-left:0.5%;
+  margin-top:10%;
+  margin-bottom:-7%;
+}
+
+
+.day{
+  border:1px solid none;
+  border-left:1px solid #FF9900;
+  border-top:1px solid #FF9900;
+  list-style: none;
+  display: inline-block;
+  text-align:center;
+  width:80px;
+  margin-left:8.3px;
+  cursor:pointer;
+}
+
+#dates{
+  border:1px solid none;
+  width:808px;
+  margin-top:8.5%;
+}
+
+
+.date{
+  border-right:1px solid #000080;
+  border-bottom:1px solid #000080;
+  list-style: none;
+  display: inline-block;
+  text-align:center;
+  width:80px;
+  height:80px;
+  margin:8.3px;
+  position:relative;
+  transition:all 0.6s;
+}
+
+
+.date:hover{
+  border:1px solid #FF9900;
+  cursor:pointer;
+   /*transform*/
+  -webkit-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  -moz-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  -ms-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  -o-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  
+
+  -webkit-box-shadow: 24px 24px 5px 1px rgba(255, 255, 255, 0.75);
+  -moz-box-shadow: 24px 24px 5px 1px rgba(255, 255, 255, 0.75);
+  box-shadow: 14px 14px 5px 1px rgba(255, 25, 255, 0.15);
+  opacity:0.9;
+}
+</style>
+</head>
+<body>
+  <div id="mouse" style= "background-color:black; opacity:1; color:white">This</div>
+  <div>
+    <h1 id="title">Calendar.0</h1>
+  </div>
+  <div>
+    <div id="cal_container">
+      <h3 id="month"><span id="month_">Month</span> <span id="year">Year</span></h3>
+      <ul id="days">
+        <li class="day">Sunday</li>
+        <li class="day">Monday</li>
+        <li class="day" style="margin-left:16px;">Tueday</li>
+        <li class="day" style="margin-left:16px;">Wednesday</li>
+        <li class="day" style="margin-left:17px;">Thursday</li>
+        <li class="day" style="margin-left:17px;">Friday</li>
+        <li class="day" style="margin-left:16px;">Saturday</li>
+      </ul>
+      
+      <ul id="dates">
+        <div id="date0" class="date">1</div>
+        <li id="date1" class="date"></li>
+        <li id="date2" class="date"></li>
+        <li id="date3" class="date"></li>
+        <li id="date4" class="date"></li>
+        <li id="date5" class="date"></li>
+        <li id="date6" class="date"></li>
+        <li id="date7" class="date"></li>
+        <li id="date8" class="date"></li>
+        <li id="date9" class="date"></li>
+        <li id="date10" class="date"></li>
+        <li id="date11" class="date"></li>
+        <li id="date12" class="date"></li>
+        <li id="date13" class="date"></li>
+        <li id="date14" class="date"></li>
+        <li id="date15" class="date"></li>
+        <li id="date16" class="date"></li>
+        <li id="date17" class="date"></li>
+        <li id="date18" class="date"></li>
+        <li id="date19" class="date"></li>
+        <li id="date20" class="date"></li>
+        <li id="date21" class="date"></li>
+        <li id="date22" class="date"></li>
+        <li id="date23" class="date"></li>
+        <li id="date24" class="date"></li>
+        <li id="date25" class="date"></li>
+        <li id="date26" class="date"></li>
+        <li id="date27" class="date"></li>
+        <li id="date28" class="date"></li>
+        <li id="date29" class="date"></li>
+        <li id="date30" class="date"></li>
+        <li id="date31" class="date"></li>
+        <li id="date32" class="date"></li>
+        <li id="date33" class="date"></li>
+        <li id="date34" class="date"></li>
+        <li id="date35" class="date"></li>
+        <li id="date36" class="date"></li>
+        <li id="date37" class="date"></li>
+        <li id="date38" class="date"></li>
+        <li id="date39" class="date"></li>
+        <li id="date40" class="date"></li>
+        <li id="date41" class="date"></li>
+      </ul>
+    </div>
+  </div>
+<script id="jsbin-javascript">
+function GID(id){
+  return document.getElementById(id);
+}
+
+var months = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+window.onmousemove = function(e){
+    var d = GID('mouse');
+    d.style.position = "absolute";
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    d.style.left = (position[0] + 30) + "px";
+    
+    d.style.top = (position[1]) + "px";
+    
+    //console.log(e.clientX);
+};  
+
+var start_day = 0;
+var end_day = 0;
+
+function get_start_day(){
+  start_day = date_indx + 1;               
+  if(start_day > 6){
+    start_day = 0;
+  } 
+}
+if(start_day < 0){
+  start_day = 0;   
+}
+
+function clear_top(){ 
+  for(var j = 0; j < start_day; j++){
+    //GID("date" + j).innerHTML = j + 1;
+    GID("date" + j).style.opacity = "0"; 
+  }
+}
+
+function clear_bottom(end_day){
+  var n = 0;
+  for(var j = (end_day + start_day); j <= 41; j++){
+    n++;
+    //GID("date" + j).innerHTML = j + 1;
+    if(n > 7){ 
+      $("date" + (j)).fadeOut();
+      //GID("date" + (j)).style.opacity = "1";
+      //GID("date" + (j)).style.position = "absolute";
+    } else {
+      GID("date" + (j)).innerHTML = n;
+      GID("date" + (j)).style.opacity = "0.4";
+    }
+    GID("date" + (j)).style.cursor = "auto";
+  }
+}
+
+var date_indx = 0;
+function generate_cal(end_day){
+  clear_top();
+  
+  for(var i = 1; i <= end_day; i++){
+    date_indx++;
+    if(date_indx > 6){
+      date_indx = 6;
+    } 
+    GID("date" + (i + (start_day - 1))).innerHTML = i;
+  }
+  
+  clear_bottom(end_day);
+}
+
+function set_Date(date, month, year){
+  GID("date" + (date + (start_day - 1))).style.border = "1px solid #FF9900";
+  //GID("date" + (date + (start_day - 1))).style.cursor = "crosshair";
+  GID("month_").innerHTML = months[month];
+  GID("year").innerHTML = year;
+}
+
+function unset_date(date){
+  if(start_day > 0){
+    GID("date" + (date + start_day - 1)).style.border = "1px solid white";
+  }
+  console.log(start_day);
+  console.log(date); 
+  for(var i = 1; i <= date; i++){
+    GID("date" + (i + start_day - 1)).style.borderRight = "1px solid red";
+    GID("date" + (i + start_day - 1)).style.borderBottom = "1px solid red";
+    console.log(i); 
+    console.log(start_day);
+  }
+}
+
+function get_end_day(month){
+  if(month == 1){
+    end_day = 28;
+    return end_day;
+  }else if (month == 3 || month == 5 || month == 8 || month == 10){
+    end_day = 30;
+    return end_day;
+  } else {
+    end_day = 31;
+    return end_day;
+  }
+}
+
+var d = new Date();
+var day = d.getDate();  
+var temp_date = day - 1;
+setInterval(function () {
+  var d = new Date();
+  var day = d.getDate();    
+  var month = d.getUTCMonth(); 
+  var year = d.getUTCFullYear(); 
+  
+  //console.log(get_end_day(month));
+  
+  if(day!= temp_date){
+    generate_cal(get_end_day(month));
+    unset_date(temp_date);
+    set_Date(day, month, year);
+    temp_date = day;
+    //console.log(date_indx);
+    console.log("Month: " + month);  
+    console.log("Day: " + day); 
+    console.log("Year: " + year); 
+    console.log("Start_day: " + start_day); 
+    console.log("End_day: " + end_day); 
+  }
+}, 1);
+
+
+</script>
+</body>
+</html>

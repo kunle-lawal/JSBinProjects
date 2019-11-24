@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/yaqeva/9/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+canvas{
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	background-color:#aaaaaa;
+	
+}
+
+.can{
+	-webkit-filter: blur(1px);
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	background-color:white;
+	opacity:0.3;
+}
+</style>
+</head>
+<body>
+  <canvas id="canvas" width="400px" height="400px"></canvas>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+var randColor = getRandomColor();
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+//Get the distance between object1 and object2
+function return_distance(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+
+    return d;
+}
+
+//Get the angle of object1 against object2
+function return_angle(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    
+    var angle = Math.atan2(dy, dx);
+    return angle;
+}
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;
+var particles = [];
+
+//Particle declareration//// 
+
+for(var i = 0; i < 3; i++){
+	particles.push({
+		x:randNum((cw/2) - 70, (cw/2) + 70), 
+		y:randNum((ch/2) - 70, (ch/2) + 70),
+		radius: 1, 
+		h:randNum(4,10), 
+		w:randNum(0.1, 1),
+		vy:0,
+		vx:randNum(0, 0),
+		ay:0,
+		f:0,
+		indx:i,
+		color: "red",
+		orbit:true,
+	});
+}
+
+var p_index = particles.length;
+window.setInterval(function(){
+	particles.push({
+		x:randNum(0, cw),
+		y:randNum(0, ch),
+		radius: 1,
+		vy:0,
+		vx:randNum(0, 0),
+		ay:1,
+		f:0,
+		indx:p_index,
+		color: "white",
+		orbit:false,
+	});
+	p_index++;
+}, 10); 
+
+window.setInterval(function(){
+	console.log(angle);
+}, 10);
+////////Drawing the Particles///////////////////////
+function drawParticle(){
+	for(var i = 0; i < particles.length; i++){
+		var p = particles[i];
+		ctx.beginPath();
+		ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+		ctx.fillStyle =  p.color;
+		ctx.fill();
+	} 
+}
+
+var angle = 0;
+////////Animating the particles///////////////////
+function animateParticle(){
+	for(var i = 0; i < particles.length; i++){
+		var p = particles[i];
+		
+		p.x += p.vx; 
+		p.y += p.vy;
+		p.vy += p.ay; 
+		
+		//p.vx = Math.cos(return_angle(p.x, p.y, cw/2, ch/2)) * -1;
+        //p.vy = Math.sin(return_angle(p.x, p.y, cw/2, ch/2)) * -1;
+		var dis = return_distance(p.x, p.y, cw/2, ch/2);
+		var ang = return_angle(p.x, p.y, randNum((cw/2) - 50, (cw/2) + 50), randNum((ch/2) - 50, (ch/2) + 50));
+		
+		if(dis < 500 && p.orbit === false){
+          p.vx = Math.cos(ang) * -600/dis;
+          p.vy = Math.sin(ang) * -600/dis;
+        } 
+		 
+		if((dis < (p.radius * 5) + 40) && p.orbit === false){
+			particles.splice(p.indx, 1);
+		    p.vx = 0;
+			//p.vy = 0;
+			//window.setTimeout(function(){
+				//particles.splice(p.indx, 1, 0); 
+			//}, 1);
+		}
+		
+		/*if(dis < (p.radius * 5) + 40){
+			p.x = (cw/2 + Math.cos(angle) * 40);
+            p.y = (ch/2 + Math.sin(angle) * 40);
+		    angle += 0.001;
+		}*/
+		/*if((p.y - p.h) < 0){
+			p.vy = -p.vy;
+		}
+		
+		if((p.x - p.w) < 70){
+			p.vx = -p.vx;
+		}
+		
+		if((p.y + p.h) > ch){
+			//p.vy = -p.vy;
+			particles.splice(0, 1);
+		}
+		
+		if((p.x + p.w) > cw-70){
+			p.vx = -p.vx;
+		}*/
+	}
+}
+
+
+window.setInterval(function(){
+	for(var i = 0; i < 10; i++){
+		var p = particles[i];
+		
+        if(p.indx === 0){
+            p.x = (cw/2 + Math.cos(angle + (Math.asin(0.3))) * 100);
+            p.y = (ch/2 + Math.sin(angle + (Math.acos(0.3))) * 100);
+			//p.color = "white";
+        } 
+		if(p.indx == 1){
+            p.x = (cw/2 + Math.cos(angle + (Math.acos(0.3))) * 100);
+            p.y = (ch/2 + Math.sin(angle + (Math.asin(0.3))) * 100);
+			//p.color = "white";
+        }
+		if(p.indx == 2){
+            p.x = (cw/2 + Math.cos(angle) * 100);
+            p.y = (ch/2 + Math.sin(angle) * 100);
+			//p.color = "red";
+        }
+		
+		angle += 0.005;
+		
+	}
+}, 1000/ 100);
+/*var p_remove = 10; //Number of Particles to remove
+//Wait 1 second til function  starts removing particles
+window.setTimeout(function(){
+	window.setInterval(function(){
+		p_remove += 5; //increase the number of particles removed by 5 every half a second 
+    	particles.splice(0, p_remove);//remove the particles every half a second
+		
+		if(p_remove >= 70){
+			p_remove -= 10; 
+			
+			if(p_remove <= 50){
+				p_remove += 5;
+			} 
+		}
+		//Regulate the number of particles being removed so not too much or too little is removed
+		
+	}, 500);  
+}, 1000); */
+
+function start(){
+	window.requestAnimFrame(start);
+	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+	ctx.clearRect(0,0,cw, ch);
+	
+	drawParticle();
+	animateParticle();
+	
+}  
+
+start();
+
+</script>
+</body> 
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/foveya/11/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-git2.js"></script>
+<script src="https://cdn.firebase.com/js/client/1.0.15/firebase.js"></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+	margin:0 auto;
+	background-image:url("http://www.hdwallpaperscool.com/wp-content/uploads/2014/03/gorilla-hd-wallpapers-free-download-lovely-hd-desktop-background-desktop-wallpapers-of-gorilla.jpg");
+	background-repeat: no-repeat;
+  	background-size:100% 107%;
+	/*background: rgb(28, 28, 28);
+	background: -moz-linear-gradient(62deg, rgb(161, 163, 165) 0%, rgb(221, 221, 221) 48%);*/
+}
+
+
+canvas{
+  	/*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  	background-repeat: no-repeat;
+  	background-size:100% 100%;*/
+  	background-color:black;
+  	position:absolute;
+  	margin-left:-0.47%;
+  	margin-top:-0.47%;
+	z-index:-3;
+}
+
+
+.page_wrapper{
+	border:1px solid transparent;
+	z-index:-3;
+}
+
+
+.component_wrapper{
+	border:2px solid transparent;
+	height:673px;
+	padding:50px;
+}
+
+.component_wrapper ul{
+	list-style:none;
+}
+
+.component_wrapper ul li{
+	border:1px solid transparent;
+	float: left;
+	width:400px;
+	height:300px;
+	margin:20px;
+	margin-left:50px;
+	text-align:center;
+	display:inline-block;
+}
+
+/*////////*/
+#timer{
+	background-color:rgb(255,255,255);
+	width:600px;
+	opacity:0.85;
+}
+
+
+#timer1 ul{
+	margin-left:-10%;
+	margin-top:50px;
+}
+
+
+#time{
+	color:#600F00;
+	text-shadow:0px 10px 10px green;
+	margin-bottom:-55px;
+	font-size:40px;
+	background-color:rgb(144,238,144);
+	font-family: Papyrus, fantasy;
+}
+
+
+.time{
+	text-shadow: 0px 0px 10px black;
+	display:inline-block;
+	font-size:55px;
+	font-family: Papyrus, fantasy;
+	margin-top:-100px;
+	color:rgb(0,0,0);
+}
+
+
+.colon{
+	color:black;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+
+.push{
+	color:rgb(0,139,69);
+	display:inline-block;
+	font-size:40px;
+	font-family: Papyrus, fantasy;
+	height:95px;
+	margin-top:40px;
+	width:196px;
+}
+
+
+#start{
+	text-shadow: 4px 4px 10px black;
+	background-color:lightgreen;
+	color:#165A2D;
+}
+
+
+#start:hover{
+	box-shadow:
+}
+
+
+
+#reset{
+	text-shadow: 4px 4px 10px black;
+	color:#165A2D;
+}
+
+/*///////*/
+
+#gorilla_progress{
+	color:#134D4D;
+	text-shadow:0px 10px 20px yellow;
+	margin-bottom:-55px;
+	font-size:40px;
+	padding:5px;
+	background-color:rgb(0,229,238);
+	font-family: Papyrus, fantasy;
+}
+
+
+#progress{
+	width:600px;
+	background-color:rgb(3,180,204);
+	opacity:0.85;
+}
+
+
+#progress ul{
+	list-style: none;
+    margin: 65px;
+    padding: 10px;
+    height: 170px;
+    overflow: hidden;
+	border:4px inset #248C8C;
+	color:white;
+	font-size:30px;
+	font-family: Papyrus, fantasy;
+}
+
+
+
+#info{
+	width:600px;
+	background-color:rgb(0,125,238);
+	opacity:1;
+}
+
+
+.info1{
+	background-color:rgb(100,125,238); 
+	font-size:30px; 
+	height:200px;
+	font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+}
+
+
+#buy_header{
+	color:black;
+	text-shadow:0px 10px 10px green;
+	font-size:40px;
+	background-color:rgb(144,238,144);
+	font-family: Papyrus, fantasy;
+}
+
+
+.block_types{
+	border:1px solid white;
+	margin:15px;
+	margin-top:25px;
+	width:70px;
+	height:70px;
+	display:inline-block;
+}
+
+
+.block_types:hover{
+	box-shadow:0px 0px 10px 10px white;
+	cursor:pointer;
+}
+</style>
+</head>
+<body>
+	<!--<canvas id="canvas" width="1608" height="785px">Your browser doesn't support the canvas element... Sorry ._.</canvas> -->
+	<div class="page_wrapper">
+		<div class="component_wrapper">
+			<ul class="component">
+				<li id="timer">
+					<div id="timerContainer">
+  						<div id="timer1">
+							<div id="time">Timer</div>
+    					<ul>
+      						<div class="time" id="hour2" >0</div>
+      
+      						<div class="time" id="hour1" >0</div>
+      
+      						<span class="colon" style="font-size:80px;">:</span>
+      
+      
+      						<div class="time" id="min2" >0</div>
+      
+      						<div class="time" id="min1" >0</div>
+      
+      
+      						<span class="colon" style="font-size:80px;">:</span>
+      
+      						<div class="time" id="sec2" >0</div>
+      
+      						<div class="time" id="sec1" >0</div>
+      
+      						<div class="time" id="mil" style="font-size:10px;">00</div>
+    					</ul>
+  					</div>
+				</div>
+  
+				<div id="ButtonContainer">
+  					<div id="push_contain">
+							<div class="push" id="start" style="cursor:pointer;">Start</div> 
+    					
+    						<div class="push" id="reset" style="cursor:pointer;">Reset</div>
+    					
+  					</div>
+				</div>  
+				</li>
+				<li id="progress">
+					<div id="gorilla_progress">Gorilla Progress</div>
+					<ul id='messageDiv'>
+						<span style="position:absolute; margin-top:139px; margin-left:110px; font-size:20px;" id="identifyer"> - New time  </span>
+					</ul>
+				</li>
+				<li id="info" class="info1">
+					<div style="margin-top:60px; color:darkblue;">The Timer is, in essence, a way to asses the Gorilla and the time in which they are able to manipulate the magnetic blocks enough to reach their sustinace.</div>
+				</li>
+				
+				<li id="info" class="info2" style="background-color:rgb(0,125,238);">
+					<div id="buy_header">Buy Block Type</div>
+					<div class="block_types" style="background-color:red;" id="red"></div>
+					<div class="block_types" style="background-color:green;" id="green"></div>
+					<div class="block_types" style="background-color:lightblue;" id="lightblue"></div>
+					<div class="block_types" style="background-color:blue;" id="blue"></div>
+					<div class="block_types" style="background-color:yellow;" id="yellow"></div>
+					<div class="block_types" style="background-color:lightgreen;" id="lightgreen"></div>
+					<div class="block_types" style="background-color:brown;" id="brown"></div>
+					<div class="block_types" style="background-color:gray;" id="gray"></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+<script id="jsbin-javascript">
+//Easier way to write document.getElemntById//
+function gib(id){
+  return document.getElementById(id);
+}
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+
+//Define global variables//
+var og_time = 0;
+var setTime; 
+/*var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;*/
+
+
+
+//Timer object//
+var time = {
+  sec1: 0,
+  sec2: 0,
+  min1: 0,
+  min2: 0,
+  hour1: 0,
+  hour2: 0,
+  mil: 0,
+  
+  //Each values needs to ALWAYS be updated!!!!//
+  update_values: function(){
+    gib("sec1").innerHTML = this.sec1;
+    
+    gib("sec2").innerHTML = this.sec2;
+    
+    gib("min1").innerHTML = this.min1;
+    
+    gib("min2").innerHTML = this.min2;
+    
+    gib("hour1").innerHTML = this.hour1;
+    
+    gib("hour2").innerHTML = this.hour2;
+    
+    gib("mil").innerHTML = time.mil;
+  },
+        
+  //General updates for the timer as a whole//
+  update: function(){
+    this.sec1++;
+    
+    if(this.sec1 > 9){
+      this.sec1 = 0;
+      this.sec2++;
+    }
+    
+    if(this.sec2 >= 6){
+      this.sec2 = 0;
+      this.min1++;
+    }
+    
+    if(this.min1 > 9){
+      this.min1 = 0;
+      this.min2++;
+    }
+    
+    if(this.min2 >= 6){
+      this.min2 = 0;
+      this.hour1++;
+    }
+    
+    if(this.hour1 >= 9){
+      this.hour1 = 0;
+      this.hour2++;
+    }
+
+  }
+};
+
+
+function update(){
+  time.update();
+}
+
+//Updates the values every miliseconds to avoid timing confusion.//
+window.setInterval(function(){
+  time.update_values();
+  
+  
+},1);
+
+var timeStart = false;
+var updating;
+//function for starting the timer//
+function start_time(){
+  //starts the timer//
+  setTime = window.setInterval(function(){
+   update();
+    updating =  true;
+  }, 1000);
+  
+  //updates the milisecond has no corrilation to the actual time//
+  setMil = window.setInterval(function(){
+    time.mil++;
+      if(time.mil >= 99){
+        time.mil = 10;
+      }
+  },1);
+}
+
+
+lap = false;
+//starts the updating process//
+$("#start").click(function(){
+  	if(updating){
+    	return;
+  	} else if(!updating){
+    	start_time();
+    	updating =  true;
+		gib("start").innerHTML = "Lap";
+		$("#start").css("background-color", "rgb(255, 51, 51)");
+  	}
+	
+	window.setTimeout(function(){
+		lap = true;
+	}, 1);
+});     
+
+
+
+//Resets timer//
+$("#reset").click(function(){
+  lap = false;
+  if(updating){
+    reset();
+    return;
+  } else if(!updating){
+    return;
+  }
+});
+
+
+//Reset function//
+function reset(){
+  window.clearInterval(setTime);
+  window.clearInterval(setMil);
+  gib("start").innerHTML = "Start";
+  $("#start").css("background-color", "rgb(102, 205, 170)");
+  time.sec1 = og_time;
+  time.sec2 = og_time;
+  time.min1 = og_time;
+  time.min2 = og_time;
+  time.hour1 = og_time;
+  time.hour2 = og_time;
+  time.mil = og_time + "0";
+  updating = false;
+}
+
+var messageList = $('#messageDiv');
+
+
+$("#messageDiv").dblclick(function(){
+	$(this).css("overflow", "auto");
+});
+
+
+  // Get a reference to the root of the chat data.
+  var messagesRef = new Firebase('https://trhuv73grz0.firebaseio-demo.com/');
+
+	var minutes_string = " Minutes and ";
+	var minutes_result = minutes_string.fontcolor("blue");
+
+	var seconds_string = " Seconds";
+	var seconds_result = seconds_string.fontcolor("green");
+  // When the user presses enter on the message input, write the message to firebase.
+	var line_num = 0;
+	$("#start").click(function(){
+		var set_time;
+		
+		if(lap){
+			line_num += 1;
+			if(time.min2 >= 1 || time.min1 >= 1){
+				set_time = line_num + ". " + " Minutes " +  time.min2 + "" + time.min1 + " Seconds" + time.sec2 + "" + time.sec1;
+      			messagesRef.push({set_time:set_time});
+      			$('#messageDiv').val('');
+				
+				$("#messageDiv").css("color", "red");
+				window.setTimeout(function(){
+					$("#messageDiv").css("color", "white");
+				}, 1000);
+				
+				$("#identifyer").css("color", "green");
+				window.setTimeout(function(){
+					$("#identifyer").css("color", "white");
+				}, 1000);
+			}else{
+				set_time = line_num + ". " + " Seconds " + time.sec2 + "" + time.sec1;
+      			messagesRef.push({set_time:set_time});
+      			$('#messageDiv').val('');
+				
+				$("#messageDiv").css("color", "red");
+				window.setTimeout(function(){
+					$("#messageDiv").css("color", "white");
+				}, 1000);
+				
+				$("#identifyer").css("color", "green");
+				window.setTimeout(function(){
+					$("#identifyer").css("color", "white");
+				}, 1000);
+			}
+			
+		} else {
+			return;
+		}
+		
+		
+		
+		
+	});
+
+	 // Add a callback that is triggered for each chat message.
+  	messagesRef.limit(5).on('child_added', function (snapshot) {
+    	var message = snapshot.val();
+    	$('<div/>').prepend($('<em/>')
+      	.text(message.set_time)).appendTo($('#messageDiv'));
+    	$('#messageDiv')[0].scrollTop = $('#messageDiv')[0].scrollHeight;
+  	}); 
+
+
+
+messageList[0].scrollTop = messageList[0].scrollHeight;
+
+
+
+$("#red").hover(function(){
+	$(".info2").css("background-color", "red");
+});
+
+$("#green").hover(function(){
+	$(".info2").css("background-color", "green");
+});
+
+$("#lightblue").hover(function(){
+	$(".info2").css("background-color", "lightblue");
+});
+
+$("#blue").hover(function(){
+	$(".info2").css("background-color", "blue");
+});
+
+$("#yellow").hover(function(){
+	$(".info2").css("background-color", "yellow");
+});
+
+$("#lightgreen").hover(function(){
+	$(".info2").css("background-color", "lightgreen");
+});
+
+$("#brown").hover(function(){
+	$(".info2").css("background-color", "brown");
+});
+
+$("#gray").hover(function(){
+	$(".info2").css("background-color", "gray");
+});
+
+
+/*
+///////Rain Particles////////
+var particles = [];
+	window.setInterval(function(){
+		particles.push({
+			x:randNum(0, cw),
+			y:randNum(0, ch),
+			radius: 1,
+			h:15,
+			w:0.3,
+			vy:randNum(2, 5),
+			vx:randNum(0, 0),
+			f:0,	
+			color: "lightblue",
+		});
+	}, 1);
+
+function drawRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		ctx.beginPath();
+		ctx.rect(rain.x, rain.y, rain.w, rain.h);	
+		//ctx.arc(rain.x, rain.y, rain.radius, 0, 2 * Math.PI);
+		ctx.fillStyle =  rain.color;
+		ctx.fill();
+	}
+}
+
+function animateRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		
+		rain.x += rain.vx;
+		rain.y += rain.vy;
+		
+		if((rain.y + rain.h) >= ch + 10){
+			rain.vy = 0;
+			rain.h = 3;
+			rain.w = 15;
+		}
+	}
+}
+
+window.setInterval(function(){
+    particles.splice(0, 1000);
+	//console.log(particles.length);
+}, 1000 * 10);
+
+window.setInterval(function(){
+	ctx.clearRect(0, 0, cw, ch);
+}, 10);
+
+function render(){
+	window.requestAnimationFrame(render);	
+	drawRain();
+	animateRain();
+}
+
+render();
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

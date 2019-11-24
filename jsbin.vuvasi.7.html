@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/vuvasi/7/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-compat-git.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<style type="text/css" href="style.css"></style>
+<link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>Kunle</title>
+<style id="jsbin-css">
+/*Makes the div fill the whole page
+position:absolute;
+left:0px;
+top:0px;    
+bottom:0px;
+right:0px;
+margin:auto;
+*/
+
+
+body{
+    width:99%;
+    height:100%;
+    background-color:#f2f2f3;
+    border:1px solid none;
+    font-family: Calibri, Candara, Segoe, 'Segoe UI', Optima, Arial, sans-serif;
+}
+
+
+#navContainer{
+    box-sizing:border-box;
+    width:100%;
+    height:9.1%;
+    color:#222222;
+}
+
+
+#navContainer #navbar{
+    list-style:none;
+    border:1px solid none;
+    text-align:center;
+    padding:10px;
+}
+
+#navContainer #navbar div{
+    font-size:17px;
+    text-align:center;
+    display:inline-block;
+    margin:25px;
+    cursor:pointer;
+    transition:all 0.5s; 
+}
+
+
+#navContainer #navbar div:hover{
+    color:red;
+    transform:rotateZ(4deg);
+}
+
+
+#img{
+    float:left;
+}
+
+
+.contact{
+  color:red;
+  float:right;
+}
+
+
+.contact:hover{
+  color:#1fda9a !important; 
+}
+
+
+#welcomeContainer{
+    text-align:center;
+    border:1px solid none; 
+    height:100%; 
+    transition:all 0.7s;  
+    height:85.5%; 
+    position:absolute;
+    z-index: 0; 
+    left:0px;  
+    top:100px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+}
+
+
+#welcome{
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
+    text-align:center;
+    border:1px solid none;
+    width:800px;
+    height:110px;
+    font-size:100px;
+    color:#1fda9a;
+    position:absolute;
+    z-index: 20;
+    left:0px;
+    top:-280px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+    transition:all 0.7s;
+}
+
+
+#welcome p{
+    font-size:20px;
+    color:#222222;
+}
+
+
+#welcome p span{
+    font-weight:900;
+    color:#1fda9a;
+    cursor:pointer; 
+    transition:all 0.7s; 
+}
+
+
+#welcome p span:hover{
+    color:red;
+    transform:rotateZ(4deg);
+}
+
+
+@media screen and (max-width:650px){
+   #navContainer #navbar{
+    display:none;
+   }
+}
+
+
+#amContainer{
+    text-align:center;
+    border:1px solid none;
+    height:100%; 
+    transition:all 0.7s;  
+    height:86.9%; 
+    position:absolute;
+    z-index: 0;
+    left:0px;
+    top:100px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+    display:none;
+}
+
+
+#am{
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
+    text-align:center;
+    border:1px solid none;
+    width:800px;
+    height:110px;
+    font-size:100px;
+    color:#1fda9a;
+    position:absolute;
+    left:0px;
+    top:-280px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+}
+
+
+#am p{
+    font-size:20px;
+    color:#222222;
+    margin-top:-1px;
+}
+
+
+#am p a{
+    font-size:20px;
+    font-weight:900;
+    color:#1fda9a;
+    text-decoration:none;
+    transition:all 0.7s;
+}
+
+
+#am p a:hover{ 
+    transform: rotateZ(5deg); 
+    color:#ee4b3e;
+    text-decoration:none;
+}
+
+
+#skillsContianer{
+    text-align:center;
+    border:1px solid none;
+    height:100%; 
+    transition:all 0.7s;  
+    position:absolute;
+    z-index: -10;
+    left:0px;
+    top:0px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+    display:none;
+}
+
+
+
+#skills{
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
+    text-align:center;
+    border:1px solid none;
+    width:700px;
+    height:410px;
+    position:absolute;
+    left:0px;
+    top:120px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+    border:1px solid none;
+}
+
+
+#skills h1{
+    color:#ee4b3e; 
+    text-align:center;
+    text-shadow: 4px 1px 10px none;
+    position:absolute;
+    left:0px;
+    height:80px;
+    font-size:40px;
+    font-weight:bold;
+    top:-430px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+}
+
+
+.skillType{
+    text-align:center;
+    display:inline-block;
+    background-color:#1fda9a; 
+    color:#f2f2f3;
+    border: 2px solid none;
+    width:60px;
+    height:60px;
+    padding:40px;
+    margin:15px ; 
+    margin-top:20px;  
+    transition:all 0.7s;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+
+.skillType p{
+    font-size:11px;
+}
+
+
+.skillType:hover{
+    color:#1fda9a;
+    border: 1px solid none;
+    background-color:#444444;
+}
+
+
+#aboutSkill{
+    color:#444444;
+    border:1px solid red;
+    float:left;
+    margin-left:17px;
+    width:100px;
+    height:26px;
+    transition:all 2s !important;
+}
+
+
+.learnMore{
+    font-weight:900;
+    font-size:26.5px;
+    color:#ee4b3e;
+    text-decoration:none;
+    transition:all 0.7s;
+    cursor:pointer;
+    border:1px dotted black;
+    width:200px;
+    height:42px;
+    position:absolute;
+    left:0px;
+    top:490px;
+    bottom:0px; 
+    right:0px;
+    margin:auto;
+    border-radius:10px;
+    z-index:1; 
+    transition:all 0.7s;
+}
+
+
+.learnMore:hover{
+    background-color:white;
+    font-size:26.5px;
+    color:#1fda9a;
+    text-decoration:none;
+    transform:rotateZ(-4deg);
+}
+
+
+#leftNav{
+    opacity:0.5;
+    background-color:black;
+    border:1px solid none;
+    border-radius:100%;
+    position:absolute; 
+    width:40px;
+    height:40px;
+    left:0px;
+    top:0px;
+    bottom:0px;  
+    right:96%;
+    margin:auto;
+    transition:all 0.7s;
+}
+
+
+#rightNav{
+    opacity:0.5;
+    background-color:black;
+    border:1px solid none;
+    border-radius:100%;
+    position:absolute;
+    width:40px;
+    height:40px;
+    left:95.5%;
+    top:0px;
+    bottom:0px;  
+    right:0;
+    margin:auto;
+    transition:all 0.7s;
+}
+
+
+.sideNav:hover{
+    cursor:pointer;
+    opacity:0.9 !important;
+    background-color:black !important;
+}
+
+
+/*Remove this if you want
+   background: rgb(142, 142, 142);
+background: -moz-linear-gradient(342deg, rgb(142, 142, 142) 40%, rgb(124, 124, 124) 74%);
+background: -webkit-linear-gradient(342deg, rgb(142, 142, 142) 40%, rgb(124, 124, 124) 74%);
+background: -o-linear-gradient(342deg, rgb(142, 142, 142) 40%, rgb(124, 124, 124) 74%);
+background: -ms-linear-gradient(342deg, rgb(142, 142, 142) 40%, rgb(124, 124, 124) 74%);
+background: linear-gradient(72deg, rgb(142, 142, 142) 40%, rgb(124, 124, 124) 74%);
+
+#miniNav{  
+    list-style-type:none; 
+    position:absolute;
+    height:200px;
+    left:0px;
+    top:450px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+    text-align:center;
+    border:1px solid none;
+}
+
+
+#dotContainer{
+    font-size:10px;
+    border:1px solid none; 
+    height:40px;
+    width:250px;
+    position:absolute; 
+    left:0px;
+    top:0px;
+    bottom:0px;
+    right:0px;
+    margin:auto;
+    cursor:pointer;
+}
+
+
+.dot{
+    color:red; 
+    width:15px;
+    height:15px;
+    border-radius:100%;
+    background-color:red; 
+    display:inline-block;
+    cursor:pointer;
+    transition:all 0.5s;
+    margin:15px;
+} 
+
+
+
+.dot:hover{
+    color:white; 
+    background-color:white;
+    width:15.5px;
+    height:15.5px;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+		<div id= 'navContainer'>
+			<div id="navbar">
+                <div id="img">LOGO</div>
+                <div class="navMid" id="nav0">Home</div>
+				<div class="navMid" id="nav1">About</div>
+				<div class="navMid" id="nav2">Skills</div>
+				<div class="navMid" id="nav3">Showcase</div>
+                <div class="contact" id="nav4">Contact</div>
+			</div>
+		</div>
+    
+		<div id= 'welcomeContainer' class="pg1">
+			<div id='welcome'>
+              <b>Hello World_</b>
+              <p>My name is Kunle lawal and I love to write My name is Kunle lawal and I love to write <span>Code</span></p>
+              <div class="learnMore">Learn More</div>
+			</div>
+		</div>
+
+		<!--Am is about me-->
+		<div id= 'amContainer' class="pg2">
+			<div id='am'>
+                <b>I</b>
+              <p>Am <a href="https://www.facebook.com/kunle.jameslawal">Kunle</a> (Coolie) Lawal, born in Nigeria raised in Boston. I am currently a first year student at Wentworth Institute of Technology majoring in computer science. As the major would imply I love to write code.  </p>
+                <div class="learnMore">Learn More</div>
+            </div>
+	    </div>
+
+		<div id= 'skillsContianer' class="pg3">
+			<div id='skills'>
+                            <h1>My Current Skills</h1> 
+              <div class="skillType" id="skill0" style="background-color:b;">JS <p>01+ Years</p></div>
+              <div class="skillType" id="skill1" style="background-color:d;">Html <p>01+ Years</p></div>
+		      <div class="skillType" id="skill2" style="background-color:d;">CSS <p>01+ Years</p></div>
+			  <div class="skillType" id="skill3" style="background-color:d;">C++ <p>01+ Years</p></div>
+			  <div class="skillType" id="skill4" style="background-color:d;">Java <p>01+ Years</p></div>
+              <div class="skillType" id="skill5" style="background-color:d;">jQuery <p>01+ Years</p></div>
+              <div class="skillType" id="skill6" style="background-color:d;">PHP <p>01+ Years</p></div>
+              <div class="skillType" id="skill6" style="background-color:d;">Eating <p>18+ Years</p></div>
+              <div id="aboutSkill">Hello</div>
+			</div>
+		</div>
+
+		<div id= 'projectContainer'>
+			<div id='project'>
+
+			</div>
+		</div>
+
+		<div id= 'contactContainer'>
+			<div id='contact'>
+
+			</div>
+		</div>
+    
+        <div id="leftNav" class="sideNav"></div>
+        <div id="rightNav" class="sideNav"></div>
+<script id="jsbin-javascript">
+console.log($('.pg1').attr('id'));
+
+$(".navMid").click(function(){
+    console.log($('this').attr('id'));
+});
+
+function GID(id){
+  return document.getElementById(id);
+}
+
+function css(id, type, value){
+    $(id).css(type, value);
+}
+
+var click = false;
+
+$(".skillType").mouseenter(function(){
+    $("#aboutSkill").css("width", "665px"); 
+    $("#aboutSkill").css("height", "100px");  
+});
+
+$(".skillType").click(function(){
+    click = true;
+    $("#aboutSkill").css("width", "665px"); 
+    $("#aboutSkill").css("height", "100px");  
+});
+
+$(".skillType").mouseleave(function(){
+    if(click === false){
+        $("#aboutSkill").css("width", "0"); 
+        $("#aboutSkill").css("height", "0");  
+    }
+    
+});
+
+
+
+var rand = Math.floor(Math.random()* 10) + 1;
+var mouseIn = false;
+$(".skillType").mouseenter(function(){
+    mouseIn = true; 
+    rand = Math.floor(Math.random()* 10) + 1;
+    console.log("rotateZ(" + rand + ")"); 
+    $(this).css("transform", "rotateZ(" + rand + "deg)");
+});
+
+$(".skillType").mouseleave(function(){
+    $(this).css("transform", "rotateZ(" - rand + "deg)");  
+});
+ 
+var currPage = 1;
+$("#leftNav").click(function(){
+   currPage -= 1; 
+    if(currPage <= 0){
+      currPage = 1;
+    }
+    console.log(currPage);
+    css(".pg" + (currPage + 1), "display", "none"); 
+    css(".pg" + currPage, "display", "block"); 
+});
+
+$("#rightNav").click(function(){
+    currPage += 1; 
+    if(currPage >= 5){
+        currPage = 1;
+    }
+    console.log(currPage);
+    css(".pg" + (currPage - 1), "display", "none"); 
+    css(".pg" + currPage, "display", "block");
+});
+
+
+/*$(".skillType").mouseleave(function(){
+    mouseIn = false;
+});
+
+mouseIn = false;
+var i = 0;
+window.setInterval(function(){
+    i += 90;
+    if(i > 360 ){
+        ///css(".skillType", "transform", "rotateZ(" - 180 + "deg)");
+        i -= 90; 
+    }
+    if(!mouseIn){
+        css(".skillType", "transform", "rotateZ(" + i + "deg)");  
+    }
+}, 1000);
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
+
+
+
+
+    
+    <!--Remove this if you want 
+      <div id="miniNav">
+          <div id="dotContainer">
+              <div class="dot" id="miniNav0">H</div>
+              <div class="dot" id="miniNav1">A</div>
+              <div class="dot" id="miniNav2">S</div>
+              <div class="dot" id="miniNav3">S</div>
+              <div class="dot" id="miniNav4">C</div>
+          </div>
+        </div>
+    -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+

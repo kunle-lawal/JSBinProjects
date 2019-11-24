@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/noxevu/5/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+@import url(https://fonts.googleapis.com/css?family=Maven+Pro);
+
+*{
+    transition:all 0.2s;
+    font-family: 'Maven Pro', sans-serif;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body{
+    background-color:#FBA212;
+	width:  100%;
+    height: 100%;
+    margin: 0px;
+}
+
+#alpha_container{
+    height:530px;
+    width:660px;
+    top:0px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    position:absolute;
+	text-align:center;
+}
+
+.alpha{
+    background-color:#222222;
+    color:white;
+    font-weight:900;
+    font-size:35px;
+    text-align:center;
+    width:40px;
+    padding:20px;
+    display:inline-block;
+    margin:10px;
+    cursor:pointer;
+	
+	border:2px solid rgb(100, 100, 205);
+    border-radius:0px;
+    background-color:rgb(100, 100, 225);
+    color:white;
+    font-weight:900;
+    box-shadow:0px 5px 1px rgb(100, 0, 255);
+}
+
+.alpha:hover{
+    padding:24px;
+}
+
+.display_{
+    color:#ffffff;
+    cursor:pointer;
+    text-align:center;
+    font-size:600px;
+	height:700px;
+    width:90%;
+	position:absolute;
+    top:0px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+}
+
+.none{
+	opacity:0;
+	z-index:-1;
+}
+</style>
+</head>
+<body id="body">
+	<div id="display" class="display_ none">A</div>
+    <div id="alpha_container">
+      <div id="alpha0" class="alpha">A</div>
+      <div id="alpha1" class="alpha">B</div>
+      <div id="alpha2" class="alpha">C</div>
+      <div id="alpha3" class="alpha">D</div>
+      <div id="alpha4" class="alpha">E</div>
+      <div id="alpha5" class="alpha">F</div>
+      <div id="alpha6" class="alpha">G</div>
+      <div id="alpha7" class="alpha">H</div>
+      <div id="alpha8" class="alpha">I</div>
+      <div id="alpha9" class="alpha">J</div>
+      <div id="alpha10" class="alpha">K</div>
+      <div id="alpha11" class="alpha">L</div>
+      <div id="alpha12" class="alpha">M</div>
+      <div id="alpha13" class="alpha">N</div>
+      <div id="alpha14" class="alpha">O</div>
+      <div id="alpha15" class="alpha">P</div>
+      <div id="alpha16" class="alpha">Q</div>
+      <div id="alpha17" class="alpha">R</div>
+      <div id="alpha18" class="alpha">S</div>
+      <div id="alpha19" class="alpha">T</div>
+      <div id="alpha20" class="alpha">U</div>
+      <div id="alpha21" class="alpha">V</div>
+      <div id="alpha22" class="alpha">W</div>
+      <div id="alpha23" class="alpha">X</div>
+      <div id="alpha24" class="alpha">Y</div>
+      <div id="alpha25" class="alpha">Z</div>
+    </div>
+<script id="jsbin-javascript">
+function ranColor() {
+    var num = Math.floor(Math.random() * Math.pow(2,24));
+    return '#' + ('00000' + num.toString(16)).substr(-6);
+}
+
+var x = "";
+var sec = 4;
+$(".alpha").click(function(){
+    x = $(this).html();
+	var t = this;
+    document.getElementById("display").innerHTML = x;
+	$(this).toggleClass("display_");
+	window.setTimeout(function(){
+        $(t).toggleClass("none");
+    }, 1000 * sec);
+});
+$("#display").click(function(){
+    $(this).addClass("none");
+});
+ 
+function fadeOut(element){
+    var i = 1;
+    var out = window.setInterval(function(){
+        if(i <= 0){
+            window.clearInterval(out);
+            $(element).css("z-index", "-1");
+        }
+        $(element).css("opacity", i);
+        i-=0.3;
+    }, 1);
+}
+
+function fadeIn(element){
+    $(element).css("z-index", "1");
+    $(element).css("opacity", 0);
+    $(element).css("display", "inline-block");
+    for(var i = 0; i <= 1; i+=0.1){
+        $(element).css("opacity", i); 
+    }
+}
+
+
+
+
+
+</script>
+</body>
+</html>

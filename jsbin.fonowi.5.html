@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fonowi/5/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+    background-color:black;
+}
+
+#custom{
+  z-index:100;
+  cursor:pointer;
+  background-color:green;
+  border:1px solid red;
+  width:70px;
+  height:100px;
+  padding:10px;
+  color:white;
+  transition:all 0.7s;
+}
+
+.option{
+    text-align:center;
+    color:red;
+}
+
+#canvas{
+    z-index:-1;
+    border:1px solid none;
+    position:absolute;
+    left:0;
+    top:0;    
+    bottom:0;
+    right:0;
+    margin:auto;
+    cursor:none;
+}
+</style>
+</head>
+<body>
+  <div id="custom">
+    <div id="title">Customize</div>
+    <div class="option">
+      <div id=CusTitle>Hole</div>
+        <div class="hole_option">Radius</div>
+        <div class="hole_option">Color</div>
+        <div class="hole_option"></div>
+        <div class="hole_option"></div>
+    </div>
+    <div class="option"></div>
+  </div>
+  
+  <canvas id="canvas" width="1590px" height="770px">Your browser does not the canvas element</canvas>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function GID(id){
+  return document.getElementById(id);
+}
+
+var randColor = getRandomColor();
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+
+var particles = [];
+var rain_color = "lightblue";
+var wind = false;
+var gravity = 0;
+var mousePos = {x:0, y:0};
+
+
+window.onmousemove = function(e){
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    mousePos.x = e.clientX;
+    mousePos.y = e.clientY; 
+    
+    hole.x = mousePos.x - 100;
+    hole.y = mousePos.y + 60;
+};
+
+
+//Particle declareration////
+var num_of_particles = 0;
+var speed = 1;
+var particle = window.setInterval(function(){	
+	particles.push({   
+		x:randNum(0, cw),
+		y:randNum(0, ch),
+		radius: randNum(0.1, 1),
+		h:1,
+		w:1,
+		vy:randNum(0, 0),
+		vx:randNum(0, 0),
+		ay:gravity,
+		f:0,	
+        angle:0,
+        circle_r:randNum(30, 50),
+		color: "gray", //getRandomColor(),
+	});
+}, speed);  
+
+
+////////Drawing the Particles///////////////////////
+function drawRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		ctx.beginPath();
+		//ctx.rect(rain.x, rain.y, rain.w, rain.h);	
+		ctx.arc(rain.x, rain.y, rain.radius, 0, Math.PI * 2);
+		ctx.fillStyle =  rain.color; 
+		ctx.fill();
+	}
+}
+
+var click = false;
+var speed = 0; 
+/*$("#canvas").mouseenter(function(){ 
+    click = true;    
+    //s += 1;
+});
+
+$("#canvas").mouseleave(function(){ 
+    click = false;      
+    s = 0;
+});*/
+
+$("#canvas").click(function(){  
+    click = true;    
+    //s += 1; 
+});
+
+$("#canvas").dblclick(function(){  
+   click = false;    
+   speed = 0;
+});
+////////Animating the particles///////////////////
+var gravity_field = 0;
+function animateRain(){
+	for(var i = 0; i < particles.length; i++){
+        for(var j = 0; j < hole1.length; j++){
+		var h = hole1[j];
+		var rain = particles[i];
+		
+		rain.x += rain.vx;
+		rain.y += rain.vy;
+		rain.vy += rain.ay;
+		if((rain.y + rain.radius) >= ch){
+			rain.vy = -rain.vy;
+		}
+        
+        if ( ( rain.x + rain.radius ) >= cw) {
+            rain.vx = -rain.vx;
+        }
+        
+		if ( ( rain.x ) <= 0 ) {
+			rain.vx = -rain.vx;
+        }  
+		
+       	if ( ( rain.y ) <= 0 ) {
+            rain.vy = -rain.vy;
+        }
+        
+        var x = mousePos.x - 100;
+        var y = mousePos.y - 60;
+       
+        var dx = (h.x) - rain.x;
+        var dy = (h.y) - rain.y;
+        var dis = Math.sqrt((dx * dx) + (dy * dy));
+        var angle = Math.atan2(dy, dx);
+            
+        if(click === true){
+          if(dis <= 1000){ 
+            speed = 60 / dis;
+            //rain.vx = hole.x;
+            //rain.vy = hole.y;
+            rain.vx = Math.cos(angle) * speed;
+            rain.vy = Math.sin(angle) * speed;
+            if(dis < 20){
+              rain.circle_r = 20;
+              rain.x = ((h.x) + Math.cos(rain.angle) * rain.circle_r);
+              rain.y = ((h.y) + Math.sin(rain.angle) * rain.circle_r);
+              rain.angle += 0.07;
+              //rain.color = "black";
+            }
+          } else {
+            //rain.angle = 0;
+          }
+        }
+	  }
+   }
+}
+
+
+var hole1 = [];
+$("#custom").click(function(){
+     hole1.push({   
+      x: randNum(0, cw),
+	  y: randNum(0, ch),
+      radius:10,
+	  h: 30,  
+	  w: 10,
+	  color: "red",
+	  vx: 0,
+	  vy: 0,
+	  ax: 0,
+	  ay: 0, 
+	  f:0,
+      maxV:5,
+	});
+});
+	
+
+function drawHole(){
+	for(var i = 0; i < hole1.length; i++){
+		var h = hole1[i];
+		ctx.beginPath();
+		//ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.arc(h.x, h.y, h.radius, 0, Math.PI * 2);
+		ctx.fillStyle = h.color;
+		ctx.fill();
+	}
+}
+
+function animateHole(){
+	for(var i = 0; i < hole1.length; i++){
+		var h = hole1[i];
+		h.x += h.vx;
+		h.y += h.vy;
+		h.vx += h.ax;
+		h.vy += h.ay;
+        
+        if((h.y + h.radius) >= ch){
+            h.y = ch - h.radius;
+			h.vy = -h.vy;
+		}
+        
+        if ( ( h.x + h.radius ) >= cw) {
+            h.x = cw - h.radius;
+            h.vx = -h.vx;
+        }
+        
+		if ( ( h.x - h.radius) <= 0 ) {
+            h.x = h.radius;
+			h.vx = -h.vx;
+        }  
+		
+       	if ( ( h.y - h.radius) <= 0 ) {
+            h.y = h.radius;
+            h.vy = -h.vy;
+        }
+        
+        if(h.vx >= h.maxV){
+            h.vx = h.maxV;
+        } 
+        
+        if(h.vy >= h.maxV){
+            h.vy = h.maxV;
+        }
+	}
+}
+
+
+var hole = {
+	x: cw/2,
+	y: ch/2,
+    radius:5,
+	h: 30,  
+	w: 10,
+	color: "black",
+	vx: 0,
+	vy: 0,
+	ax: 0,
+	ay: 0, 
+	f:0,
+    maxV:5,
+	draw: function(){
+		ctx.beginPath();
+		//ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx += this.ax;
+		this.vy += this.ay;
+        
+        if((this.y + this.radius) >= ch){
+            this.y = ch - this.radius;
+			this.vy = -this.vy;
+		}
+        
+        if ( ( this.x + this.radius ) >= cw) {
+            this.x = cw - this.radius;
+            this.vx = -this.vx;
+        }
+        
+		if ( ( this.x - this.radius) <= 0 ) {
+            this.x = this.radius;
+			this.vx = -this.vx;
+        }  
+		
+       	if ( ( this.y - this.radius) <= 0 ) {
+            this.y = this.radius;
+            this.vy = -this.vy;
+        }
+        
+        if(this.vx >= this.maxV){
+            this.vx = this.maxV;
+        } 
+        
+        if(this.vy >= this.maxV){
+            this.vy = this.maxV;
+        }
+	},
+};
+
+var keyPressed = [];
+   window.onkeydown = function(e){
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if(keyPressed[37]){
+          hole.vx -= 0.5;
+       }
+     
+       if(keyPressed[38]){
+          hole.vy -= 0.5;
+	   }
+       
+       if(keyPressed[39]){
+          hole.vx += 0.5;
+       }
+	
+	   if(keyPressed[40]){
+          hole.vy += 0.5;
+	   }
+       
+       if(keyPressed[32]){
+          click = true;
+       }
+};
+
+
+window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false; 
+     e.preventDefault();
+       if(code === 37){
+          hole.vx = 0; 
+       }
+       
+       if(code === 38){
+          hole.vy = 0;
+       }
+    
+       if(code === 39){ 
+          hole.vx = 0;
+       } 
+       
+       if(code === 40){
+          hole.vy = 0; 
+       }
+ };
+
+
+var reset = false;
+ 
+function start(){
+	window.requestAnimFrame(start);
+    ctx.clearRect(0,0,cw, ch);
+    
+    hole.draw();
+    hole.update();
+    
+    drawRain();
+    animateRain();
+    
+    drawHole();
+    animateHole();
+    
+}  
+
+start(); 
+
+/*window.setTimeout(function(){
+    window.setInterval(function(){
+      particles.splice(0, 1);
+      console.log(particles.length);
+    }, 10);
+}, 1000 * 10);*/
+start(); 
+
+
+</script>
+</body>
+</html>

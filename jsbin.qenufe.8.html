@@ -1,0 +1,473 @@
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/qenufe/8/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<style id="jsbin-css">
+body{
+  background-color:rgb(100,106,104);
+  width:100%;
+}
+canvas{
+  /*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  background-repeat: no-repeat;
+  background-size:100% 100%;*/
+	background-color:rgb(100,106,104);
+	position:relative;
+	top: 50%;
+    left: 50%;
+    margin-left: -400px;
+	border:1px solid transparent;
+	border-left:1px inset black;
+	border-right:1px inset black;
+}
+
+#pos{
+  background-color:red;
+  width:100px;
+  position:relative;
+}
+
+ul{
+	list-style:none;
+	margin-left:17%;
+}
+
+ul li{
+	display:inline-block;
+	border:1px solid white;
+	width:65px;
+	height:46px;
+	padding-left:0px;
+	padding:20px;
+	font-size:20px;
+	border-radius:5px;
+	margin:10px;
+	cursor:pointer;
+	text-align:center;
+}
+</style>
+<script src="https://fb.me/react-with-addons-0.11.0.js"></script>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+
+
+var mapArray = [
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,3,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
+var map = {
+	x:0,
+	y:0,
+	w:20,
+	h:20,
+	color: "black",
+	draw:function(){
+		for(var i = 0; i < mapArray.length; i++){
+			for(var j = 0; j < mapArray[i].length; j++){
+				if(mapArray[i][j] == 1){
+					ctx.beginPath();
+					ctx.rect(this.x, this.y, this.w, this.h);
+					ctx.fillStyle = this.color;
+					ctx.fill();
+				}
+				
+				if(mapArray[i][j] == 2){
+					ctx.beginPath();
+					ctx.rect(this.x, this.y, this.w, this.h);
+					ctx.fillStyle = "white";
+					ctx.fill();
+				}
+				
+				if(mapArray[i][j] == 3){
+					ctx.beginPath();
+					ctx.rect(this.x, this.y, this.w, this.h);
+					ctx.fillStyle = "yellow";
+					ctx.fill();
+				}
+				
+				
+				
+				this.x += 20;
+				if(this.x >= cw){
+					this.x = cw - 100;
+				}
+			}
+			
+			this.x = 0;
+			this.y += 20;
+			
+		}
+		this.y = 0;
+	}
+};
+
+
+var platforms = [];
+
+platforms.push({
+	x:map.x + 20,
+	y:map.y - 100,
+	w:100,
+	h:10,
+	color: "black",
+});
+
+platforms.push({
+	x:200,
+	y:400,
+	w:100,
+	h:10,
+	color: "black",
+});
+
+platforms.push({
+	x:500,
+	y:450,
+	w:100,
+	h:10,
+	color: "black",
+});
+
+platforms.push({
+	x:560,
+	y:200,
+	w:100,
+	h:10,
+	color: "black",
+});
+
+platforms.push({
+	x:100,
+	y:300,
+	w:100,
+	h:10,
+	color: "black",
+});
+
+platforms.push({
+	x:290,
+	y:150,
+	w:100,
+	h:10,
+	color: "black",
+});
+
+platforms.push({
+	x:240,
+	y:510,
+	w:100,
+	h:100,
+	color: "black",
+});
+
+platforms.push({
+	x:700,
+	y:510,
+	w:70,
+	h:10,
+	color: "black",
+});
+
+function drawPlatforms(){
+	for(var i = 0; i < platforms.length; i++){
+		var plat = platforms[i];
+		ctx.beginPath();
+		ctx.rect(plat.x, plat.y, plat.w, plat.h);
+		ctx.fillStyle = plat.color;
+		ctx.fill();
+	}
+	
+}
+var grounded;
+var canJump = false;
+var jumping;
+function checkPlatCollision() {
+	for(var i = 0; i < platforms.length; i++){
+		var plat = platforms[i];
+		
+		
+		if ( ( player.y + player.h ) >= plat.h - 20) {
+			//grounded = true;
+        }
+		
+		
+		if(plat.x <= player.x + player.w  && plat.x + plat.w  >= player.x && plat.y <= player.y + player.h && plat.y + plat.h >= player.y){
+			
+			if (player.vy >= 0) {
+            	if (plat.y <= player.y + player.h && player.y + player.h <= plat.y + Math.abs(player.vy)) {
+                	player.y = plat.y - player.h + 0.1;
+                    player.vy = 0;
+					grounded = true;
+                 }
+            }
+            if (player.vy <= 0) {
+                if (plat.y + plat.h - Math.abs(player.vy) <= player.y && player.y <= plat.y + plat.h) {
+                    player.y = plat.y + plat.h;
+                    player.vy = 0;
+                 }
+            }
+            if (player.vx >= 0) {
+                if (plat.x <= player.x + player.w && player.x + player.w <= plat.x + Math.abs(player.vx)) {
+                    player.x = plat.x - player.w;
+                    player.vx = 0;
+                 }
+            }
+            if (player.vx <= 0) {
+                if (plat.x + plat.w - Math.abs(player.vx) <= player.x && player.x <= plat.x +plat.w) {
+                    player.x = plat.x + plat.w;
+                    player.vx = 0;
+                 }
+            }
+		}
+		
+		//Check for collisioin between map and player
+		if ( ( player.x ) <= 20 ) {
+            player.x = (cw - player.w) - 1 ;
+			player.vx = -player.vx/2;
+        }
+		
+        if ( ( player.x + player.w ) >= canvas.width - 20) {
+            player.x = 20;
+        }
+       	if ( ( player.y ) <= 20 ) {
+            player.y = 20; 
+            player.vy = -player.vy/2;
+        }
+        		
+		//Touching the floor	
+		if ( ( player.y + player.h ) >= canvas.height - 20) {
+            player.y = (canvas.height - 20) - player.h;
+			grounded = true;
+        }
+		
+		if(player.vy <= player.jump_v){
+			grounded = false;
+		}
+		
+		if(grounded && !walking){
+         	player.vx *= player.f;
+        }
+		
+	}
+}
+
+drawPlatforms();
+var walking;
+
+var player = {
+	x: cw/1.5,
+	y: ch - 300,  
+	h: 30, 
+	w: 10,
+	color: "yellow",
+	vx: 0,
+	vy: 0,
+	ax: 0,
+	ay: 0.3,
+	f:0.81,
+	initVX:2,
+	maxVX:10, 
+	jump_v:-7,
+	draw: function(){
+		ctx.beginPath();
+		ctx.rect(this.x, this.y, this.w, this.h);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx += this.ax;
+		this.vy += this.ay;
+				
+		
+		if(this.initVX >= this.maxVX){
+			this.initVX = this.maxVX;
+		}
+		
+		if(this.initVX <= -this.maxVX){
+			this.initVX = -this.maxVX;
+		} 
+		
+	},
+	power_up:function(omit){
+		if(omit === "no"){
+			return;
+		}
+			
+	},
+	walk_left: function(){
+        if(walking === true){
+            this.vx = -this.initVX; 
+            this.initVX += 0.5;
+        } 
+    },
+    walk_right: function(){
+        if(walking === true){
+            this.vx = this.initVX; 
+			this.initVX += 0.5;
+        }  
+    },
+	
+	checkCollision: function(){
+		
+	},
+};
+
+
+window.setInterval(function(){
+	//console.log(player.x);
+}, 1000);
+
+//Key functions for player block
+var walk_left;
+var walk_right;
+var jump;
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if (keyPressed[32]){
+		   	if(grounded){
+				player.vy = player.jump_v;
+			}
+       }
+     
+       if(keyPressed[37]){
+	   		//this.vx = -1;
+			walking = true;
+         	walk_left = true;
+        	player.walk_left();  
+       }
+     
+       if(keyPressed[39]){
+	   		//this.vx = 1;
+         	walking = true;
+        	walk_right = true;
+         	player.walk_right();
+       }
+       
+       if(keyPressed[90]){
+         
+         }
+
+       if(keyPressed[88]){
+        
+       }
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode;
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 32){
+       		jump = false;
+       }
+       if(code === 37){
+         	walking = false;
+         	walk_left = false;
+			player.initVX = 3
+       }
+     
+       if(code === 39){ 
+         	walking = false;  
+        	walk_right = false;
+			player.initVX = 2
+       } 
+       
+       if(code === 40){
+         
+       }
+       
+       if(code === 83){
+         
+       }
+       
+       if(code === 90){
+        
+       }
+
+       if(code === 88){
+
+       }
+   };
+
+
+function render(){
+	window.requestAnimFrame(render);
+	
+	ctx.clearRect(0,0,cw, ch);
+	map.draw();
+	drawPlatforms();
+	checkPlatCollision();
+	
+	player.draw();
+	player.update();
+	player.checkCollision();
+}  
+
+render();
+
+
+
+
+
+
+
+
+
+</script>

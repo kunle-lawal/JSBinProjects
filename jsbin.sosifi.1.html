@@ -1,0 +1,126 @@
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/sosifi/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+Spinning 
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+<style id="jsbin-css">
+#add_element{
+  border:1px inset gray;
+  padding:10px;
+}
+
+#newNameInput{
+  margin:10px;
+  width:100px;
+  text-align:center;
+}
+
+.pop_up{
+  display:inline-block;
+}
+</style>
+</head>
+<body>
+    <table border="" style="width:100%">
+  <tr>
+  <tr id="tr">
+    <td id="td">First Name</td> 	
+    <td>Points</td>
+  </tr>
+</table>
+  <div id="add_element" style=";">
+    <input class = "pop_up" type="text" id="firstName" placeholder="First name">
+    <div class = "pop_up" id="add" style="border:1px solid gray; width:50px; text-align:center; cursor:pointer; float:right; margin-top:11px;">Add</div>
+</div>
+    <div id="spin">spin</div>
+<script id="jsbin-javascript">
+function GID(id){
+      return document.getElementById(id);
+    } 
+
+function add_(){
+      GID("add_element").style.display = "block";
+    } 
+function get_random(num){
+    return Math.floor((Math.random() * num) + 0);
+}
+    // CREATE A REFERENCE TO FIREBASE
+    var messagesRef = new Firebase('https://brilliant-fire-8407.firebaseio.com/-JofTg76Y_jFDGA2knx1');
+
+    // REGISTER DOM ELEMENTS
+    var first_name = $('#firstName');
+    var click = false;
+    // LISTEN FOR KEYPRESS EVENT
+    $("#add").click(function(){
+      click = true; 
+      //FIELD VALUES
+      var firstName = first_name.val();
+      var id = click;
+      
+      //SAVE DATA TO FIREBASE AND EMPTY FIELD
+      var data_name = messagesRef.push({
+          points:0,
+          first_name:firstName, 
+          click:id
+      });
+      first_name.val('');
+    });
+    
+    var name_array = [];
+    // Add a callback that is triggered for each chat message.
+    var i = 0;
+  
+    messagesRef.limitToLast(10).on('child_added', function (snapshot) {
+      //GET DATA
+      var data = snapshot.val();
+      var first_name = data.first_name;
+      var click = data.click;  
+      name_array.push(first_name);
+      if(click){
+       if(first_name !== " "){
+         var insert = document.getElementById("tr");
+         var new_row = insert.parentNode.insertRow(insert.rowIndex + 1 );
+         new_row.insertCell(0).innerHTML = first_name;
+         new_row.insertCell(1).innerHTML = 0;
+       }
+       //console.log(name_array[i]);
+       i++;
+       $("#spin").click(function(){
+           console.log(name_array[get_random(i)]);
+       });
+      }
+    });    
+console.log(name_array[0]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

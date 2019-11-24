@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/wopumu/3/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+  <meta charset="utf-8">
+  <title>Timesheet</title>
+<style id="jsbin-css">
+@import url(https://fonts.googleapis.com/css?family=Maven+Pro);
+
+*{
+    transition:all 0.2s;
+	font-weight:900;
+    font-family: 'Maven Pro', sans-serif;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body{
+    background-color:#222222;
+    color:white;
+}
+
+.page_container{
+	border:1px solid none;
+	position:absolute;
+	top:0;
+	right:0;
+	left:0;
+	bottom:0;
+	margin:auto;
+	text-align:center;
+}
+
+.event_area{
+	border:5px outset white;
+	position:absolute;
+	top:-40px;
+	right:0;
+	left:0;
+	bottom:0;
+	margin:auto;
+	text-align:center;
+	width:85%;
+	height:490px;
+	padding:20px;
+}
+
+.title{
+	
+}
+
+.times{
+	margin-top:50px;
+}
+
+.time{
+	width:140px;
+	height:44px;
+	padding:10px;
+	margin:30px;
+	display:inline-block;
+	font-size:20px;
+}
+
+.clock{
+	margin-top:50px;
+	padding:33px;
+}
+
+.clock_time{
+	text-align:center;
+	font-size:20px;
+}
+
+.go{
+	margin-top:10px;
+	position:absolute;
+}
+
+.button_reset{
+	border:2px solid rgb(250, 200, 120);
+    border-radius:0px;
+    background-color:rgb(250, 200, 120);
+    color:white;
+    font-weight:900;
+	font-size:10px;
+	
+	width:70px;
+	padding:2px;
+	display:inline-block;
+	cursor:pointer;
+	margin-left:100px;
+	margin-top:-58px;
+	text-align:right; 
+	position:absolute;
+	cursor:pointer;
+}
+
+.button_reset:hover{
+	margin-left:135px;
+}
+
+.button{
+	border:2px solid rgb(255, 100, 80);
+    border-radius:0px;
+    background-color:rgb(255, 60, 60);
+    color:white;
+    font-weight:900;
+	font-size:30px;
+    box-shadow:0px 5px 1px rgb(255, 0, 10);
+	
+	width:260px;
+	padding:20px;
+	display:inline-block;
+	cursor:pointer;
+	margin:10px;
+} 
+
+.button_end{
+	border:2px solid rgb(80, 100, 255);
+    border-radius:0px;
+    background-color:rgb(60, 60, 255);
+    color:white;
+    font-weight:900;
+	font-size:30px;
+    box-shadow:0px 5px 1px rgb(10, 0, 255);
+	
+	width:260px;
+	padding:20px;
+	display:inline-block;
+	cursor:pointer;
+	margin:10px;
+}
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+  <div class="page_container">
+    <div class="event_area">
+        <div class="title">
+          <!--<h1><u>Time Sh</u>eets</h1>-->
+        </div>
+	    
+		<div class="times">
+		    <div class="time">Checked in <span id="checked_in_time">00:00:00</span></div>
+			<div class="time">Checked Out <span id="checked_out_time">00:00:00</span></div>
+		</div>
+		
+		<div class="clock">
+		    <div id="clock_time" class="clock_time">00:00:00</div>
+			<div id="button" class="button">Start</div>
+			<div id="button_reset" class="button_reset">Reset</div>
+		</div>
+    </div>
+  </div>
+<script id="jsbin-javascript">
+var d = new Date();
+var h = d.getHours();
+var min = d.getMinutes();
+var sec = d.getSeconds();
+
+//Getting elements by ID for UI/UX
+function GID(id){
+  return document.getElementById(id);
+}
+
+var log = {
+	checked_in: {
+        bool: true,
+		display:"00:00:00",
+	},
+	checked_out: {
+		bool: false,
+		display:"00:00:00",
+	},
+	reset: function(){
+		this.checked_in.display = "00:00:00";
+		this.checked_out.display = "00:00:00";
+	}
+};
+
+window.setInterval(function(){
+	d = new Date();
+	h = d.getHours();
+    min = d.getMinutes();
+    sec = d.getSeconds();
+	if(h < 12){
+		GID("clock_time").innerHTML = h + ":" + min + ":" + sec; 
+	} else {
+		GID("clock_time").innerHTML = Math.round((h - 2)/2) + ":" + min + ":" + sec; 
+	}
+}, 100);
+
+
+$(".button").click(function(){
+	if(log.checked_in.bool){
+		if(h < 12){
+		  GID("checked_in_time").innerHTML = h + ":" + min + ":" + sec; 
+	    } else {
+		  GID("checked_in_time").innerHTML = Math.round((h - 2)/2) + ":" + min + ":" + sec; 
+	    }
+		log.checked_in.bool = !log.checked_in.bool;
+		log.checked_out.bool = !log.checked_out.bool;
+		GID("button").innerHTML = "End";
+		$(this).toggleClass("button_end");
+	} else if(log.checked_out.bool){
+		if(h < 12){
+		  GID("checked_out_time").innerHTML = h + ":" + min + ":" + sec; 
+	    } else {
+		  GID("checked_out_time").innerHTML = Math.round((h - 2)/2) + ":" + min + ":" + sec; 
+	    }
+		log.checked_out.bool = !log.checked_out.bool;
+		log.checked_in.bool = !log.checked_in.bool;
+		GID("button").innerHTML = "Start"; 
+		$(this).toggleClass("button_end");
+	}
+});
+
+
+$(".button").dblclick(function(){
+	log.reset();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

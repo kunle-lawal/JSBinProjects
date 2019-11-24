@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/mujune/23/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+* { margin: 0; padding: 0;}
+
+html, body {
+    width:  100%;
+    height: 100%;
+    margin: 0px;
+    overflow:hidden;
+} 
+
+canvas{
+    width:  100%;
+    height: 100%;
+	background-color: black; 
+	position: absolute;
+	top:0;
+	left:0; 
+	right:0;
+	bottom:0;
+	margin:auto;
+	border:1px solid transparent;
+    z-index:-1;
+}
+
+.display_UI{
+    width:300px;
+    text-align:center;
+    padding:10px;
+    background-color:yellow;
+    color:red;
+    font-size:22px;
+    font-weight:900;
+    font-family: 'Indie Flower', cursive;
+    opacity:0.4;
+}
+</style>
+</head> 
+<body>
+    <canvas id="canvas" width="1600" height="1600">Eat the Gems!</canvas> 
+    
+  <div class="display_UI">
+      <div id="player_cords">X:0 Y: 0</div>
+  </div>
+  
+  <div class="display_UI">
+    <div id="gems">Gems:0</div>
+  </div>
+<script id="jsbin-javascript">
+$(window).resize(function() { 
+    $("#canvas").height($("#canvas").width());
+});
+$(window).resize();
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+
+var map_w = cw * 2;
+var map_h = ch * 2;
+
+// how far offset the canvas is
+var offsetX = 0;
+var offsetY = 0;
+
+//Offset speed/ direction
+var ofx =  4;
+var ofy = 4;
+
+//Random number Generator
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+//Getting elements by ID for UI/UX
+function GID(id){
+  return document.getElementById(id);
+}
+
+//Make a random color
+function randColor(){
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+//Get the distance between object1 and object2
+function return_distance(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+
+    return d;
+}
+
+//Get the angle of object1 against object2
+function return_angle(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    
+    var angle = Math.atan2(dy, dx);
+    return angle;
+}
+
+//Request animation frame for rendering
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+//Here we will update the canvas position
+var vPlayer = {
+    x: cw/2,
+    y: ch/2,
+    worldx:randNum(-map_w, map_w),
+    worldy:randNum(-map_h, map_h), 
+    vx:0,
+    vy:0,    
+    update: function(){
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+};
+
+
+function goto(){
+    var angle_ = return_angle(offsetX, offsetY, vPlayer.x, vPlayer.y);
+
+    offsetX += Math.cos(angle_) * 1;
+    offsetY += Math.sin(angle_) * 1; 
+}
+
+window.setInterval(function(){
+    //goto();
+    //console.log(offsetX);
+    console.log("View X: " + vPlayer.x + " View Y: " + vPlayer.y + " offsetX: " + offsetX + " offsetY: " + offsetY);
+}, 1000);
+
+//The player object.
+var player = {
+	x: vPlayer.x,
+	y: vPlayer.y,
+    r: 5,
+    gems_collected: 0,
+	color: "white",
+	vx: 0,
+	vy: 0,
+    left:false,
+    right:false,
+    up:false,
+    down:false,
+	draw: function(){
+        ctx.save();
+        ctx.translate((offsetX), (offsetY));
+		ctx.beginPath();
+        ctx.arc(this.x - (offsetX), this.y - (offsetY), this.r, 0, (2 * Math.PI));
+		//ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+		ctx.fillStyle = this.color; 
+		ctx.fill();
+        ctx.restore();
+	},
+    
+	update: function(){
+		this.x += this.vx; 
+		this.y += this.vy;
+        //this.x = viewport.x;
+        //this.y = viewport.y;
+        
+        if(this.left){
+			offsetX -= ofx;
+            vPlayer.x += ofx;
+            vPlayer.worldx -= 1;
+        }
+		if(this.up){
+			offsetY -= ofx;
+            vPlayer.y += ofy;
+            vPlayer.worldy += 1;
+        }
+		if(this.right){
+			offsetX += ofx; 
+            vPlayer.x -= ofx;
+            vPlayer.worldx -= 1;
+        }
+		if(this.down){
+			offsetY += ofx;
+            vPlayer.y -= ofy; 
+            vPlayer.worldy -= 1;
+        }
+	},
+    
+    eatGem: function(){
+        for(var i = 0; i < gems.length; i++){
+            var gem = gems[i];
+            
+            var player_dToGem = return_distance(vPlayer.x, vPlayer.y, gem.x, gem.y);
+            
+            if(player_dToGem < 50){
+                var angle_ = return_angle(vPlayer.x, vPlayer.y, gem.x, gem.y);
+                gem.vx = Math.cos(angle_) * 1;
+                gem.vy = Math.sin(angle_) * 1;
+            } else {
+                gem.vx = 0;
+                gem.vy = 0;
+            }
+            
+            var audio = new Audio('audio_file.mp3');
+
+            if (player_dToGem < (player.r) + gem.r) {    
+                audio.play();
+                if((player.gems_collected + gem.r) <= pouch.max_storage){
+                    gems.splice(gem.pos, 1, 0);
+                    player.gems_collected += gem.r;
+                    player.r += 0.7;
+                } 
+            }
+        }
+    }
+};
+
+var pouch = {
+    max_storage:50,
+};
+
+//Create an array to store all gems
+var gems = [];
+
+//Push 10 gems into the array
+for(var i = 0; i < 350; i++){
+    gems.push({
+      x:randNum(-map_w, map_w),
+      y:randNum(-map_h, map_h),
+      r:randNum(2, 6),
+      vx:0,
+      vy:0,
+      pos:i,
+      color:randColor(),
+      mass:randNum(1, 5),
+    });
+}
+
+function draw_gems(){
+    ctx.save();
+    ctx.translate((offsetX), (offsetY));
+    // clear the viewport
+    ctx.clearRect(-offsetX, -offsetY, cw,ch); 
+    
+    // draw the other stuff 
+    for (var i = 0; i < gems.length; i++) {
+        var gem = gems[i];
+        gem.x += gem.vx;
+        gem.y += gem.vy;
+        
+        /*var angle_ = return_angle(vPlayer.x, vPlayer.y, gem.x, gem.y);
+        gem.vx = Math.cos(angle_) * 1;
+        gem.vy = Math.sin(angle_) * 1;*/
+        
+        // we should really only draw the things that intersect the viewport!
+        // but I am lazy so we are drawing everything here
+        ctx.beginPath();
+        ctx.arc(gem.x, gem.y, gem.r, 0, (2 * Math.PI));
+        //ctx.fillRect(gem.x, gem.y, 8, 8);
+        ctx.fillStyle = gem.color;
+        ctx.fill();
+    } 
+    ctx.restore();
+}
+
+
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event; 
+     keyPressed[e.keyCode] = true;
+     e.preventDefault();      
+       if(keyPressed[37] || keyPressed[65]){
+           player.right = true;
+          //offsetX += ofx; 
+          //player.vx = -1; 
+          
+       }
+       
+       if(keyPressed[38]|| keyPressed[87]){ 
+		   player.down = true; 
+          //offsetY += ofy;
+          //player.vy = -1;
+          
+       }
+       
+       if(keyPressed[39]|| keyPressed[68]){
+           player.left = true;
+          //offsetX -= ofx;
+          //player.vx = +1; 
+          
+       }
+		
+	   if(keyPressed[40]|| keyPressed[83]){
+           player.up = true;
+          //offsetY -= ofy;
+          //player.vy = +1;
+          
+	   }
+       //console.log("offsetX: " + offsetX + " offsetY: " + offsetY);
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 37 || code === 65){ 
+           player.right = false;
+          //offsetX += ofx; 
+            //player.vx = 0;
+           vPlayer.vx = 0;
+           offsetX -= 0;
+       }
+        
+       if(code === 38 || code === 87){
+       	   player.down = false; 
+          //offsetY += ofx;
+           //player.vy = 0;
+           vPlayer.vy = 0;
+           offsetY -= 0;
+       }
+     
+       if(code === 39 || code === 68){ 
+       	   player.left = false;
+          //offsetX -= ofx;
+          // player.vx = 0; 
+           vPlayer.vx = 0;
+           offsetX += 0; 
+       } 
+        
+       if(code === 40 || code === 83){ 
+            player.up = false;
+          //offsetY -= ofx;
+           //player.vy = 0;
+           vPlayer.vy = 0; 
+           offsetY += 0;
+       }
+   };
+
+//UI
+function update_UI(){
+    GID("player_cords").innerHTML = "X: " + Math.round(vPlayer.worldx)/10 + " Y: " + Math.round(vPlayer.worldy)/10;
+    
+    GID("gems").innerHTML = "Gems: " + Math.round(player.gems_collected);
+}
+
+function start(){
+	window.requestAnimFrame(start);
+    ctx.clearRect(0,0,map_w, map_h); 
+    
+    //draw_gems();
+    update_UI();
+    player.draw();
+    player.update();
+    vPlayer.update();
+    
+    //player.eatGem();
+}
+
+start();
+
+</script>
+</body>
+</html>
+
+
+<!--var map = {
+    //Origin of the map
+    x : (-map_w),
+    y : (-map_h),
+    //"Limits"
+    xlimit: (map_w),
+    ylimit: (map_h),
+    
+    //Origin of the map
+    x : 0,
+    y : 0,
+    //"Limits"
+    xlimit: 0,
+    ylimit: 0, 
+    draw: function(){
+        ctx.save();
+        ctx.translate((offsetX/1.2), (offsetY/1.2));
+        ctx.lineWidth = 2;
+        for (var mapX = this.x; mapX < this.xlimit; mapX += 100) {
+            ctx.moveTo(mapX, this.y);
+            ctx.lineTo(mapX, this.ylimit);
+        } 
+
+        for (var mapY = this.y; mapY < this.ylimit; mapY += 100) {
+            ctx.moveTo(this.x, mapY);
+            ctx.lineTo(this.xlimit, mapY);
+        }
+        ctx.strokeStyle = "#ddd";
+        ctx.stroke();
+        ctx.restore();
+    },
+    update: function(){
+        //Origin of the map
+        this.x -= (viewport.x - 800); 
+        this.y -= (viewport.y - 800); 
+        //"Limits"
+        this.xlimit += (viewport.x + 800);
+        this.ylimit += (viewport.y + 800);
+        
+        console.log();
+    }
+};
+
+
+function map_grid(){
+   ctx.save();
+   ctx.translate((offsetX/1.2), (offsetY/1.2));
+   ctx.lineWidth = 2;
+  for (var x = -map_w; x < map_w; x += 100) {
+    ctx.moveTo(x, -map_h);
+    ctx.lineTo(x, map_h);
+  } 
+
+  for (var y = -map_h; y < map_h; y += 100) {
+      ctx.moveTo(-map_w, y);
+      ctx.lineTo(map_w, y);
+  }
+  ctx.strokeStyle = "#ddd";
+  ctx.stroke();
+  ctx.restore();
+} -->

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/sipot/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+
+<head>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-git2.js"></script>
+    <title>WHEN PIGS FLY!!!!!</title>
+    <style>
+        #canvas {
+            background: black;
+            display: block;
+            margin: 15px auto;
+            float:bottom;
+            background-color:purple;
+        }
+        button {
+            float:bottom;
+        }
+    </style>
+<style id="jsbin-css">
+body{
+	margin:0 auto;
+	background-image:url("http://www.hdwallpaperscool.com/wp-content/uploads/2014/03/gorilla-hd-wallpapers-free-download-lovely-hd-desktop-background-desktop-wallpapers-of-gorilla.jpg");
+	background-repeat: no-repeat;
+  	background-size:100% 100%;
+	/*background: rgb(28, 28, 28);
+	background: -moz-linear-gradient(62deg, rgb(161, 163, 165) 0%, rgb(221, 221, 221) 48%);*/
+}
+
+
+canvas{
+  	/*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  	background-repeat: no-repeat;
+  	background-size:100% 100%;*/
+  	background-color:black;
+  	position:absolute;
+  	margin-left:-0.47%;
+  	margin-top:-0.47%;
+	z-index:-3;
+}
+
+
+.page_wrapper{
+	border:1px solid transparent;
+	z-index:-3;
+}
+
+
+.component_wrapper{
+	border:2px solid transparent;
+	height:673px;
+	padding:50px;
+}
+
+.component_wrapper ul{
+	list-style:none;
+}
+
+.component_wrapper ul li{
+	border:1px solid transparent;
+	float: left;
+	width:400px;
+	height:300px;
+	margin:20px;
+	margin-left:90px;
+	text-align:center;
+}
+
+/*////////*/
+#timer{
+	background-color:rgb(255,255,255);
+	width:600px;
+	opacity:0.85;
+}
+
+
+#timer1 ul{
+	margin-left:-10%;
+	margin-top:50px;
+}
+
+
+#time{
+	color:#600F00;
+	text-shadow:0px 10px 10px green;
+	margin-bottom:-55px;
+	font-size:40px;
+	background-color:rgb(144,238,144);
+	font-family: Papyrus, fantasy;
+}
+
+
+.time{
+	text-shadow: 0px 0px 10px black;
+	display:inline-block;
+	font-size:55px;
+	font-family: Papyrus, fantasy;
+	margin-top:-100px;
+	color:rgb(0,0,0);
+}
+
+
+.colon{
+	color:black;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+
+.push{
+	color:rgb(0,139,69);
+	display:inline-block;
+	font-size:40px;
+	font-family: Papyrus, fantasy;
+	height:95px;
+	margin-top:40px;
+	width:196px;
+}
+
+
+#start{
+	text-shadow: 4px 4px 10px black;
+	background-color:lightgreen;
+	color:#165A2D;
+}
+
+
+#start:hover{
+	box-shadow:
+}
+
+
+
+#reset{
+	text-shadow: 4px 4px 10px black;
+	color:#165A2D;
+}
+
+/*///////*/
+
+#gorilla_progress{
+	color:#134D4D;
+	text-shadow:0px 10px 20px yellow;
+	margin-bottom:-55px;
+	font-size:40px;
+	padding:5px;
+	background-color:rgb(0,229,238);
+	font-family: Papyrus, fantasy;
+}
+
+
+#progress{
+	width:600px;
+	background-color:rgb(3,180,204);
+	opacity:0.85;
+}
+
+
+#progress ul{
+	list-style: none;
+    margin: 65px;
+    padding: 10px;
+    height: 180px;
+    overflow: hidden;
+	border:4px inset #248C8C;
+	color:white;
+	font-size:30px;
+	font-family: Papyrus, fantasy;
+}
+
+
+
+#info{
+	width:600px;
+	background-color:rgb(0,125,238);
+	opacity:0.85;
+}
+
+
+.info1{
+	background-color:rgb(100,125,238); 
+	font-size:30px; 
+	height:200px;
+	padding:20px 0 0 0;
+	font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+}
+</style>
+</head>
+
+<body>
+    <canvas id="canvas" width="1200" height="800"></canvas>
+    <script type="text/javascript">
+        // Get the canvas element
+        var canvas = document.getElementById("canvas");
+        // Get our 2D context for drawing
+        var ctx = canvas.getContext("2d");
+
+        // Frames-per-second
+        var FPS = 30;
+
+        function randNum(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Particle Array
+        var particles = [];
+        for (var i = 0; i < 4; i++) {
+            particles.push({
+                // Create random values for each of these:
+                x: randNum(30, canvas.width - 30),
+                y: randNum(30, canvas.height - 30),
+                vx: randNum(-200, 200),
+                vy: randNum(-200, 200),
+                ax: randNum(-150, 150),
+                ay: randNum(-150, 150),
+                radius: 30,
+                color: "rgba(0,255,0,0.65)"
+            });
+        }
+
+        // Game loop draw function
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (var i = 0; i < particles.length; i++) {
+                var p = particles[i];
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            }
+        }
+
+        // Game loop update function
+        function update() {
+            for (var i = 0; i < particles.length; i++) {
+                var p = particles[i];
+
+                // Update code here:
+                p.vx += p.ax / FPS;
+                p.vy += p.ay / FPS;
+                p.x += p.vx / FPS;
+                p.y += p.vy / FPS;
+
+                if ((p.x - p.radius) < 0) {
+                    p.x = p.radius;
+                    p.vx = -p.vx;
+                }
+                if ((p.x + p.radius) > canvas.width) {
+                    p.x = canvas.width - p.radius;
+                    p.vx = -p.vx;
+                }
+                if ((p.y - p.radius) < 0) {
+                    p.y = p.radius;
+                    p.vy = -p.vy;
+                }
+                if ((p.y + p.radius) > canvas.height) {
+                    p.y = canvas.height - p.radius;
+                    p.vy = -p.vy;
+                }
+            }
+        }
+
+        function tick() {
+            draw();
+            update();
+        }
+
+        setInterval(tick, 1000 / FPS);
+
+
+        var particle = {
+            x: 250,
+            y: 150,
+            vx: 150,
+            vy: 200,
+            ax: 10,
+            ay: 70,
+            radius: 10,
+            color: "pink"
+        };  
+    </script>
+<script id="jsbin-javascript">
+/*/Easier way to write document.getElemntById//
+function gib(id){
+  return document.getElementById(id);
+}
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+
+//Define global variables//
+var og_time = 0;
+var setTime; 
+/*var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;*/
+
+
+
+//Timer object//
+var time = {
+  sec1: 0,
+  sec2: 0,
+  min1: 0,
+  min2: 0,
+  hour1: 0,
+  hour2: 0,
+  mil: 0,
+  
+  //Each values needs to ALWAYS be updated!!!!//
+  update_values: function(){
+    gib("sec1").innerHTML = this.sec1;
+    
+    gib("sec2").innerHTML = this.sec2;
+    
+    gib("min1").innerHTML = this.min1;
+    
+    gib("min2").innerHTML = this.min2;
+    
+    gib("hour1").innerHTML = this.hour1;
+    
+    gib("hour2").innerHTML = this.hour2;
+    
+    gib("mil").innerHTML = time.mil;
+  },
+        
+  //General updates for the timer as a whole//
+  update: function(){
+    this.sec1++;
+    
+    if(this.sec1 > 9){
+      this.sec1 = 0;
+      this.sec2++;
+    }
+    
+    if(this.sec2 >= 6){
+      this.sec2 = 0;
+      this.min1++;
+    }
+    
+    if(this.min1 > 9){
+      this.min1 = 0;
+      this.min2++;
+    }
+    
+    if(this.min2 >= 6){
+      this.min2 = 0;
+      this.hour1++;
+    }
+    
+    if(this.hour1 >= 9){
+      this.hour1 = 0;
+      this.hour2++;
+    }
+
+  }
+};
+
+
+function update(){
+  time.update();
+}
+
+//Updates the values every miliseconds to avoid timing confusion.//
+window.setInterval(function(){
+  time.update_values();
+  
+  
+},1);
+
+var timeStart = false;
+var updating;
+//function for starting the timer//
+function start_time(){
+  //starts the timer//
+  setTime = window.setInterval(function(){
+   update();
+    updating =  true;
+  }, 1000);
+  
+  //updates the milisecond has no corrilation to the actual time//
+  setMil = window.setInterval(function(){
+    time.mil++;
+      if(time.mil >= 99){
+        time.mil = 10;
+      }
+  },1);
+}
+
+
+lap = false;
+//starts the updating process//
+$("#start").click(function(){
+  	if(updating){
+    	return;
+  	} else if(!updating){
+    	start_time();
+    	updating =  true;
+		gib("start").innerHTML = "Lap";
+		$("#start").css("background-color", "rgb(255, 51, 51)");
+  	}
+	
+	window.setTimeout(function(){
+		lap = true;
+	}, 1);
+});     
+
+
+
+//Resets timer//
+$("#reset").click(function(){
+  lap = false;
+  if(updating){
+    reset();
+    return;
+  } else if(!updating){
+    return;
+  }
+});
+
+
+//Reset function//
+function reset(){
+  window.clearInterval(setTime);
+  window.clearInterval(setMil);
+  gib("start").innerHTML = "Start";
+  $("#start").css("background-color", "rgb(102, 205, 170)");
+  time.sec1 = og_time;
+  time.sec2 = og_time;
+  time.min1 = og_time;
+  time.min2 = og_time;
+  time.hour1 = og_time;
+  time.hour2 = og_time;
+  time.mil = og_time + "0";
+  updating = false;
+}
+
+var messageList = $('#messageDiv');
+
+
+$("#messageDiv").dblclick(function(){
+	$(this).css("overflow", "auto");
+});
+
+
+  // Get a reference to the root of the chat data.
+  var messagesRef = new Firebase('https://trhuv73grz0.firebaseio-demo.com/');
+
+	var minutes_string = " Minutes and ";
+	var minutes_result = minutes_string.fontcolor("blue");
+
+	var seconds_string = " Seconds";
+	var seconds_result = seconds_string.fontcolor("green");
+  // When the user presses enter on the message input, write the message to firebase.
+	var line_num = 0;
+	$("#start").click(function(){
+		var set_time;
+		
+		if(lap){
+			line_num += 1;
+			if(time.min2 >= 1 || time.min1 >= 1){
+				set_time = line_num + ". " + " Minutes " +  time.min2 + "" + time.min1 + " Seconds" + time.sec2 + "" + time.sec1;
+      			messagesRef.push({set_time:set_time});
+      			$('#messageDiv').val('');
+				
+				$("#messageDiv").css("color", "red");
+				window.setTimeout(function(){
+					$("#messageDiv").css("color", "white");
+				}, 1000);
+				
+				$("#identifyer").css("color", "green");
+				window.setTimeout(function(){
+					$("#identifyer").css("color", "white");
+				}, 1000);
+			}else{
+				set_time = line_num + ". " + " Seconds " + time.sec2 + "" + time.sec1;
+      			messagesRef.push({set_time:set_time});
+      			$('#messageDiv').val('');
+				
+				$("#messageDiv").css("color", "red");
+				window.setTimeout(function(){
+					$("#messageDiv").css("color", "white");
+				}, 1000);
+				
+				$("#identifyer").css("color", "green");
+				window.setTimeout(function(){
+					$("#identifyer").css("color", "white");
+				}, 1000);
+			}
+			
+		} else {
+			return;
+		}
+		
+		
+		
+		
+	});
+
+	 // Add a callback that is triggered for each chat message.
+  	messagesRef.limit(5).on('child_added', function (snapshot) {
+    	var message = snapshot.val();
+    	$('<div/>').prepend($('<em/>')
+      	.text(message.set_time)).appendTo($('#messageDiv'));
+    	$('#messageDiv')[0].scrollTop = $('#messageDiv')[0].scrollHeight;
+  	}); 
+
+
+
+messageList[0].scrollTop = messageList[0].scrollHeight;
+
+/*
+///////Rain Particles////////
+var particles = [];
+	window.setInterval(function(){
+		particles.push({
+			x:randNum(0, cw),
+			y:randNum(0, ch),
+			radius: 1,
+			h:15,
+			w:0.3,
+			vy:randNum(2, 5),
+			vx:randNum(0, 0),
+			f:0,	
+			color: "lightblue",
+		});
+	}, 1);
+
+function drawRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		ctx.beginPath();
+		ctx.rect(rain.x, rain.y, rain.w, rain.h);	
+		//ctx.arc(rain.x, rain.y, rain.radius, 0, 2 * Math.PI);
+		ctx.fillStyle =  rain.color;
+		ctx.fill();
+	}
+}
+
+function animateRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		
+		rain.x += rain.vx;
+		rain.y += rain.vy;
+		
+		if((rain.y + rain.h) >= ch + 10){
+			rain.vy = 0;
+			rain.h = 3;
+			rain.w = 15;
+		}
+	}
+}
+
+window.setInterval(function(){
+    particles.splice(0, 1000);
+	//console.log(particles.length);
+}, 1000 * 10);
+
+window.setInterval(function(){
+	ctx.clearRect(0, 0, cw, ch);
+}, 10);
+
+function render(){
+	window.requestAnimationFrame(render);	
+	drawRain();
+	animateRain();
+}
+
+render();
+
+
+
+
+
+
+var pig = {
+	x: 40,
+	y: canvas.height - 30,
+	h:20,
+	w:10,
+	color:"pink",
+	vx:0,
+	vy:0,
+	ax:0,
+	ay:0,
+	draw: function(){
+		//Draw the pig onto the screen
+		ctx.beginPath();
+        ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.filltyle = this.color;
+        ctx.fill();
+	},
+	update: function(){
+		//Update the pig's movement 
+		this.x += this.vx;
+		//Volocity in the x direction
+        this.y += this.vy;
+		//Volocity in the y direction
+		this.vx += this.ax;
+		//Acceleration in the x direction
+        this.vy += this.ay;
+		//Acceleration in the y direction 
+		//Add any collision detection or event that you want after this line
+	}
+};
+
+//onkeydown events to allow the manipulation of the pig object
+//i use an array so I can push muliple key at a time
+var keyPressed = [];
+window.onkeydown = function(e){ 
+    e = e || window.event;  
+    keyPressed[e.keyCode] = true;
+    e.preventDefault(); 
+     
+	if(keyPressed[32]){
+		//This will make the "pig fly up" when the spacebar is pushed
+		pig.vy -= 1;
+	}
+	
+	if(keyPressed[37]){
+		//add code for what happend when the left arrow is pushed
+	}
+	
+	if(keyPressed[38]){
+		//add code for what happend when the up arrow is pushed
+	}
+	
+	if(keyPressed[39]){
+		//add code for what happend when the right arrow is pushed
+	}
+	
+	if(keyPressed[40]){
+		//add code for what happend when the down arrow is pushed
+	}
+	
+};
+
+
+function render(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	window.requestAnimationFrame(render);
+	
+	pig.draw();
+	pig.update();
+}
+
+
+render();
+
+
+
+
+
+
+
+</script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

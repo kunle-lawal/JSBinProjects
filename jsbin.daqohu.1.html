@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/daqohu/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<style type="text/css" href="style.css"></style>
+<link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+ /* background-color:rgb(100,106,104);*/
+  width:100%;
+}
+canvas{
+  /*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  background-repeat: no-repeat;
+  background-size:100% 100%;*/
+	position:relative;
+	background-color: white;
+	top: 50%;
+    left: 50%;
+    margin-left: -405px;
+	border:1px solid transparent;
+	border-left:1px inset black;
+	border-right:1px inset black;
+}
+
+#textBox{
+	background-color:white;
+	border-left:1px inset yellow;
+	border-right:1px inset black;
+	border-top:1px inset red;
+	border-bottom:1px inset green;
+	text-align:center;
+ 	width:50%;
+  	position:relative;
+	opacity:0.8;
+	color:rgb(100,106,104);
+	font-size:20px;
+	padding-left:20px;
+	padding-right:20px;
+	padding-bottom:2px;
+}
+
+
+ul{
+	list-style:none;
+	margin-left:17%;
+}
+
+ul li{
+	display:inline-block;
+	border:1px solid white;
+	width:65px;
+	height:46px;
+	padding-left:0px;
+	padding:20px;
+	font-size:20px;
+	border-radius:5px;
+	margin:10px;
+	cursor:pointer;
+	text-align:center;
+}
+
+#life{
+	margin-left: 30%;
+	border: 1px dotted green;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas" width="800" height="600">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+  <div id="textBox"> 
+		<div id="box"></div> 
+	</div>
+	<div id="life">
+		Life Force: 
+	</div>
+	<script type="text/javascript" src="script.js"></script>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+var randColor = getRandomColor();
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+var spawnY = 50;
+
+
+//////Particles declaration///////
+var particles = [];
+var rain_color = "lightblue";
+var wind = false;
+
+function get_rand_color(){
+	var colors = [red, "black", "white", "lightblue"];
+	
+	var rand_color1 = colors[Math.floor(Math.random() * colors.length)];
+	var rand_color2 = colors[Math.floor(Math.random() * colors.length)];
+	var rand_color_num = Math.floor(Math.random() * colors.length);
+	
+	if(rand_color_num <= 0 && rand_color_num <= 1){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(0 + " " + 1);
+	} else if(rand_color_num <= 1 && rand_color_num <= 2){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(1 + " " + 2);
+	} else if(rand_color_num <= 2 && rand_color_num <= 3){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(2 + " " + 3);
+	} else if(rand_color_num <= 3 && rand_color_num <= 4){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(3 + " " + 4);
+	}
+	
+	console.log(colors.length);
+}
+/*
+//Particle declareration////
+var rain2 = new Audio("http://www.subsidence.org/Assets/Sounds/rain.mp3");
+var thunder = new Audio("http://www.ghservices.com/gregh/fairligh/examples/thunder.wav");
+
+var rainDuration = 0;
+window.setInterval(function(){
+	rainDuration += 500;
+	rain2.play();
+	
+	if(rainDuration >= 5000){
+		rain2.currentTime = 0;
+		rainDuration = 0;
+	}
+	
+	var randnum = randNum(0,10);
+	if(randnum <= 9 && randnum >= 8.6){
+		thunder.currentTime = 0;
+		thunder.play();
+		$("canvas").css("background-color", "white");
+	} else {
+		$("canvas").css("background-color", "rgb(100,106,104)");
+		return;
+	}
+}, 500); 
+*/
+for(var i = 0; i < 1; i++){
+	particles.push({
+		x:randNum(40, cw-40),
+		y:randNum(30, 200),
+		radius: 5,
+		h:randNum(10,50),
+		w:10,
+		vy:0,
+		vx:0,
+		ay:0,
+		f:0,	
+		color: "black",
+	});
+}
+
+
+////////Drawing the Particles///////////////////////
+function drawRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		ctx.beginPath();
+		//ctx.rect(rain.x, rain.y, rain.w, rain.h);	
+		ctx.arc(rain.x, rain.y, rain.radius, 0, Math.PI * 2);
+		ctx.fillStyle =  rain.color;
+		ctx.fill();
+	}
+}
+
+window.setInterval(function(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		var rand = randNum(0, 5);
+		if(rand <= 1){
+			rain.vx += 0.5;
+		} else if(rand <= 2){
+			rain.vx -= 0.5;
+		} else if(rand <= 3){
+			rain.vy += 0.5;
+		} else if(rand <= 4){
+			rain.vy -= 0.5;
+		}else{
+			rain.vx = 0;
+			rain.vy = 0;
+			speed += 10;
+		}
+	}
+}, 1000);
+
+var speed = 0.1;
+////////Animating the particles///////////////////
+function animateRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		
+		rain.x += rain.vx;
+		rain.y += rain.vy;
+		rain.vy += rain.ay;
+		
+		if(rain.x <= 0){
+			rain.x = 0;
+			rain.vx = -rain.vx/2;
+		}
+		if(rain.x + rain.w >= cw){
+			rain.x = cw - rain.w;
+			rain.vx = -rain.vx/2;
+		} 
+		if(rain.y <= 0){
+			rain.y = 0;
+			rain.vy = -rain.vy/2;
+		} 
+		if(rain.y + rain.h >= ch){
+			rain.y = ch - rain.h;
+			rain.vy = -rain.vy/2;
+		}
+		
+		/*if(rain.x <= player.x + player.w  && rain.x + rain.w  >= player.x &&
+		rain.y <= player.y + player.h && rain.y + rain.h >= player.y){
+          	rain.ay = 0;
+			rain.color = player.color;
+			rain.h = 1;
+			rain.w = 2;
+			
+		}*/
+	}
+}
+
+
+
+function start(){
+	window.requestAnimFrame(start);
+	
+	ctx.clearRect(0,0,cw, ch);
+	
+	drawRain();
+	animateRain();
+	
+}  
+
+start();
+</script>
+</body>
+</html>

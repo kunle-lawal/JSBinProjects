@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/debozo/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-compat-git.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta charset="utf-8">
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <title>Top 5</title>
+<style id="jsbin-css">
+body{
+    background-color:black;
+}
+#canvas{
+    background-color:gray;
+    border:1px solid none;
+    position:absolute;
+    border:1px solid none;
+    left:0px;
+    top:0px;
+    bottom:0px;
+    right:0px;
+    margin:auto; 
+}
+
+</style>
+</head>
+<body id="body">
+    
+   <canvas id='canvas' width="700px" height="600px"></canvas>  
+<script id="jsbin-javascript">
+
+function GID(id){
+  return document.getElementById(id);
+}
+
+var w = window.innerWidth;
+var h = window.innerHeight;
+
+//setup
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;
+
+window.requestAnimFrame = ( function() {
+  return window.requestAnimationFrame ||
+		   window.webkitRequestAnimationFrame ||
+             window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var fps = 30;
+
+function Ball(r, circle_r, max_r, color, vx, vy, speed, angle_type) {
+	this.x = cw/2;
+	this.y = ch/2;
+	this.r = r;
+    this.circle_r = circle_r;
+	this.color = color;
+	this.vx = vx;
+	this.vy = vy;
+    this.speed = speed;
+    this.angle = 0;
+	this.draw = function(){
+		ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+        ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+    
+	this.update = function(){
+		this.x += this.vx;
+		this.y += this.vy;
+
+        if(angle_type === true){
+            this.x = (cw/2 + Math.cos(this.angle + (Math.asin(0.3))) * this.circle_r);
+            this.y = (ch/2 + Math.sin(this.angle + (Math.acos(0.3))) * this.circle_r);
+        } else if(angle_type === false){
+            this.x = (cw/2 + Math.cos(this.angle + (Math.acos(0.3))) * this.circle_r);
+            this.y = (ch/2 + Math.sin(this.angle + (Math.asin(0.3))) * this.circle_r);
+        } else {
+            this.x = (cw/2 + Math.cos(this.angle) * this.circle_r);
+            this.y = (ch/2 + Math.sin(this.angle) * this.circle_r);
+        }
+        this.angle += this.speed;
+    };
+}
+
+
+var mid_x = cw/2;
+var mid_y = ch/2;
+var ball1 = new Ball(5, 79, 10, "red", 0, 0, 0.1, true);
+var ball2 = new Ball(5, 79, 20, "#FF9900", 0, 0, 0.1, false);
+var ball3 = new Ball(5, 79, 30, "white", 0, 0, 0.1, "no");
+var ball4 = new Ball(1, 20, 30, "lightblue", 0, 0, 0.5, "no");
+//console.log(ball1.r + " " + ball1.circle_r + " " + ball1.color + " " + ball1.vx + " ", ball1.vy + " " + ball1.speed);
+
+function load(){
+	window.requestAnimFrame(load);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.13)";
+    ctx.fillRect(0,0,cw, ch);
+	//ctx.clearRect( 0, 0, cw, ch);
+    
+	ball1.draw();  
+	ball1.update();
+    
+    ball2.draw();  
+	ball2.update();
+    
+    
+    ball3.draw();  
+	ball3.update();
+    
+    ball4.draw();  
+	ball4.update();
+}  
+
+load();
+</script>
+</body>
+</html>

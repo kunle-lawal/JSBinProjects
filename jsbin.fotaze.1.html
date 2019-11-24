@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fotaze/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-git2.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:rgb(100,106,104);
+  width:100%;
+}
+canvas{
+  /*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  background-repeat: no-repeat;
+  background-size:100% 100%;*/
+	background-color:rgb(100,106,104);
+	position:relative;
+	top: 50%;
+    left: 50%;
+    margin-left: -300px;
+	border:1px solid transparent;
+	border-left:1px inset white;
+	border-right:1px inset black;
+}
+
+#pos{
+  background-color:red;
+  width:100px;
+  position:relative;
+}
+
+ul{
+	list-style:none;
+	margin-left:17%;
+}
+
+ul li{
+	display:inline-block;
+	border:1px solid white;
+	width:65px;
+	height:46px;
+	padding-left:0px;
+	padding:20px;
+	font-size:20px;
+	border-radius:5px;
+	margin:10px;
+	cursor:pointer;
+	text-align:center;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="500px">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+  
+  <div id="pos"> Position </div>
+	
+	<ul >
+		<li onclick="get_rand_color()" style="background-color:black; color:white;">Random <br><br></li>
+	</ul>
+<script id="jsbin-javascript">
+function getPosition(){
+  window.onmousemove = function(e){
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    //$("#pos").style.left = position[0] - 10;
+    
+    //$("#pos").style.top = position[1] - 60;   
+    
+    $('#pos').css('position', 'absolute');
+    $('#pos').css('top', position[1]); //or wherever you want it
+    $('#pos').css('left', position[0] + 10);
+    
+    var pos = document.getElementById("pos");
+		pos.innerHTML = "x: " + e.clientX + " y: " + e.clientY;
+	  
+	/*if((e.clientX >= player.x + player.w) && (e.clientY >= player.y + player.h) && (e.clientX <= player.x + player.w) && (e.clientY <= player.y + player.h)){
+		pos.innerHTML = "Anti-Gravity";
+	} else {
+		pos.innerHTML = "x: " + e.clientX + " y: " + e.clientY;
+	}*/
+  };  
+}
+
+getPosition();
+///////////////////////////////////////////////////////////////////
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var enemies = [];
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;
+var walking;
+
+var player_speed = "#bd8348";
+var player_fly = "#667f91";
+var player_jump = "#14e0c3";
+var player_white = "white";
+var x = 0, y = 0;
+
+var player = {
+	x: cw/4,
+	y: ch - 70,
+	h: 30,
+	w: 10,
+	color: "yellow",
+	vx: 0,
+	maxVX:5,
+	vy: 0,
+	ax: 0,
+	ay: 0.3,
+	f:0.6,
+	jump_v:-5,
+	strong:false,
+	draw: function(){ 
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(this.x - x, this.y - y, this.w, this.h);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+		
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx += this.ax;
+		this.vy += this.ay;
+		
+		if ( ( this.x ) <= 0 ) {
+            this.x = (cw - this.w) - 1 ;
+        }
+		
+        if ( ( this.x + this.w ) >= canvas.width) {
+            this.x = 0 + 1;
+        }
+        if ( ( this.y ) <= 0 ) {
+            this.y = 0; 
+            this.vy = -this.vy/2;
+        }
+        //Touching the floor
+        if ( ( this.y + this.h ) >= canvas.height ) {
+            this.y = canvas.height - this.h;
+            grounded = true;
+        } else {
+            grounded = false;
+        }
+		
+		if(grounded && !walking){
+          this.vx *= this.f;
+        }		
+		
+		if(this.vx >= this.maxVX){
+			this.vx = this.maxVX;
+		}
+		
+		if(this.vx <= -this.maxVX){
+			this.vx = -this.maxVX;
+		}  
+		
+		if(player.x >= (cw/4) + 50){
+			player.vx = 0
+		}
+		
+		if(player.x <= (cw/4) - 50){
+			player.vx = 0
+		}
+		
+		/*if(this.x >  350){
+			x++;
+			save();
+			ctx.translate(x, y);
+			
+		} else if(this.x <  250){
+			x--;
+			ctx.translate(x, y);
+		} 
+		
+		if(this.y > this.y + 1){
+			y++;
+			ctx.translate(x, y);
+		}*/
+	},
+	power_up:function(omit){
+		if(omit === "no"){
+			return;
+		}
+		
+		if(this.color == player_jump){
+			this.jump_v = -10;
+			this.strong = true;
+		} else {
+			this.strong = false;
+			this.jump_v = -5;
+		}
+		
+		if(this.color == player_speed){
+			this.maxVX = 10;
+		} else {
+			this.maxVX = 5;
+		}
+		
+		if(this.color == player_fly){
+			this.ay = 0;
+			this.strong = true;
+			grounded = true;
+		} else {
+
+			this.ay = 0.3;
+		}
+		
+		if(this.color == player_white){
+			return;
+		} else {
+			//this.jump_v = -5;
+		}
+			
+	},
+	walk_left: function(){
+        if(walking === true){
+            this.vx = -1; 
+              
+        } 
+    },
+    walk_right: function(){
+        if(walking === true){
+            this.vx = 1;
+              
+        } 
+    },
+};
+
+
+window.setInterval(function(){
+	//console.log(player.x);
+}, 1000);
+
+//Key functions for player block
+
+var walk_left;
+var walk_right;
+var jump;
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if (keyPressed[32]){
+		   	jump = true;
+		   	if(grounded){
+				y--
+				player.vy = player.jump_v;
+			} else  {
+				y++
+				if(y >= 0){
+					y = 0; 
+				}
+			}
+       } 
+     
+       if(keyPressed[37]){
+			walking = true;
+         	walk_left = true;
+        	player.walk_left(); 
+		   
+		   	x--;
+		   
+       }
+     
+       if(keyPressed[39]){
+         	walking = true;
+        	walk_right = true;
+         	player.walk_right();  
+		   	x++
+       }
+     	
+       /*if(keyPressed[32] && keyPressed[37]){
+         	if(grounded){
+				player.vy -= 1.5;
+		  		player.vx = -10;
+			}
+       }
+     
+       if(keyPressed[32] && keyPressed[39]){
+		  	if(grounded){
+				player.vy += 1.5;
+		   		player.vx = 10;
+			}
+       }*/
+       
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode;
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 32){
+       		jump = false;
+		   	keyPressed[32] = false;
+       }
+       if(code === 37){
+         	walking = false;
+         	walk_left = false;
+		   	keyPressed[37] = false;
+       }
+     
+       if(code === 39){ 
+         	walking = false;  
+        	walk_right = false;
+		   	keyPressed[39] = false;
+       }
+   };
+
+var blocks = [];
+
+blocks.push({
+	x:0,
+	y:ch,
+	w:100,
+	h:7,
+	color:"blue",
+});
+
+blocks.push({
+	x:150,
+	y:ch,
+	w:100,
+	h:7,
+	color:"red",
+});
+
+blocks.push({
+	x:300,
+	y:ch,
+	w:100,
+	h:7,
+	color:"green",
+});
+
+blocks.push({
+	x:450,
+	y:ch,
+	w:100,
+	h:7,
+	color:"white",
+});
+
+blocks.push({
+	x:600,
+	y:ch,
+	w:100,
+	h:7,
+	color:"yellow",
+});
+
+blocks.push({
+	x:750,
+	y:ch,
+	w:100,
+	h:7,
+	color:"purple",
+});
+
+blocks.push({
+	x:900,
+	y:ch,
+	w:100,
+	h:7,
+	color:"brown",
+});
+
+blocks.push({
+	x:1050,
+	y:ch,
+	w:100,
+	h:7,
+	color:"pink",
+});
+
+
+function draw_blocks(){
+	for(var i = 0; i < blocks.length; i++){
+		var blck = blocks[i];
+		
+		ctx.beginPath();
+		ctx.rect(blck.x, blck.y, blck.w, blck.h);
+		ctx.fillStyle = blck.color;
+		ctx.fill();
+	}
+}
+
+
+function update_blocks(){
+	for(var i = 0; i < blocks.length; i++){
+		var blck = blocks[i];
+		blck.y = cw;
+		ctx.rect(blck.x, blck.y, blck.w, blck.h);
+		
+        //Touching the floor
+        if ( ( blck.y + blck.h ) >= canvas.height ) {
+            blck.y = canvas.height - blck.h;
+		}
+		
+		if(blck.x <= player.x + player.w  && blck.x + blck.w  >= player.x &&
+		   blck.y <= player.y + player.h && blck.y + blck.h >= player.y){
+				grounded = true;
+				if(player.strong === true){
+					blck.h -= 1;
+				} else {
+					blck.h -= 0.2;
+				}
+				player.y = player.y - blck.h;
+				if(blck.h <= 2){
+					blck.h = 2;
+					player.color = blck.color;
+				} 
+		} else {
+			if(!grounded){
+				grounded = false;
+			}
+			blck.h += 0.5;
+			if(blck.h >= 7){
+				blck.h = 7;
+			} 
+		}
+	}
+}
+
+
+
+function render(){
+	ctx.clearRect(0, 0, cw, ch);
+	window.requestAnimFrame(render);
+	
+	ctx.save();
+	ctx.translate(x, y); 
+	 
+	
+	
+	player.draw();
+	player.update();
+	player.power_up("yes");
+	
+	draw_blocks();
+	update_blocks();
+	
+	ctx.restore();
+	
+}
+
+render();
+
+</script>
+</body>
+</html>

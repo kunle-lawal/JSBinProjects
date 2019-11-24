@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/buhik/9/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<link href="http://code.jquery.com/ui/1.9.2/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<link href="http://code.jquery.com/ui/jquery-ui-git.css" rel="stylesheet" type="text/css" />
+<script src="http://code.jquery.com/jquery-git.js"></script>
+<script src="http://code.jquery.com/ui/jquery-ui-git.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-git1.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-git2.js"></script>
+   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" 
+   src="/jquery/jquery-1.3.2.min.js"></script>
+   <script type="text/javascript" 
+   src="/jquery/jquery-ui-1.7.2.custom.min.js"></script>
+  <script type="text/javascript" language="javascript"></script>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+          
+    </script>
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:white;
+  height:2000px;
+}
+
+
+.container{
+  
+}
+
+
+.nav{
+  display:inline-block;
+  padding:28px;
+  float:left;
+  cursor:pointer;
+  opacity:1;
+  height:15px;
+  transition:all 0.7s;
+} 
+
+
+#home{
+
+}
+
+
+.navbar{
+  color:black;
+  width:99.79%;
+  height:50px;
+  padding-top:-10px;
+  padding-bottom:20px;
+  background-color:white;
+  opacity:0.73;
+  z-index:2;
+  position:fixed;
+  margin-left:0.1%;
+}
+
+
+.nav:hover{
+  border-left:1px outset black;
+  border-right:1px outset black;
+  text-shadow:0 0 10px rgb(156, 149, 149);
+}
+
+
+
+
+.welcome{
+  position:relative;
+  top: 0;
+  float:left;
+  width:100%;
+  height:38%;
+  z-index:1;
+  margin-left:0.1%;
+  text-align:center;
+  background-image:url("http://goo.gl/04j7Nn");
+  background-repeat:no-repeat;
+  background-size:cover;
+}
+
+
+.welcome h1{
+  font-weight: bold;
+  color:white;
+  font-family: "Goudy Old Style", Garamond, "Big Caslon", "Times New Roman", serif;
+  font-size:70px;
+  margin-bottom:-20px;
+  text-shadow:0 0 3px black; 
+
+  margin-top:15%;
+  margin-bottom:-10%; 
+}
+
+
+#seperate{
+  bottom:280px;
+  border:1px outset #ffffff;
+  transition:all .7s;
+  width:0%;
+  margin-top:11%;
+  margin-left:30%;
+  margin-bottom:-11%
+}
+
+
+.welcome p{
+  font-size:20px;
+  color:#DBE8F9;
+ font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
+  text-shadow:0 0 3px black;
+  margin-top:13%;
+}
+
+
+#info{
+  margin-left:5.1%;
+  margin-top: 0.2%;
+  float:left;
+  height:38.6%;
+  width:99.9%;
+  z-index:1;
+}
+
+
+.infocontainer{
+  width:68%;
+  height:204px;
+  margin-left:1%;
+  margin-top:5%;
+  padding:200px;
+  transition: all 0.7s;
+  display:inline-block;
+  
+}
+
+
+.proclaim{
+  position:relative;
+  color:white;
+  text-align:center;
+  width:100px;
+  height:100px;
+  transition: all 0.7s;
+  display:inline-block;
+ font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+  font-size:32px;
+  cursor:pointer;
+  margin:1px;
+  background-color:black;
+  border-radius:4px;
+}
+
+
+#who{
+  transition: all 0.7s;
+  margin-left:10%;
+}
+
+
+#what{
+  transition: all 0.7s;
+  margin-left:10%
+}
+
+
+#why{
+  transition: all 0.7s;
+  margin-left:10%;
+}
+
+
+#how{
+  transition: all 0.7s;
+  margin-left:10%;
+}
+
+.proclaim:hover {
+  /*transform*/
+  -webkit-transform:perspective(800px) rotate3d(1, 0, 0, 17deg);
+  -moz-transform:perspective(800px) rotate3d(1, 0, 0, 17deg);
+  -ms-transform:perspective(800px) rotate3d(1, 0, 0, 17deg);
+  -o-transform:perspective(800px) rotate3d(1, 0, 0, 17deg);
+  transform:perspective(800px) rotate3d(1, 0, 0, 17deg);
+  
+  opacity:0.7;
+}
+
+
+#socInfo{
+  position:relative;
+  top: 0;
+  float:left;
+  width:100%;
+  height:39%;
+  z-index:1;
+  margin-left:0.1%;
+  text-align:center;
+  font-size:40px;
+  font-family: "Goudy Old Style", Garamond, "Big Caslon", "Times New Roman", serif;
+  background-color:rgb(247, 247, 247);
+  opacity:0.8;
+}
+
+
+#socInfoContainer{
+  color:#8D8D8D;
+  margin-top:10%;
+}
+
+
+#socInfoContainer p{
+  font-size:20px;
+}
+
+
+#smart{
+  color:black;
+}
+
+
+#engagin{
+  color:black;
+}
+
+
+#games{
+  color:black;
+}
+
+
+#SSF{
+  color:black;
+}
+
+
+
+.testimony{
+  font-size:30px;
+  color:white;
+  cursor:pointer;
+  transition:all 0.7s;
+  font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+}
+
+
+.testimony:hover{
+  color:#5F625A;
+  opacity:0.7;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+  
+<div class="navbar">
+  <div class="container">
+    
+    <div id="home" class="nav"><b>Home</b></div>
+  
+    <div id="signup" class="nav"><b>Sign up</b></div>
+  
+    <div id="about" class="nav"><b>About</b></div>
+  
+    <div id="theprogram" class="nav"><b>The program</b></div>
+  
+    <div id="start" class="nav"><b>Getting started</b></div>
+    
+  </div>
+  
+</div>
+  
+
+  
+<div class="welcome">
+  <div class="container">
+    <h1>Welcome to the Ambassador Program!</h1>
+    
+   <div id="seperate"></div>
+    
+    <p>Educateing teachers and students about <b>Technology</b> in the <b>Classroom</b> </p>
+  </div>
+</div>
+  
+  <div id="info">
+    <div class="infocontainer">
+      <div id="who" class="proclaim"><p>Who?</p></div>
+      
+      <div id="what" class="proclaim"><p>What?</p></div>
+      
+      <div id="why" class="proclaim"><p>Why?</p></div>
+      
+      <div id="how" class="proclaim"><p>How?</p></div>
+    </div>
+  </div>
+  
+  
+  <div id="socInfo">
+    
+    <div id="socInfoContainer">
+      <h1><b>What is Socrative?</b></h1>
+      
+      <p>
+        <span id="easy" class="testimony">It's super easy my students LOVE IT!   - Kendra Jordan</span><br>
+        
+        <span id="smart" class="testimony">A smart student response</span> <br>
+        
+        <span id="solution" class="testimony">Great solution! - Peter High</span><br>
+        
+        <span id="engagin" class="testimony">Engaging in classrooms</span> <br>
+        
+        <span id="coolTool" class="testimony">Cool classroom tool - Susanne Neumann</span><br>
+        
+        <span id="games" class="testimony">Exercises and Game</span><br>
+        
+        <span id="loving" class="testimony">I'm loving Socrative - Rob Mattson</span><br>
+        
+        <span id="SSF" class="testimony">Smart, Simple, Fun</span>
+      </p>
+      
+    </div>
+    
+  </div>
+  
+  
+  
+<script id="jsbin-javascript">
+$(document).ready(function(){
+  
+  var maxLength = 40;
+  
+  var length = 0;
+  
+  function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+  
+  var sepe = window.setInterval(function(){
+    length += 10;
+    $("#seperate").css("width", length +"%");
+    
+    if(length >= 40){
+      window.clearInterval(sepe);
+    }
+  }, 1000/10);
+  
+  
+    window.setInterval(function(){
+      var randTestimo = randNum(0, 4);
+      
+      function getOut(easy, solution, coolTool, loving){
+        if(easy === true){
+          $("#easy").css({
+            color:"#ffffff",
+            opacity:"0"
+          });
+        }
+        if(solution === true){
+          $("#solution").css({
+            color:"#ffffff",
+            opacity:"0"
+          });
+        }
+        if(coolTool === true){
+          $("#coolTool").css({
+            color:"#ffffff",
+            opacity:"0"
+          });
+        }
+        if(loving === true){
+          $("#loving").css({
+            color:"#ffffff",
+            opacity:"0"
+          });
+        }
+      }
+      
+      
+      if(randTestimo <= 1){
+        $("#easy").css({
+          color:"#5f625a",
+          opacity:"0.7"
+        });
+        getOut(false, true, true, true);
+      } else if(randTestimo <= 2 && randTestimo >= 1.09){
+        $("#solution").css({
+          color:"#5f625a",
+          opacity:"0.7"
+        });
+        getOut(ture, false, true, true);
+      } else if(randTestimo <= 3 && randTestimo >= 2.09){
+        $("#coolTool").css({
+          color:"#5f625a",
+          opacity:"0.7"
+        });
+        getOut(true, true, false, true);
+      } else if(randTestimo <= 4 && randTestimo >= 3.09){
+        $("#loving").css({
+          color:"#5f625a",
+          opacity:"0.7"
+        });
+        getOut(true, true, true, false);
+      }
+      
+    }, randNum(1, 10)*1000);
+    
+  
+ /* $(".proclaim").click(function(){
+   $(".proclaim").css("transform", "perspective(800px) rotate3d(1, 0, 0, 17deg)");
+    $(".proclaim").css("opacity", "0.7");
+ });
+  */
+     var scroll =  $(document).scrollTop();   
+  
+  
+      if(scroll == 700){
+        $("#proclaim").css("-webkit-transform", "perspective(800px) rotate3d(1, 0, 0, 17deg);");
+      }
+  
+ 
+});  
+   
+   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</script>
+</body>
+</html>
+
+
+
+
+<?-- #highlight{
+  position:absolute;
+  background-color:white;
+  height:7px;
+  width:20px;
+  box-shadow: 0 -40px 100px 40px white;
+  opacity:1;
+  left:80px;
+  top:0;
+  transition:all .7s;
+} --->

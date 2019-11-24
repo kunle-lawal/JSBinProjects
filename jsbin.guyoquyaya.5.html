@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/guyoquyaya/5/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+
+@import url(https://fonts.googleapis.com/css?family=Monda&subset=latin-ext,latin);
+*{
+    font-family: 'Monda', sans-serif;
+    font-weight:900;
+	transition:all 0.3s;
+}
+
+body{
+    background-color:white;
+    color:white;
+    overflow: hidden;
+}
+
+.button{
+     user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border:2px solid rgb(210, 70, 90);
+	border-radius:5px;
+    background-color:rgb(210, 60, 60);
+    color:white;
+    font-size:25px;
+    width:200px;
+	height:40px;
+    padding:16px;
+    cursor:pointer;
+    font-weight:900;
+    box-shadow:0px 7px 5px rgb(210, 0, 0), 0px 12px 5px #aaaaaa;
+    margin:auto;
+    position:absolute;
+	bottom:0;
+    top:0;
+    left:0;
+    right:0;
+    text-align:center;
+}
+
+.button:active{
+    top:16px;
+	box-shadow:0px 4px 5px rgb(210, 0, 0);
+}
+
+#text{
+    text-align:center;
+    color:rgba(0, 0, 0, 0.6);
+    padding:2px;
+	width:50%;
+	font-size:50px;
+	margin:auto;
+    position:absolute;
+	top:20px;
+    left:0;
+    right:0;
+}
+
+#text:hover{
+    border: 2px solid rgba(190, 87, 87, 1);
+    color:rgba(0, 0, 0, 1);
+    outline-width: 0;
+}
+
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+    <div id="button_" class="button">Do Not Click</div>
+  	<div id="text"></div>
+<script id="jsbin-javascript">
+function say(text){
+  document.getElementById("text").innerHTML = text;
+}
+//Random number Generator
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+var button = $(".button");
+
+var text = ["", "(¬_¬ )", "(←_←)", "(⇀_⇀)", "...", "ヽ(ー_ー )ノ", "Stop", ".", "..", "...", "What are you doing?","Can you read?", "Do", "Not", "Click", "I dont think you understand", "STOP!", "STOP CLICKING", "ow!", "your clicking...", ".. it hurts", "Stop", "have you no conscience?!", "i'm fading", "i'll die", "you'll never see me again", "why?", "why do you do this?", ";-;", "sike!", "did you really think i'd die?", "┐(￣ヘ￣)┌ Amature", "wait..", "you didnt care?", ""];
+var clicks = 0;
+window.setInterval(function(){
+	say(text[clicks]);
+}, 100); 
+
+button.click(function(){ 
+	clicks++;
+	if(clicks >= 20 && clicks <= 29){
+		button.css("bottom", randNum(-140, 140) + "px");
+	    button.css("left", randNum(-140, 140) + "px");
+	}
+	if(clicks == 20){
+		button.css("opacity", "0.9");
+	}
+	if(clicks == 21){
+		button.css("opacity", "0.8"); 
+	}
+	if(clicks == 22){
+		button.css("opacity", "0.7");
+	}
+	if(clicks == 23){
+		button.css("opacity", "0.6");
+	}
+	if(clicks == 24){
+		button.css("opacity", "0.5");
+	}
+	if(clicks == 25){
+		button.css("opacity", "0.4");
+	}
+	if(clicks == 26){
+		button.css("opacity", "0.3");
+	}
+	if(clicks == 27){
+		button.css("opacity", "0.2");
+	}
+	if(clicks == 28){
+		button.css("opacity", "0.1");
+	}
+	if(clicks == 29){
+		button.css("opacity", "1");
+		button.css("bottom", "0px");
+	    button.css("left", "0px");
+	}
+});
+
+$(".button").on("tap",function(){
+	
+});
+</script>
+</body>
+</html>

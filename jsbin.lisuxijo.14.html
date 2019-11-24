@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/lisuxijo/14/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+    <title>Just Jump</title> 
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel='stylesheet' href='style.css'/>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src='https://cdn.firebase.com/v0/firebase.js'></script>
+<style id="jsbin-css">
+body{
+    background-color:;
+    color:white;
+    box-shadow:10 10px 1px red; 
+    background-image:url(http://archives.frederatorblogs.com/danmeth/files/2008/04/bg_combined4582.jpg); 
+    background-repeat:no-repeat;
+    background-size:cover;
+
+}
+#yes{ 
+    font-size:30px;
+    position:absolute; 
+    left:820px; 
+    color:green;
+    text-shadow:0 0 10px black;
+}
+span{
+    cursor:pointer;     
+}
+#justJump{
+    position: absolute;
+    border:1px solid #4c4c4c;
+    width:900px;
+    height:500px; 
+    top:100px;
+    left:410px;
+    border-radius:20px;
+    opacity:0.5;
+}
+#nameInput{
+  color:white;
+  background-color:black;
+  position:inherit;
+  left:350px;
+  height:20px;
+  width:200px;
+  box-shadow:0 0 100px gray;
+  opacity:1;
+}
+#info{
+  position:inherit;
+  top:100px;
+  left:350px;
+  font-size:39px;
+  text-align:center;
+  width:230px;
+  height:50px;
+  border:1px solid gray;
+  border-radius:70px;
+  background-color:#a8a8a8;
+  color:black;
+  text-shadow:0 0 10px black;
+  font-family:Tahoma;
+  box-shadow:0 0 10px white;
+  cursor:pointer;
+}
+#info:hover{
+  -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+#play{
+  position:inherit;
+  top:200px;
+  left:350px;
+  font-size:39px;
+  text-align:center;
+  width:230px;
+  height:50px;
+  border:1px solid gray;
+  border-radius:70px;
+  background-color:#a8a8a8;
+  color:black;
+  text-shadow:0 0 10px black;
+  font-family:Tahoma;
+  box-shadow:0 0 10px white;
+  cursor:pointer;
+}
+#play:hover{
+  -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+#about{
+  position:inherit;
+  top:300px;
+  left:350px;
+  font-size:39px;
+  text-align:center;
+  width:230px;
+  height:50px;
+  border:1px solid gray;
+  border-radius:70px;
+  background-color:#a8a8a8;
+  color:black;
+  text-shadow:0 0 10px black;
+  font-family:Tahoma;
+  box-shadow:0 0 10px white;
+  cursor:pointer;
+}
+#about:hover{
+  -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+#canvas {
+    position:absolute; 
+    top:100px;
+    left:410px;
+    background-color:white;
+    border:1px solid #4c4c4c;
+    border-radius:20px; 
+    opacity:0.5;
+} 
+
+#timer2{
+    position:absolute;
+    top:52px;
+    left:650px;
+    font-size:40px;
+    border:1px solid #4c4c4c; 
+    border-radius:20px; 
+    width:200px;
+    height:47px;
+    background-color:#4c4c4c;
+    text-shadow: 0 0 10px red; 
+    
+}
+#timer2{
+	-moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+#mins{
+    width:10px;
+    left:10px;
+    position:inherit; 
+}
+#mins2{
+    width:10px;
+    position:inherit;
+    left:35px;
+}
+#sec{
+    width:10px;
+    position:inherit;
+    left:71px
+}
+#sec2{
+    width:10px;
+    position:inherit;
+    left:95px
+}
+#mil{
+    position:absolute;
+    left:127px;
+    top:18px; 
+    font-size:20px; 
+}
+#colon{
+    width:10px;
+    position:inherit;
+    left:56px;
+    top:-2.3px;
+}
+#dot{
+  border:1px solid black;
+  position:absolute;
+  border-radius:100%;
+  top:71.4px;
+  left:873px;
+  width:5px;
+  height:5px;
+  background-color:black;
+  z-index:1
+}
+#dot2{
+  border:1px solid black;
+  position:absolute;
+  border-radius:100%;
+  top:71.4px;
+  left:1005px;
+  width:5px;
+  height:5px;
+  background-color:black;
+  z-index:1
+}
+#start{
+    color:black;
+    text-align:center;
+    position:absolute;
+    border-radius:20px;
+    width:165px;
+    height:50px;
+    font-size:40px; 
+    background-color:#4c0000; 
+    top:50px;
+    left:860px;
+    cursor:pointer; 
+    box-shadow: 0 0 10px #4c4c4c;
+    font-family:impact;
+  -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+#start:hover{
+  box-shadow:         inset 0 0 100px #0ff000;
+}
+#restart{
+    color:black;
+    text-align:center;
+    position:absolute;
+    border-radius:20px;
+    width:165px;
+    height:50px;
+    font-size:40px; 
+    background-color:#4c0000; 
+    top:50px;
+    left:860px;
+    cursor:pointer; 
+    box-shadow: 0 0 10px #4c4c4c;
+  font-family:impact;
+  -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+#restart:hover{
+  box-shadow:         inset 0 0 100px #0000fa;  
+}
+#score{
+  color:black;
+  font-size:30px;
+  text-shadow: 0 0 10px red;
+}
+#highscore{
+    text-shadow: 0 0 10px yellow;
+    text-align:center;
+    position:absolute; 
+    height:500px;
+    width:900px;
+    border: 2px solid white;
+    background-color:black;
+    border:1px solid #4c4c4c;
+    border-radius:20px; 
+    opacity:1;
+    z-index:4;
+    top:100px;
+    left:410px;
+}
+
+
+
+</style>
+</head>
+<body>
+    <div id="justJump">
+         <div id=info>Instructions</div>         
+         <div id=play>Play</div>
+         <div id=about>About</div>
+      </div>
+    <div id="highscore">
+      <span id=score>Highscore</span>
+      <table id="leaderboardTable"></table>
+      <input type="text" id="nameInput" placeholder="Put your name here">
+    </div>
+    <div id="yes">Ready?</div>
+    <div>
+        <canvas id="canvas" width= 900px height= 500px>
+        Your browser does not support the Canvas element.
+        </canvas> 
+        <script type='text/javascript' src="script.js"></script>
+        <div id= 'bottom'></div>
+        <div id="timer2"> 
+            <div id=mins>0</div> 
+            <div id=mins2>0</div>
+            <div id=colon>:</div>
+            <div id=sec>0</div>
+            <div id=sec2>0</div>
+            <div id=mil>00</div>
+        </div>
+
+        
+    </div>
+  <div id=playBot>
+    <div id=dot></div>
+    <div id=dot2></div>
+  <div id=start>Play</div> 
+    <div id=restart>Restart</div>
+   </div> 
+  <script>
+       
+  </script>
+<script id="jsbin-javascript">
+///The code isn't yet readable to all but myself, i'll change that, but for now if you don't understand anything its ok.///
+var fps = 30;//frames per second    
+var natSpeed = -150; 
+var dis = 0;    
+var mins = 0;
+var mins2 = 0;
+var sec = 0;
+var sec2 = 0;
+var mil = 0;
+var shadow = 1;  
+var markdown = 1.5; 
+var snd = new Audio("http://sound.slayersonline.net/massue.wav");
+var snd2 = new Audio("http://www.dadsworksheets.com/v1/sounds/PacManEnd.wav");
+var snd3 = new Audio("http://sep800.mine.nu/files/sounds/kick.wav");
+var snd4 = new Audio("http://atschool.eduweb.co.uk/jblincow/sound/songth3.wav");
+var snd5 = new Audio("http://www.mbr-pwrc.usgs.gov/id/htmwav/h5810so.mp3");
+var snd6 = new Audio("http://www.dccl.org/Sounds/songsparrow.wav");
+var snd7 = new Audio("http://www.davidphotoart.org/docs/fruits/images/ss1.wav");
+
+
+
+function randSong2(){
+  window.setInterval(function(){
+     randSong = randNum(1, 8);
+  }, 3 * 1000);
+}
+window.setInterval(function(){ 
+  randSong2();
+  if(randSong <= 2){
+    snd4.play();
+  } else if((randSong > 2) && (randSong <= 4)){
+    snd5.play();
+  } else if((randSong > 4) && (randSong <= 6)){
+    snd6.play();
+  } else if((randSong > 6) && (randSong <= 8)){
+    snd7.play();
+  }
+}, 5000); 
+$("#start").hide();
+$("canvas").hide();      
+$("#highscore").hide();   
+$("#restart").hide();
+$("#timer2").hide();
+$("#mins").hide();
+$("#mins2").hide();
+$("#sec").hide();
+$("#sec2").hide();
+$("#mil").hide();
+$("#colon").hide();
+
+
+function flash(){
+  $("document").ready(function(){
+    window.setInterval(function(){
+        shadow++;
+          if(shadow >= 2){
+              $("#timer2").fadeTo(100, 0.9);
+              $("#timer2").css("text-shadow", "0 0 10px blue"); 
+             
+          }
+          if(shadow >=3){
+              shadow = 0;
+          }
+          if(shadow < 1){
+              $("#timer2").fadeTo(100, 0.4); 
+              $("#timer2").css("text-shadow", "0 0 10px red");
+          }
+      console.log(shadow);
+    }, 1 * 1000);
+  
+  });
+}
+
+function setTime(){
+  $("#timer2").fadeIn(1 * 1000);  
+  $("#mins").fadeIn(1 * 1000);
+  $("#mins2").fadeIn(1 * 1000);  
+  $("#sec").fadeIn(1 * 1000);
+  $("#sec2").fadeIn(1 * 1000);
+  $("#mil").fadeIn(1 * 1000);
+  $("#colon").fadeIn(1 * 1000);
+}
+
+function end(){
+  snd2.play();
+  document.getElementById("yes").innerHTML = "You got " + mins + mins2 + ":" + sec + sec2 + " minutes and " + " seconds";
+  window.clearInterval(timer);
+  window.clearInterval(timer2);
+  //stop the clock
+  sec = 0;
+  sec2 = 0;
+  window.clearInterval(gameLoop); 
+  $("canvas").fadeTo(1000, 0.08);
+  window.setTimeout(function(){
+    $("#highscore").fadeTo(1000, 1);
+  },2 * 1000);
+}
+
+function reset(){
+  document.getElementById("mins").innerHTML = mins * 0;
+  document.getElementById("mins2").innerHTML = mins * 0;
+  document.getElementById("sec").innerHTML = mins * 0; 
+  document.getElementById("sec2").innerHTML = mins * 0;
+  document.getElementById("mil").innerHTML = mins * 0;
+  window.clearInterval(timer); 
+  start(); 
+  startTime();
+}
+//random color generator   
+function randColor() {
+    var num = Math.floor(Math.random() * Math.pow(2,24)); 
+    return '#' + ('00000' + num.toString(16)).substr(-6);    
+}
+ 
+//random number generator
+function randNum( min, max ) { 
+    return Math.random() * ( max - min ) + min;    
+}
+
+$("#info").mouseenter(function(){
+  document.getElementById("info").innerHTML = "No info yet";  
+});
+$("#info").mouseleave(function(){
+  document.getElementById("info").innerHTML = "Instructions";    
+});
+
+ 
+$("#play").click(function(){
+     $("#justJump").fadeOut(2 * 1000); 
+     $("#play").css("background-color", "red"); 
+     $("#play").css("cursor", "text");
+    document.getElementById("yes").innerHTML = "Preparing..."; 
+    window.setTimeout(function(){   
+        document.getElementById("yes").innerHTML = "Processing...";
+            window.setTimeout(function(){    
+                document.getElementById("yes").innerHTML = "Programming...";
+        }, 2 * 1000);
+                    window.setTimeout(function(){   
+                        document.getElementById("yes").innerHTML = "Making jump patterns...";
+                }, 4 * 1000);
+                        window.setTimeout(function(){   
+                            document.getElementById("yes").innerHTML = "Wasting your time...";
+                                 setTime();
+                                 flash();
+                        }, 6 * 1000);     
+    }, 2 * 1000);  
+       
+    window.setTimeout(function(){
+        $("#start").fadeIn(1 * 1000);
+        $("h2").fadeIn(2000); 
+        $("canvas").fadeTo(2000, 0.3);
+        document.getElementById("yes").innerHTML = "Ready to start!";
+    }, 12 * 1000); 
+});
+
+
+$("#start").click(function(){
+    window.setTimeout(function(){
+      startTime();
+    }, 3.8 * 1000);
+     start(); 
+     document.getElementById("yes").innerHTML = "Playing..."; 
+     $("canvas").fadeTo(2000, 0.85);
+     $("#start").fadeOut(0.1 * 1000);
+     $("#restart").fadeIn(0.09 * 1000); 
+});
+
+//Restart the game
+$("#restart").click(function(){
+  document.getElementById("yes").innerHTML = "Playing..."; 
+  reset();
+  $("canvas").fadeTo(2000, 0.85);
+  $("#highscore").fadeTo(1000, 0);
+});
+
+//Self made timmer :D
+startTime = function(){
+  timer = window.setInterval(function(){
+    sec2++;  
+    if(sec2 > 9){
+        sec2 = 0;
+        sec++;
+        if(sec >= 6){
+            sec = 0;
+            mins2++;
+            if(mins2 > 9){
+                mins2 = 0;
+                mins++;
+            }
+        }
+    }
+    document.getElementById("mins").innerHTML = mins;
+    document.getElementById("mins2").innerHTML = mins2;
+    document.getElementById("sec").innerHTML = sec;
+    document.getElementById("sec2").innerHTML = sec2;
+}, 1 * 1000);
+
+timer2 = window.setInterval(function(){
+    mil++;
+    if(mil >= 60){
+        mil = 0;    
+    }
+    document.getElementById("mil").innerHTML = mil;
+}, 11.2);
+};
+
+
+///////////    //       ///////   ////////   //
+//           /////      //   //  //    //  /////
+////          //             //  //         //
+    /////     //        ///////  //         //
+        ///   //   //   //   //  //         //   //
+//////////    //////    ///////  //         //////
+
+
+function start(){
+//get the canvas element     
+var canvas = document.getElementById("canvas");     
+var ctx = canvas.getContext("2d");   
+  
+  
+//box object 
+var box = { 
+    x: 80/markdown,       
+    y: 360/markdown,  
+    width: 30/markdown, 
+    height:30/markdown, 
+    color: randColor(),     
+    vx: 0,   
+    vy: 0,
+    ax: 0,
+    ay: 25000,  
+    draw: function(){
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height); 
+    },
+    rotate: function(){ 
+          
+    },
+    update: function(){
+        this.x += this.vx/fps; 
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;  
+        
+
+        if(this.y <= 200){
+            this.ay = 2500; 
+            console.log("Hi");   
+        }
+        if((this.y + this.height) > base.y + base.height){   
+            this.y = base.y - this.height; 
+            this.vy = 0; 
+            this.ay = 0;
+        }  
+        if(this.x > 198){        
+            this.x = 198 - 5;      
+        }
+        if(this.x < 0){
+            this.x  =  0 + 0.002;           
+        }
+        if(this.y < 139){
+            this.y = 139 + 0.00000001;  
+            this.ay = 25000; 
+        }
+
+    }    
+};    
+
+var downObstacle1 = { 
+    x: 1100/markdown,
+    y: 300,  
+    width:25/markdown,  
+    height:randNum(100, 170),
+    color: "#9c2a00",        
+    vx: natSpeed, 
+    vy: 0,
+    ax: 0,
+    ay: 2500,            
+    draw2: function(){ 
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    update2: function(){
+        this.x += this.vx/fps;
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;
+               
+          this.width++;
+          if (this.width < 20){
+            this.width++; 
+          }
+          if (this.width >= 45/markdown){
+            this.width = 25/markdown;
+          }
+
+        if((this.x + this.width) <= 0){
+                this.x = canvas.width; 
+                this.width = 25/markdown;
+                this.height = randNum(100, 175);   
+                this.vx = natSpeed;      
+                this.y = base.y - this.height;    
+        }   
+ 
+        if((this.y + this.height) >= (base.y + base.height)){ 
+            this.y = base.y - this.height; 
+            this.vy = 0; 
+            this.ay = 0;
+        } 
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width)){
+            //stop the obstacle from moving
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+        } 
+    }
+};
+
+var downObstacle2 = {  
+    x: 1520/markdown, 
+    y: 280, 
+    width:90/markdown,           
+    height:90/markdown,
+    color: "#6b8e23",         
+    vx: natSpeed,  
+    vy: 200,  
+    ax: 0, 
+    ay: 0,
+    draw3: function(){
+        ctx.fillStyle = this.color; 
+        ctx.fillRect(this.x, this.y, this.width, this.height); 
+    },  
+    update3: function(){
+        this.x += this.vx/fps; 
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;
+        
+        if((this.y + this.height) >= 470){
+            this.vy = -this.vy;   
+        }
+        if((this.y + this.height) <= 310){
+            this.vy = -this.vy;    
+        }
+        if((this.x + this.width) <= 0){
+                this.x = canvas.width; 
+                this.width = randNum(60, 100)/markdown; 
+                this.height = 90/markdown;  
+                this.vx = natSpeed;
+                this.y = randNum(270, 300);   
+        }  
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width) && (box.y) < (this.y + this.height)){ 
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+            
+        }
+ 
+    }
+};
+
+var downObstacle3 = {
+    x: 1920/markdown,
+    y: 300,  
+    width:25/markdown,  
+    height:randNum(70, 100), 
+    color: "#567138",           
+    vx: natSpeed, 
+    vy: 10,
+    ax: 0,
+    ay: 2500,             
+    draw4: function(){  
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    update4: function(){
+        this.x += this.vx/fps;
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;
+        
+        if((this.x + this.width) <= 0){
+                this.x = canvas.width; 
+                this.width = 25/markdown;
+                this.height = randNum(70, 100);      
+                this.vx = natSpeed;
+                this.y = base.y - this.height; 
+        }  
+        if((this.y + this.height) >= (base.y + base.height)){ 
+            this.y = base.y - this.height; 
+            this.vy = 0; 
+            this.ay = 0;
+        }
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width) && (box.y) < (this.y + this.height)){ 
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+            
+        }  
+    }    
+};   
+
+var downObstacle4 = {
+    x: 2340/markdown,
+    y: 470,
+    width:randNum(20, 25)/markdown,        
+    height:200, 
+    color: "black",           
+    vx: randNum(-100, -160),   
+    vy: 30, 
+    ax: 0,
+    ay: 0,
+    draw5: function(){
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    update5: function(){
+        this.x += this.vx/fps;
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps; 
+         
+        if(this.y >= 480){  
+            this.vy = -this.vy;
+        }
+        if (this.y <= 440){
+            this.vy = -this.vy;    
+        }
+        if((this.x + this.width) <= 0){
+                this.x = randNum(40, 900); 
+                this.width = randNum(20, 25)/markdown;     
+                this.height = 200/markdown; 
+                this.vx = randNum(-120, -170);  
+                this.y = 470;   
+        }
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width) && (box.y) < (this.y + this.height)){ 
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+            
+        } 
+    }     
+};
+var upObstacle1 = { 
+    x: 2000/markdown, 
+    y: 100,   
+    width:25/markdown,  
+    height:randNum(200, 250),   
+    color: "#717171",           
+    vx: natSpeed, 
+    vy: 0, 
+    ax: 0,
+    ay: -2500,               
+    draw7: function(){  
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    update7: function(){
+        this.x += this.vx/fps;
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;
+        
+        if((this.x + this.width) <= 0){
+                this.x = canvas.width; 
+                this.width = 25/markdown; 
+                this.height = randNum(130, 250);      
+                this.vx = natSpeed;
+                this.y = 0;  
+        }  
+        if((this.y) <= (0 )){   
+            this.y = 0;
+            this.vy = 0; 
+            this.ay = 0;
+        }
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width) && (box.y) < (this.y + this.height)){ 
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+        }
+    }        
+};
+var upObstacle2 = {
+    x: 1620/markdown,
+    y: 100,   
+    width:25/markdown,  
+    height:randNum(100, 150), 
+    color: "#73984b",           
+    vx: natSpeed, 
+    vy: 0,
+    ax: 0,
+    ay: -2500,              
+    draw8: function(){  
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    },
+    update8: function(){
+        this.x += this.vx/fps;
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;
+        
+
+        if((this.x + this.width) <= 0){
+                this.x = canvas.width; 
+                this.width = 25/markdown;
+                this.height = randNum(130, 250);      
+                this.vx = natSpeed; 
+                this.y = 0;  
+        }  
+        if((this.y) <= (0 )){   
+            this.y = 0;
+            this.vy = 0; 
+            this.ay = 0;
+        }
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width) && (box.y) < (this.y + this.height)){ 
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+        }
+    }            
+};
+
+var upObstacle3 = {
+    x: 1150/markdown,
+    y: 100,   
+    width:25/markdown,  
+    height:randNum(100, 190), 
+    color: "#8fb467",           
+    vx: natSpeed, 
+    vy: 0,
+    ax: 0,
+    ay: -2500,               
+    draw9: function(){  
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height); 
+    }, 
+    update9: function(){
+        this.x += this.vx/fps;
+        this.y += this.vy/fps;
+        this.vx += this.ax/fps;
+        this.vy += this.ay/fps;
+        
+        this.height++;
+        if(this.height >= 200){
+            this.height -= 100;    
+        }
+        if((this.x + this.width) <= 0){  
+                this.x = canvas.width; 
+                this.width = 25/markdown;
+                this.height = randNum(130, 250);      
+                this.vx = natSpeed; 
+                this.y = 0;  
+        }  
+        if((this.y) <= (0 )){   
+            this.y = 0;
+            this.vy = 0; 
+            this.ay = 0;
+        }
+        if((box.x + box.width) > (this.x) && (box.y + box.height) > (this.y) && (box.x) < (this.x + this.width) && (box.y) < (this.y + this.height)){ 
+            this.vx = 0;   
+            box.vy = 0;  
+            box.vx = 0; 
+            end();
+        }
+    }    
+};
+var base = {
+    x: 0,
+    y: 480,
+    width:3000,
+    height:20,
+    color: "lightgreen",          
+    vx: 0,
+    vy: 0,
+    ax: 0,
+    ay: 0,
+    draw6: function(){
+        ctx.fillStyle = this.color; 
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+};
+
+
+//draws the box
+function draw(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);  
+    box.draw();   
+    downObstacle1.draw2(); 
+    base.draw6();
+    downObstacle2.draw3(); 
+    downObstacle3.draw4();
+    downObstacle4.draw5();
+    upObstacle1.draw7();
+    upObstacle2.draw8();
+    upObstacle3.draw9();    
+}
+
+//updates the box
+function update(){
+    box.update(); 
+    downObstacle1.update2();
+    downObstacle2.update3();  
+    downObstacle3.update4(); 
+    downObstacle4.update5();
+    upObstacle1.update7();
+    upObstacle2.update8(); 
+    upObstacle3.update9();    
+}
+
+//wraps the drawing and update into one function
+function ticks(){ 
+    draw();
+    update();
+} 
+
+//ticks or draws and updates every second
+gameLoop = window.setInterval(ticks, 1000/fps);
+  
+window.onkeydown = function(e){ 
+        e = e || window.event;  
+        var code = e.which || e.keyCode;  
+        e.preventDefault(); 
+    if (code === 32){
+        snd3.play();
+        box.color = randColor();
+        box.height = 30/markdown; 
+        box.vy = -610;   
+    }
+    if(code === 37){
+        box.vx = -300;  
+    }
+    if(code === 39){
+        box.vx = 300; 
+    }
+    if (code === 40){  
+        snd.play();
+        box.vy = 300; 
+        box.height = 15/markdown;           
+    }
+};   
+
+
+window.onkeyup = function(e){     
+    e = e || window.event;  
+    var code = e.keyCode;
+    if (code === 32) { 
+        box.ay = 2500;
+    } 
+    if(code === 37){  
+        box.vx = -4;  
+    }
+    if(code === 39){  
+        box.vx = 4;     
+    } 
+}; 
+}
+
+
+////Firebase stuff////
+  var LEADERBOARD_SIZE = 5;
+
+  // Create our Firebase reference
+  var scoreListRef = new Firebase("https://brilliant-fire-8407.firebaseio.com");
+
+  // Keep a mapping of firebase locations to HTML elements, so we can move / remove elements as necessary.
+  var htmlForPath = {};
+
+  // Helper function that takes a new score snapshot and adds an appropriate row to our leaderboard table.
+  function handleScoreAdded(scoreSnapshot, prevScoreName) {
+    var newScoreRow = $("<tr/>");
+    newScoreRow.append($("<td/>").append($("<em/>").text(scoreSnapshot.val().name)));
+    newScoreRow.append($("<td/>").text(scoreSnapshot.val().score));
+
+    // Store a reference to the table row so we can get it again later.
+    htmlForPath[scoreSnapshot.name()] = newScoreRow;
+
+    // Insert the new score in the appropriate place in the table.
+    if (prevScoreName === null) {
+      $("#leaderboardTable").append(newScoreRow);
+    }
+    else {
+      var lowerScoreRow = htmlForPath[prevScoreName];
+      lowerScoreRow.before(newScoreRow);
+    }
+  }
+
+  // Helper function to handle a score object being removed; just removes the corresponding table row.
+  function handleScoreRemoved(scoreSnapshot) {
+    var removedScoreRow = htmlForPath[scoreSnapshot.name()];
+    removedScoreRow.remove();
+    delete htmlForPath[scoreSnapshot.name()];
+  }
+
+  // Create a view to only receive callbacks for the last LEADERBOARD_SIZE scores
+  var scoreListView = scoreListRef.limit(LEADERBOARD_SIZE);
+
+  // Add a callback to handle when a new score is added.
+  scoreListView.on('child_added', function (newScoreSnapshot, prevScoreName) {
+    handleScoreAdded(newScoreSnapshot, prevScoreName);
+  });
+
+  // Add a callback to handle when a score is removed
+  scoreListView.on('child_removed', function (oldScoreSnapshot) { 
+    handleScoreRemoved(oldScoreSnapshot);
+  });
+
+  // Add a callback to handle when a score changes or moves positions.
+  var changedCallback = function (scoreSnapshot, prevScoreName) {
+    handleScoreRemoved(scoreSnapshot);
+    handleScoreAdded(scoreSnapshot, prevScoreName);
+  };
+  scoreListView.on('child_moved', changedCallback);
+  scoreListView.on('child_changed', changedCallback);
+
+  // When the user presses enter on scoreInput, add the score, and update the highest score.
+  $("#nameInput").keypress(function (e) { 
+    if (e.keyCode == 13){
+      var name = Number($("#nameInput").val());
+      var newScore = "Got " + mins + " mins";
+      $("#scoreInput").val("");
+
+      if (name.length === 0)
+        return;
+
+      var userScoreRef = scoreListRef.child(name);
+      
+      // Use setWithPriority to put the name / score in Firebase, and set the priority to be the score.
+      userScoreRef.setWithPriority({ name:name, score:newScore }, newScore);
+    }
+      
+  });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/bejaqa/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+</head>
+<body>
+<canvas id="canvas1" width="300" height="300" style = "border: 1px solid black;"></canvas>
+<script id="jsbin-javascript">
+var can = document.getElementById('canvas1');
+var ctx = can.getContext('2d');
+can.tabIndex = 1; // quick way to get focus so keypresses register
+ctx.font = '8px sans';
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+var cw = can.width; //300
+var ch =  can.height; //300
+var map_w = cw * 2;
+var map_h = ch * 1.1; 
+var thingsOnMap = [];
+
+for(var x = 0; x < 10; x++){
+    thingsOnMap.push({
+      x:randNum(0, map_w),
+      y:randNum(0, map_h),
+    });
+}
+
+
+
+// player's position
+var playerX = cw/2;
+var playerY = ch/2;
+
+// how far offset the canvas is
+var offsetX = 0;
+var offsetY = 0;
+    
+function draw() {
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    // clear the viewport
+    ctx.clearRect(-offsetX, -offsetY, cw,ch);
+    
+    // draw the player
+    ctx.fillStyle = 'red';
+    ctx.fillRect(playerX-offsetX, playerY-offsetY, 8, 8);
+    
+    // draw the other stuff
+    var l = thingsOnMap.length;
+    for (var i = 0; i < l; i++) {
+        var j = thingsOnMap[i];
+        // we should really only draw the things that intersect the viewport!
+        // but I am lazy so we are drawing everything here
+        var x = j.x;
+        var y = j.y;
+        ctx.fillStyle = 'lightblue';
+        ctx.fillRect(x, y, 8, 8);
+        ctx.fillStyle = 'black';
+        ctx.fillText(x + ', ' + y, x, y); // just to show where we are drawing these things
+    }
+    
+    ctx.restore();
+}
+    
+    can.addEventListener('keydown', function(e) {
+        if (e.keyCode === 37) { // left
+            offsetX++;
+        } else if (e.keyCode === 39) { // right
+            offsetX--;
+        } else if (e.keyCode === 38) { // right
+            offsetY++;
+        } else if (e.keyCode === 40) { // right
+            offsetY--;
+        }
+        //draw();
+    }, false);
+
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+function start(){
+	window.requestAnimFrame(start);
+    draw();
+}
+
+start(); 
+//draw(); 
+</script>
+</body>
+</html>

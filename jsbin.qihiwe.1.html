@@ -1,0 +1,224 @@
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/qihiwe/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+
+<html>
+<head>
+<title>Perfect Tic Tac Toe</title>
+<style>
+  .box {
+    font-family:Verdana;
+    font-size:20pt;
+    cursor:default;
+  }
+  value {
+    font-family:Verdana;
+    font-size:16pt;
+    cursor:default;
+  }
+</style>
+<script>
+function Gid(id) {
+  return document.getElementById(id);
+}
+
+function Q(s) {
+  return '"' + s + '"';
+}
+
+function PerfectTicTacToe() {
+  var Board;
+  var MarkersA = ["&nbsp;", "X", "O"];
+  var ColorsA = ["","red","blue"];
+  var ModeO = {
+    UserFirst:0,
+    ComputerFirst:1,
+    Solitaire:2
+  };
+  var ModeA = [
+    "User First",
+    "Computer First",
+    "Solitaire"
+  ];
+  
+  var Mode;
+
+  /*
+    0 1 2
+    3 4 5
+    6 7 8
+  */
+  var WinsA = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [6, 4, 2]
+  ];
+  
+  Win = 2;
+  Draw = 1;
+  InProgress = 0;
+    
+  function GameStateStr (st) {
+    switch(st) {
+      case Win: return "Win";
+      case Draw: return "Draw";
+    }
+    return "In Progress";
+  }  
+  
+  function BoardValue(b, mk) {
+    var i, j, t, mkCnt, emptyCnt, enemyCnt, RetVal = Draw; 
+    
+    for (i = 0; i < WinsA.length; i++) {
+      mkCnt = emptyCnt = enemyCnt = 0;
+      for (j = 0; j < 3; j++)
+        if ((t = b [WinsA[i][j]]) == mk)
+          mkCnt++;
+        else if (t == 0) 
+          emptyCnt++;
+        else
+          enemyCnt++;
+          
+      if (mkCnt == 3)
+        return Win;
+      if (mkCnt + emptyCnt == 3 || enemyCnt + emptyCnt == 3)
+        RetVal = InProgress;      
+    }
+    return RetVal;
+  }
+
+  function FindBest (b, mk, vmin, vmax) {
+    var i, v, enemy = 3 - mk, besti = -1;
+    for (i = 0; i < b.length; i++) {
+      if (b [i] != 0)
+        continue;
+      b [i] = mk;
+      if ((v = BoardValue(b, mk)) != Win && v != Draw)
+          v = -FindBest(b, enemy, -vmax, -vmin).bestv;
+      if (v > vmin) {
+        vmin = v;
+        besti = i;
+        if (v >= vmax) {
+           b [i] = 0;  
+           break;
+        }               
+      }
+      b [i] = 0;  
+    }
+    return {besti:besti, bestv:vmin};
+  }
+
+  var Mark, LastMove1, LastMove2, BoardVal, BoardEle;
+  
+  function MakeMove (i) {
+    var th = BoardEle[i];
+    if (BoardVal == Draw || BoardVal == Win || Board[i])
+      return;
+    if (LastMove2)
+      LastMove2.bgColor = "";
+    LastMove2 = LastMove1;
+    th.innerHTML = MarkersA[Board[i] = Mark];
+    th.style.color = ColorsA[Mark];
+    Gid("VALUE").innerHTML = GameStateStr(BoardVal = BoardValue(Board, Mark));
+    (LastMove1 = th).bgColor = "yellow"; 
+    Mark = 3 - Mark;
+    return true;
+  }
+
+  function GenHTML() {
+    var o, i, j = [], s = "<table border='1' cellpadding='3' cellspacing='0'>";
+    for (i = 0; i < ModeA.length; i++) 
+      j.push("<button>" + ModeA[i] + "</button>");
+    (o = Gid("BUTTONS")).innerHTML = j.join("&nbsp;");
+    var ba = o.getElementsByTagName("button");
+    for (i = 0; i < ba.length; i++)
+      ba[i].onclick = function(i) {
+        return function() { 
+          SetMode(i); 
+        }; 
+      }(i);
+    
+    for (i = 0; i < 3; i++) {
+       s += "<tr>";
+       for (j = 0; j < 3; j++)
+         s += "<th width='45' height='45' class='box'>&nbsp;</th>";
+       s += "</tr>";
+    }
+    
+    (o = Gid("BOARD")).innerHTML = s += "</table>";
+    BoardEle = o.getElementsByTagName("th");
+    
+    for (i = 0; i < BoardEle.length; i++) {
+      BoardEle [i].onclick = function (i) {
+        return function () {
+          if (MakeMove(i) && BoardVal == InProgress)
+            switch(Mode) {
+              case ModeO.Solitaire: 
+                break;
+              case ModeO.UserFirst:
+              case ModeO.ComputerFirst:
+                MakeMove(FindBest(Board, Mark, -10, 10).besti);
+                break;
+              case ModeO.Test:
+                break;
+            };
+        };
+      }(i);
+    }
+  }
+  function ClearBoard () {
+    var i;
+    if (LastMove1)
+      LastMove1.bgColor = "";
+    if (LastMove2)
+      LastMove2.bgColor = "";
+    LastMove1 = LastMove2 = BoardVal = undefined;
+    for (i = 0; i < BoardEle.length; i++)
+      BoardEle [i].innerHTML = MarkersA[Board[i] = 0];
+    Mark = 1;
+    Gid("VALUE").innerHTML = "";
+  };
+
+  function SetMode (NewMode) {
+    ClearBoard();
+    switch(Mode = NewMode) {
+      case ModeO.Solitaire: 
+        Gid("VALUE").innerHTML = "Solitaire mode...play against yourself.";
+        break;
+      case ModeO.UserFirst:
+        Gid("VALUE").innerHTML = "Please make your first move.";
+        break;
+      case ModeO.ComputerFirst:
+        MakeMove(FindBest(Board, Mark, -10, 10).besti);
+        Gid("VALUE").innerHTML = "Computer moved first.";
+        break;
+      case ModeO.Test:
+        break;
+    }
+  };
+  GenHTML();
+  Board = [];
+  SetMode(ModeO.Solitaire);
+}
+
+</script>
+</head>
+<body onload='PerfectTicTacToe()'>
+<center>
+  <div id='BUTTONS'></div><br><br>
+  <div id='BOARD'></div><br><br>
+  <div id='VALUE'></div>
+</center>
+</body>
+</html>

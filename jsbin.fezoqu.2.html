@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fezoqu/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+* {
+  transition: all 1s;
+    color:white;
+}
+
+body{
+    background-color:black;
+}
+
+.scene {
+  width: 150px; 
+  height: 150px;
+  perspective: 200px;
+    position: absolute; 
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+}
+
+#lorem{color:white;
+    margin:10px;
+    font-size:14px;
+}
+
+.cube {
+    width: inherit;
+    height: inherit;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    color:black; !important;
+}
+
+.cube-face {
+  border:5px solid white;
+  width: inherit;
+  height: inherit;
+  position: absolute;
+  background: red;
+  opacity: 0.8;
+    background-color:black !important;
+}
+
+.cube-face-front {
+  background: yellow;
+  transform: translate3d(0, 0, 75px);
+}
+
+.cube-face-back {
+  background: orange;
+  transform: rotateY(180deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-left {
+  background: green;
+  transform: rotateY(-90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-right {
+  background: magenta;
+  transform: rotateY(90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-top {
+  background: blue;
+  transform: rotateX(90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-bottom {
+  background: red;
+  transform: rotateX(-90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face:before, .cube-face:after {
+  content: ""; display: block; position: absolute;
+  width: 100%; height: 100%; opacity: 0;
+}
+.cube-face:before {
+  background: -webkit-radial-gradient(top left, rgba(0, 0, 0, 0.5), #000000);
+}
+.cube-face:after {
+  background: -webkit-radial-gradient(top right, rgba(0, 0, 0, 0.5), #000000);
+}
+
+.cube-face-front:before { -webkit-animation: frontShading1 10s infinite linear; }
+
+@-webkit-keyframes frontShading1 {
+  2% { opacity: 0; }
+  25% { opacity: 0.8; }
+  35% { opacity: 0.8; }
+  50% { opacity: 0; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+    <h2>Wheel Delta value: <span id="wheelvalue">hi</span></h2>
+<div class="scene">
+  <div class="cube" id="cube">
+    <div class="cube-face  cube-face-front"><p id="lorem">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an</p> </div>
+    <div class="cube-face  cube-face-back"><p id="lorem">Hello there</p></div> 
+    <div class="cube-face  cube-face-left"><p id="lorem">Pencil caseing!</p></div>
+    <div class="cube-face  cube-face-right"><p id="lorem">You can fly awaay</p></div>
+    <div class="cube-face  cube-face-top"><p id="lorem">Random text</p></div>
+    <div class="cube-face  cube-face-bottom"><p id="lorem">Touch the sky</p></div>
+  </div>
+</div> 
+    
+    <!--<div id="experiment">
+  <div id="cube">
+    <div class="face one">
+      One face
+    </div>
+    <div class="face two">
+      Up, down, left, right
+    </div>
+    <div class="face three">
+      Lorem ipsum.
+    </div>
+    <div class="face four">
+      New forms of navigation are fun.
+    </div>
+    <div class="face five">
+      Rotating 3D cube
+    </div>
+    <div class="face six">
+      More content
+    </div>
+  </div>
+</div>-->
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}  
+
+window.setInterval(function(){
+    var rand_deg = randNum(-360, 360);
+    var rand_ang = Math.ceil(randNum(0, 3)); 
+    if(rand_ang == 1){
+        $(".cube").css("transform", "rotateX(" + rand_deg + "deg)");
+    } else if(rand_ang == 2){
+        //$(".cube").css("transform", "rotateZ(" + rand_deg + "deg)");
+    }  else if(rand_ang == 3){
+       $(".cube").css("transform", "rotateY(" + rand_deg + "deg)");   
+    } 
+}, 100000000000000000);
+
+
+/*var xAngle = 0, yAngle = 0;
+document.addEventListener('keydown', function(e) {
+  switch(e.keyCode) {
+
+    case 37: // left
+      yAngle -= 90;
+      break;
+
+    case 38: // up
+      xAngle += 90;
+      break;
+
+    case 39: // right
+      yAngle += 90;
+      break;
+
+    case 40: // down
+      xAngle -= 90;
+      break;
+  }
+
+  $('cube').style.webkitTransform = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg)";
+}, false);*/
+
+
+var xAngle = 0, yAngle = 0;
+var zoom_in = 0;
+var zoom_out = 0;
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     //var rand_deg = randNum(-360, 360);
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault();      
+       if(keyPressed[37]){
+          yAngle -= 90;
+          $(".cube").css("transform", "rotateY(" + yAngle + "deg)");
+       }
+       
+       if(keyPressed[38]){ 
+          xAngle += 90;
+		  $(".cube").css("transform", "rotateX(" + xAngle + "deg)");
+       }
+       
+       if(keyPressed[39]){
+          yAngle += 90;
+	   	  $(".cube").css("transform", "rotateY(" + yAngle + "deg)");
+       }
+		
+	   if(keyPressed[40]){
+          xAngle -= 90;
+		  $(".cube").css("transform", "rotateX(" + xAngle + "deg)");
+	   }
+       
+       if(keyPressed[87]){
+            zoom_in += 10;
+		  $(".scene").css("perspective", zoom_in + "px");
+           console.log(zoom_in);
+	   }
+        
+       if(keyPressed[83]){ 
+           zoom_out -= 10;
+		   $(".scene").css("perspective", zoom_out + "px");
+           console.log(zoom_out);
+	   }
+};
+
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 37){
+           
+       }
+       
+       if(code === 38){
+       	   
+       }
+     
+       if(code === 39){ 
+       	   
+       } 
+       
+       if(code === 40){
+             
+       }
+   };
+
+function displaywheel(e){
+    var evt=window.event || e; //equalize event object
+    var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta; //check for detail first so Opera uses that instead of wheelDelta
+    document.getElementById("wheelvalue").innerHTML=delta; //delta returns +120 when wheel is scrolled up, -120 when down
+}
+ 
+var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
+ 
+if (document.attachEvent){ //if IE (and Opera depending on user setting)
+    document.attachEvent("on"+mousewheelevt, displaywheel);
+}else if (document.addEventListener){ //WC3 browsers
+    document.addEventListener(mousewheelevt, displaywheel, false);
+}
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

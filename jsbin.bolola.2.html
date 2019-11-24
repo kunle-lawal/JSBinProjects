@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/bolola/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+@import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400);
+*{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+body{
+	background-color:#fff;
+	margin:auto;
+}
+
+a{
+	text-decoration: none;
+	color:white !important;
+}
+
+.page_title_container{
+    transition:all 0.2s;
+	width:100%;
+	margin:auto;
+	background-color:#79d;
+	color:white;
+	text-align:center;
+	padding:20px 0px 20px 0px;
+}
+.page_title_container:hover{
+	padding:10px 0px 0px 0px;
+}
+.page_title_container:hover .nav{
+	top:0px;
+	left:0;
+	right:0;
+	margin:auto;
+	color:white;
+	text-align:center;
+	padding:20px 0px 20px 0px;
+	background-color:#79e;
+	font-size:15px;
+	opacity:1;
+}
+.page_title{
+	cursor:pointer;
+	left:0;
+	right:0;
+	width:100%;
+	padding-top:10px;
+	margin:auto;
+	text-align:center;
+}
+.nav{
+    opacity:0;
+	font-size:0;
+}
+.nav li{
+	transition:all 0.4s;
+	display:inline-block;
+	padding:10px 30px 10px 30px;
+	cursor:pointer;
+}
+.nav li:hover{
+    box-shadow:0px 1px 5px #66d;
+}
+.nav li:active{
+    box-shadow:inset 1px 1px 5px #66d;
+}
+
+.write_post_popup{
+    background-color:#fff;
+    transition:all 0.6s;
+	color:#222;
+	position:absolute;
+	top:140px;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	width:100%;
+	text-align:center;
+	z-index:2;
+	border-radius:4px;
+}
+
+.inputs{
+	border-radius:5px;
+    transition:all 0.2s;
+	border:2px solid #eee;
+	outline: none;
+	font-size:17px;
+	width:65%;
+}
+.inputs:focus{
+	border:2px solid rgba(80, 120, 70, 0.5);
+}
+.write_post_popup input{
+    transition:inherit;
+	padding-top:12px;
+	padding-bottom:12px;
+	padding-left:15px;
+}
+
+.write_post_popup textarea{
+    transition:inherit;
+	padding-top:15px;
+	padding-left:15px;
+}
+
+.button{
+	user-select: none;
+	transition:all 0.2s;
+    border-radius: 5px;
+    background-color: #333333;
+    color: white;
+    font-size: 18px;
+    width: 130px;
+    padding: 13px;
+    cursor: pointer;
+    margin:auto;
+	margin-top:30px;
+    text-align: center;
+	margin-bottom:50px;
+}
+.submit_button:hover{
+	user-select: none;
+    border-radius: 5px;
+    background-color: rgb(80, 200, 80);
+    color: white;
+    width: 130px;
+}
+
+
+.display_post_continer{
+	background-color:#fff;
+    transition:all 0.6s;
+	color:#222;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	width:100%;
+	text-align:center;
+	z-index:2;
+	border-radius:4px;
+	text-align:left;
+}
+.display_post{
+	position:absolute;
+	top:17%;
+	left:0;
+	right:0;
+	margin:auto;
+	width:60%;
+	padding:10px;
+}
+.display_post .page_title_container {
+	margin-bottom:70px;
+}
+.post_title{
+	margin:0px !important;
+}
+.switch_post{
+    transition:all 0.3s;
+	border-radius:4px;
+	text-align:center;
+	width:30px;
+	height:70px;
+	font-size:50px;
+	position:absolute;
+	top:178px;
+	left:0;
+	right:0;
+	margin:auto;
+	cursor:pointer;
+}
+.switch_post:active{
+	box-shadow:inset 1px 1px 5px #eee !important;
+}
+.remove_switch{
+    transition:all 0.1s;
+	opacity:0;
+	width:0;
+	font-size:0;
+}
+.previous_post{
+	margin-right:110%;
+}
+.previous_post:hover{
+	right:5px;
+	box-shadow:0px 0px 5px #eee;
+}
+.display_post p {
+	font-size:20px;
+	margin-top:50px;
+}
+.next_post{
+	margin-left:110%;
+}
+.next_post:hover{
+	left:5px;
+	box-shadow:0px 0px 5px #eee;
+}
+.close_button{
+	margin-top:70px;
+}
+.close_button:hover{
+	user-select: none;
+    border-radius: 5px;
+    background-color: rgb(200, 80, 80);
+    color: white;
+    width: 130px;
+}
+
+
+.container{
+    transition:all 1s;
+    text-align:center;
+	position:absolute;
+	top:200px;
+	right:0;
+	left:0;
+	margin:auto;
+	width:100%;
+	z-index:1;
+}
+
+.anon_text_container{
+    transition:margin 0.5s;
+    text-align:center;
+    display:inline-block;
+	width:60%;
+	margin:auto;
+}
+
+.anon_text_container:hover{
+	color:white;
+    opacity:1;
+	position:relative;
+	margin:5px;
+}
+
+.anon_text_container:hover .title {
+    background-color:#79d;
+	color:#fff;
+	padding-top:43px;
+	padding-bottom:43px;
+	opacity:1;
+	border-left:3px solid rgb(190, 90, 90);
+	border-right:3px solid rgb(190, 90, 90);
+}
+
+.title{
+	transition:all 0.3s;
+	background-color:#fff;
+	border-left:3px solid #222;
+	border-right:3px solid #222;
+	color:#222;
+	width:100%;
+	padding:25px 20px 25px 20px;
+	font-size:25px;
+	cursor:pointer;
+	text-align:left;
+}
+.time_posted{
+	font-size:10px;
+    float:right;
+	margin-top:10px;
+}
+.text{
+	transition:padding 0.6s;
+	color:#222;
+	width:100%;
+	font-size:0px;
+	cursor:pointer;
+}
+.show_text{
+	padding:50px;
+	font-size:20px;
+}
+
+/*
+NO MOBILE SUPPORT FOR THE TIME BEING (4/2/16)
+@media only screen and (max-device-width: 480px) {
+  .display_post_continer{
+	background-color:#fff;
+    transition:all 0.6s;
+	color:#222;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	margin:auto;
+	width:100%4
+	text-align:center;
+	z-index:2;
+	border-radius:4px;
+	text-align:left;
+  }
+	
+  .display_post{
+	position:absolute;
+	top:17%;
+	left:0;
+	right:0;
+	margin:auto;
+	width:100%;
+	padding:10px;
+  }
+  .display_post p {
+	font-size:16px;
+	margin-top:50px;
+  }
+  .post_title{
+	margin:0px !important;
+	font-size:20px !important;
+  }
+  .anon_text_container{
+    transition:margin 0.5s;
+    text-align:center;
+    display:inline-block;
+	width:100%;
+  }
+	
+  .anon_text_container:hover{
+	border:3px solid none;
+	color:white;
+    opacity:1;
+	position:relative;
+	width:98%;
+	margin:0px 0px 10px 0px;
+  }
+
+  .anon_text_container:hover .text { 
+	padding-top:0px;
+	padding-bottom:0px;
+	font-size:0px;
+	opacity:0;
+  }
+  .anon_text_container:hover .title {
+    background-color:#fff;
+	border-left:3px solid #222;
+	border-right:3px solid #222;
+	color:#222;
+	width:100%;
+	padding:45px 0px 45px 0px;
+	font-size:25px;
+	cursor:pointer;
+  }
+}*/
+
+.not_displayed_text{
+	display:none;
+}
+.not_displayed{
+    transition:all 0.2s;
+    opacity:0; 
+	font-size:0px;
+	top:-800px;
+	padding-top:0px;
+	z-index:-1;
+	overflow-y: hidden;
+}
+.underline{
+    transition:all 0.2s;
+	border-bottom:2px solid #222222;
+	margin:auto;
+}
+.blur{
+	opacity:0;
+	display:none;
+}
+.hide_scroll{
+	overflow-y:hidden;
+}
+
+/*Customize Scroll bar*/
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(130,130,130,1); 
+}
+ 
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(60,60,60,0.5); 
+    background-color: rgba(60,60,60,0.2);
+    width: 10px;
+}
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+	<div class="page_title_container">
+		  <h1 class="page_title">ANON</h1>
+		  <ul class="nav">
+		      <li class="write_post"><a href="write.html">Write Post</a></li>
+			  <li class="read_posts"><a href="index.html">Read Post</a></li>
+			  <li class="my_posts"><a href="myposts.html">My Posts</a></li>
+		  </ul>
+	  </div> 
+	<div class="not_displayed display_post_continer">
+      <div class="display_post">
+        <div class="page_title_container">
+	      <h1 class="page_title">ANON</h1> 
+	    </div>
+	    <h1 id="post_title" class="underline post_title"></h1>
+		<span id="time_posted" class="time_posted">00:00</span>
+		<div id="previous" class="switch_post previous_post"><span>‹</span></div>
+	    <p id="post_text" class="post">I am a Sophomore attending Wentworth Institute of Technology studying Computer Information Systems with a Minor in Computer Science. As a Coding Instructor for Action for Boston Community Development(ABCD), I gained exceptional communication and time management skills. I was able to create a fun and engaging learning environment for the various students and Instructors I worked with. Teaching the classes helped nurture my Work Ethic, as I needed to come to each class session knowing what I would teach. While working at Resilient Coders I developed strong bonds with the clients I worked with. With every client, I tried to understand their desire for their project and worked according to their agenda, while keeping my work as detailed as possible. As someone who is dedicated to their work and preparing the best work to clients, I was at all times closely involved in everything that happened during the development of the client’s website. I take pride in organizing the client’s project and working out each step individually.</p>
+		<div id="next" class="switch_post next_post"><span>›</span></div>
+	  <div class="button close_button">Close</div>
+      </div>
+  </div>
+	<div class="container">
+    <p>Saved Posts</p>
+	  <div id="posts" class="posts">
+	    <!--<div id="post_0" class="anon_text_container topdown_view">
+	       <div id="title_0" class="title box_view">
+			  The story
+		      <span class="time_posted">10:35</span>
+			</div>
+          <div id="text_0" class="text">I am a Sophomore attending Wentworth Institute of Technology studying Computer Information Systems with a Minor in Computer Science. As a . . .   </div> 
+	    </div>-->
+	  </div> 
+	  <script type="text/javascript" src="script.js"></script>
+  </div>
+<script id="jsbin-javascript">
+var textarea = document.getElementById("textarea");
+var pop_up = document.getElementById("pop_up");
+var limit = 10000;
+
+var saved_posts_title_arr = ["The story"];
+var saved_posts_text_arr = ["When examining the Yummy Gelato case, many factors had to be taken into account. The company is one of the oldest gelato companies in the US, and when Giuseppe opened the business in 1930 his business flourished. With 15 locations by the mid 1960’s, the number of employees were increasing and Giuseppe retired to let his two sons take over the company. As the two sons Carlo and Anthony grew to retire, the net sales had grown to $6,259 but the net profit bottomed at around $80,000. Carlo’s only son, Phil, was left to run the company. Phil was able to have sales grow 27% between 2010 and 2012 with COGS growing only 22%. He increased interest income 32% and reduced interest paid by 1% to result in over 300% net income. With financial statements, Phil realized that the net sales during the winter were inadequate, and fall sales were also not ideal. A welcome challenge for the team here at Prestige Worldwide. When examining the Yummy Gelato case, many factors had to be taken into account."];
+var saved_posts_time_arr = ["Ghost Post"];
+var curr_post_displayed = 0;
+
+//Random number Generator
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+function new_post(title, post, time){
+	var posts = $(".posts");
+	
+	posts.prepend("<div id=\"post_" + posted + "\" class=\"anon_text_container topdown_view\"> <div id=\"title_" + posted + "\" class=\"title box_view\">" + title + " <span class=\"time_posted\">" + sort_time(time) + "</span></div> <div id=\"text_" + posted + "\" class=\"text\">" + post + "</div> </div>" );
+	posted++;
+}
+function GID(id){
+	return document.getElementById(id);
+}
+
+function sort_time(time){
+	if(time.length > 5){
+		return time;
+	}
+	var curr_time = new Date().getTime();
+	var time_diff = (((curr_time - time)/1000)/60).toFixed(0); 
+	if((time_diff/60) >= 24){
+		time = ((time_diff/60)/24).toFixed(0) + " days ago";
+	} else if(time_diff >= 60){
+	    time = (time_diff/60).toFixed(0) + " Hours ago";
+	} else {
+		time = time_diff + " Minutes ago"; 
+	}
+	return time;
+}
+
+function push_post(title, post, time){
+  messagesRef.push({
+      title_:title,
+      post_:post,
+	  time_:time,
+  }); 
+}
+
+messagesRef.on('child_added', function (snapshot) {
+	var data = snapshot.val();
+    title = data.title_;
+    post = data.post_;
+	time = data.time_;
+
+    posts_title_arr.push(title);
+    posts_text_arr.push(post);
+	posts_time_arr.push(sort_time(time));
+});
+window.setTimeout(function(){
+	GID("posts").innerHTML = "";
+	for(var i = 0; i < posts_title_arr.length; i++){
+		new_post(posts_title_arr[i], posts_text_arr[i].slice(0, randNum(100, 200)) +  "...", posts_time_arr[i]);
+	}
+}, 2000);
+
+function get_end_ID(id){
+    var x = "";
+	if(id.length > 6){
+		for(var i = 0; i < id.length; i++){
+          if(i > 4){
+              x += id[i];
+          }
+        }
+	} else {
+	   return id[id.length - 1];	
+	}
+	return x;
+}
+
+function scroll_to_top(){
+	$('html,body').animate({
+      scrollTop: $("#top").offset().top + -190
+    }, 1000);
+}
+$(document).on('click', '.anon_text_container' ,function() {
+    var x = this.id;
+    var indx = Number(get_end_ID(x));
+	GID("post_title").innerHTML = posts_title_arr[indx];
+	GID("post_text").innerHTML = posts_text_arr[indx];
+	GID("time_posted").innerHTML = posts_time_arr[indx];
+	curr_post_displayed = indx;
+	$(".display_post_continer").toggleClass("not_displayed");
+	scroll_to_top();
+	$(".container").addClass("blur");
+});
+
+window.setInterval(function(){
+	if(curr_post_displayed <= 0){
+		$(".previous_post").addClass("remove_switch");
+		$(".next_post").removeClass("remove_switch");
+	} else {
+		$(".previous_post").removeClass("remove_switch");
+		$(".next_post").addClass("remove_switch");
+	}
+    if(curr_post_displayed > (posts_text_arr.length - 2)){
+		$(".next_post").addClass("remove_switch");
+	} else {
+		$(".next_post").removeClass("remove_switch");
+	}
+}, 100);
+
+$(".switch_post").click(function(){
+	var id = this.id;
+	if(id == "next"){
+		curr_post_displayed++;
+	} else if(id == "previous"){
+		curr_post_displayed--;
+	}
+	GID("post_title").innerHTML = posts_title_arr[curr_post_displayed];
+	GID("post_text").innerHTML = posts_text_arr[curr_post_displayed];
+	GID("time_posted").innerHTML = posts_time_arr[curr_post_displayed];
+	scroll_to_top();
+});
+</script>
+</body>
+</html>

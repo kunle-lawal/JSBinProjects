@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/hopupu/4/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<style type="text/css" href="style.css"></style>
+<link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:rgb(100,106,104);
+  width:100%;
+}
+canvas{
+  /*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  background-repeat: no-repeat;
+  background-size:100% 100%;*/
+	position:relative;
+	top: 50%;
+    left: 50%;
+    margin-left: -405px;
+	border:1px solid transparent;
+	border-left:1px inset black;
+	border-right:1px inset black;
+}
+
+#textBox{
+	background-color:white;
+	border-left:1px inset yellow;
+	border-right:1px inset black;
+	border-top:1px inset red;
+	border-bottom:1px inset green;
+	text-align:center;
+ 	width:50%;
+  	position:relative;
+	opacity:0.8;
+	color:rgb(100,106,104);
+	font-size:20px;
+	padding-left:20px;
+	padding-right:20px;
+	padding-bottom:2px;
+}
+
+
+ul{
+	list-style:none;
+	margin-left:17%;
+}
+
+ul li{
+	display:inline-block;
+	border:1px solid white;
+	width:65px;
+	height:46px;
+	padding-left:0px;
+	padding:20px;
+	font-size:20px;
+	border-radius:5px;
+	margin:10px;
+	cursor:pointer;
+	text-align:center;
+}
+
+#life{
+	margin-left: 30%;
+	border: 1px dotted green;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas" width="800" height="600">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+  <div id="textBox"> 
+		<div id="box"></div> 
+	</div>
+	<div id="life">
+		Life Force: 
+	</div>
+	<script type="text/javascript" src="script.js"></script>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+var randColor = getRandomColor();
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+var spawnY = 50;
+var s = 10;
+var sValue = 1000/s;
+
+window.setInterval(function(){
+	var rand = randNum(1, 4);
+	if(rand <= 3 && rand >= 2){
+		s = 1000;
+	}
+},10);
+var mapArray = [
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
+
+var map = {
+	x:0,
+	y:0,
+	w:20,
+	h:20,
+	color: "#2A3F44", 
+	draw:function(){
+		for(var i = 0; i < mapArray.length; i++){
+			for(var j = 0; j < mapArray[i].length; j++){
+				if(mapArray[i][j] == 1){
+					ctx.beginPath();
+					ctx.rect(this.x, this.y, this.w, this.h);
+					ctx.fillStyle = this.color;
+					ctx.fill();
+					
+				}
+				
+				if(mapArray[i][j] == 2){
+					ctx.beginPath();
+					ctx.rect(this.x, this.y, this.w, this.h);
+					ctx.fillStyle = "black";
+					ctx.fill();
+				}
+				
+				if(mapArray[i][j] == 3){
+					ctx.beginPath();
+					ctx.rect(this.x, this.y, this.w, this.h);
+					ctx.fillStyle = "#736868";
+					ctx.fill();
+				}
+				
+				
+				
+				this.x += 20;
+				if(this.x >= cw){
+					this.x = cw - 100;
+				}
+			}
+			
+			this.x = 0;
+			this.y += 20;
+			
+		}
+		this.y = 0;
+	}
+};
+
+
+var platforms = [];
+
+platforms.push({
+	x:0,
+	y:270,
+	w:180,
+	h:20,
+	color: map.color,
+});
+
+platforms.push({
+	x:150,
+	y:400,
+	w:100,
+	h:20,
+	color: map.color,
+});
+
+
+platforms.push({
+	x:240,
+	y:150,
+	w:100,
+	h:20,
+	color: map.color,
+});
+
+platforms.push({
+	x:240,
+	y:510,
+	w:100,
+	h:100,
+	color: map.color,
+});
+
+platforms.push({
+	x:500,
+	y:400,
+	w:100,
+	h:20,
+	color: map.color,
+});
+
+platforms.push({
+	x:600,
+	y:200,
+	w:100,
+	h:20,
+	color: map.color,
+});
+
+
+platforms.push({
+	x:cw - 120,
+	y:510,
+	w:100,
+	h:20,
+	color: map.color,
+});
+
+function drawPlatforms(){
+	for(var i = 0; i < platforms.length; i++){
+		var plat = platforms[i];
+		ctx.beginPath();
+		ctx.rect(plat.x, plat.y, plat.w, plat.h);
+		ctx.fillStyle = plat.color;
+		ctx.fill(); 
+	}
+	
+}
+
+var grounded;
+var canJump = false;
+var jumping;
+
+function checkPlatCollision() {
+	for(var i = 0; i < platforms.length; i++){
+		var plat = platforms[i];
+		if(plat.moveable){
+			//plat.x 
+		}
+		
+		if ( ( player.y + player.h ) >= plat.h - 20) {
+			//grounded = true;
+        }  
+		
+		
+		if(plat.x <= player.x + player.w  && plat.x + plat.w  >= player.x && plat.y <= player.y + player.h && plat.y + plat.h >= player.y){
+			
+			if (player.vy >= 0) {
+            	if (plat.y <= player.y + player.h && player.y + player.h <= plat.y + Math.abs(player.vy)) {
+                	player.y = plat.y - player.h + 0.1;
+                    player.vy = 0;
+					grounded = true;
+                 }
+            }
+            if (player.vy <= 0) {
+                if (plat.y + plat.h - Math.abs(player.vy) <= player.y && player.y <= plat.y + plat.h) {
+                    player.y = plat.y + plat.h;
+                    player.vy = 0;
+                 }
+            }
+            if (player.vx >= 0) {
+                if (plat.x <= player.x + player.w && player.x + player.w <= plat.x + Math.abs(player.vx)) {
+                    player.x = plat.x - player.w;
+                    player.vx = 0;
+                 }
+            }
+            if (player.vx <= 0) {
+                if (plat.x + plat.w - Math.abs(player.vx) <= player.x && player.x <= plat.x +plat.w) {
+                    player.x = plat.x + plat.w;
+                    player.vx = 0;
+                 }
+            }
+		}
+		
+		//Check for collisioin between map and player
+		if ( ( player.x ) <= 20 ) {
+            player.x = (cw - player.w) - 1 ;
+			player.vx = -player.vx/2;
+        }  
+		
+        if ( ( player.x + player.w ) >= canvas.width) {
+            player.x = 21;
+        }
+       	if ( ( player.y ) <= 20 ) {
+            player.y = 20; 
+            player.vy = -player.vy/2;
+        }
+        		
+		//Touching the floor	
+		if ( ( player.y + player.h ) >= canvas.height - 20) {
+            player.y = (canvas.height - 20) - player.h;
+			player.ay = 0;
+			grounded = true;
+        } else {
+			player.ay = 0.3;
+		}
+		
+		if(player.vy <= player.jump_v){
+			grounded = false;
+		}
+		
+	}
+}
+
+var specialPlatforms = [];
+
+var horizontal = true, vertical = false;
+var collide = false;
+
+var types = ["platform", "button", "invisDetector", "End"];
+specialPlatforms.push({
+	x:380,
+	y:600, 
+	w:70,
+	h:10,
+	color: "black",
+	vertical: false,
+	horizontal: true,
+	type:"platform",
+	vx:0,
+	vy:0,
+}); 
+
+
+specialPlatforms.push({
+	x:340,
+	y:540, 
+	w:5,
+	h:23,
+	color: "yellow",
+	vertical: false,
+	horizontal: false,
+	type:"button1",
+	vx:0,
+	vy:0,
+});
+
+
+specialPlatforms.push({
+	x:360,
+	y:280,
+	w:10,
+	h:20,
+	color: map.color,
+	vertical: true,
+	horizontal: false,
+	type:"platform",
+	vx:0,
+	vy:0,
+});
+
+specialPlatforms.push({
+	x:410,
+	y:280,
+	w:10,
+	h:20,
+	color: map.color,
+	vertical: true,
+	horizontal: false,
+	type:"platform",
+	vx:0,
+	vy:0,
+});
+
+
+specialPlatforms.push({
+	x:360,
+	y:320,
+	w:20,
+	h:20,
+	color: map.color,
+	type:"platform2",
+	vx:0,
+	vy:0,
+});
+
+
+specialPlatforms.push({
+	x:400,
+	y:320,
+	w:20,
+	h:20,
+	color: map.color,
+	type:"platform2",
+	vx:0,
+	vy:0,
+});
+
+
+specialPlatforms.push({
+	x:360,
+	y:320,
+	w:60,
+	h:20,
+	color: map.color,
+	vertical: true,
+	horizontal: true,
+	type:"platform2",
+	vx:0,
+	vy:0,
+});
+
+
+specialPlatforms.push({
+	x:420,
+	y:300,
+	w:20,
+	h:20,
+	color: "#white",
+	vertical: false,
+	horizontal: false,
+	type:"platform",
+	vx:0,
+	vy:0,
+});  
+
+specialPlatforms.push({
+	x:340,
+	y:300,
+	w:20,
+	h:20,
+	color: "#white",
+	vertical: false,
+	horizontal: false,
+	type:"platform",
+	vx:0,
+	vy:0
+});
+
+
+specialPlatforms.push({
+	x:-cw, 
+	y:470,
+	w:cw,
+	h:5,
+	color:"white",
+	vertical: false,
+	horizontal: false,
+	type:"platformX",
+	vx:0,
+	vy:0 
+}); 
+
+window.setInterval(function(){
+	if(player.x <= 180 && player.y <= 300){
+		specialPlatforms.push({
+			x:190, 
+			y:260,
+			w:50,
+			h:5,
+			color:"rgba(0,0,0,0.3)",
+			vertical: false,
+			horizontal: false,
+			type:"platformY",
+			vx:0,
+			vy:-0.8 
+		}); 
+		
+		specialPlatforms.push({
+			x:190, 
+			y:260,
+			w:10,
+			h:10,
+			color:"rgba(0,0,0,0.3)",
+			vertical: false,
+			horizontal: false,
+			type:"platformY",
+			vx:0,
+			vy:-0.8
+		}); 
+		
+		specialPlatforms.push({
+			x:230, 
+			y:260,
+			w:10,
+			h:10,
+			color:"rgba(0,0,0,0.3)",
+			vertical: false,
+			horizontal: false,
+			type:"platformY",
+			vx:0,
+			vy:-0.8
+		}); 
+	}
+}, 4000);
+
+specialPlatforms.push({
+	x:600, 
+	y:100,
+	w:500,
+	h:10,
+	color:"white",
+	vx:0,
+	vy:0 
+}); 
+
+window.setInterval(function(){
+	if(player.x >= 200 && player.y >= 100 && player.y <= 150){
+		specialPlatforms.push({
+			x:335, 
+			y:150,
+			w:30,
+			h:5,
+			color:"black",
+			vx:1.5,  
+			vy:0 
+		});
+	}
+}, 500);
+
+function drawSpecialPlatforms(){
+	for(var i = 0; i < specialPlatforms.length; i++){
+		var spePlat = specialPlatforms[i];
+		
+		ctx.beginPath();
+		ctx.rect(spePlat.x, spePlat.y, spePlat.w, spePlat.h);
+		ctx.fillStyle = spePlat.color;
+		ctx.fill();
+	}
+}
+
+var buttonClicked1 = false;
+var buttonClicked2 = false;
+
+function updateSpecialPlatforms(){
+	for(var i = 0; i < specialPlatforms.length; i++){
+		var spePlat = specialPlatforms[i];
+		
+		spePlat.x += spePlat.vx;
+		spePlat.y += spePlat.vy;
+		//buttonClicked = true;
+		
+		if(buttonClicked1 === true){
+			if(spePlat.horizontal && spePlat.type != "platform2"){
+				spePlat.vy = -1; 
+				if(spePlat.y <= 530){
+					spePlat.vy = 0;
+					if(spePlat.x <= 380){
+						spePlat.vx = -1;
+						spePlat.vx = -spePlat.vx ;
+					}
+					if(spePlat.x >= 590){ 
+						spePlat.vx = -spePlat.vx;
+					}
+				}
+			}
+		}
+		
+		
+		if(buttonClicked2 === true){
+			spawnY = 400;
+			if(spePlat.vertical && spePlat.type != "platfromX"){
+				spePlat.vy = -1;
+				spePlat.color = "black";
+				
+				if(spePlat.y <= 250){
+					spePlat.h -= 4;
+					if(spePlat.h <= 0){
+						spePlat.h = 0; 
+					}
+				}
+			} 
+			
+			if(spePlat.type === "platformX"){
+				spePlat.x += 25;
+				
+				if(spePlat.x >= 0){
+					spePlat.x = 0; 
+				}
+			}
+			
+		}
+
+		if(collide === true && spePlat.type === "button1" && player.y >= 400){
+			spePlat.w -= 0.2;
+			
+			if(spePlat.w <= 0.4){
+				spePlat.w = 0;
+				buttonClicked1 = true;   
+			}
+		}
+		
+		if(player.y <= 322 && player.y >= 230 && player.x <= 430 && player.x >= 360){
+			buttonClicked2 = true;    
+		}
+	}
+}
+
+
+function checkSpecialPlatCollision() {
+	for(var i = 0; i < specialPlatforms.length; i++){
+		var spePlat = specialPlatforms[i];
+		if(spePlat.x <= player.x + player.w  && spePlat.x + spePlat.w  >= player.x && spePlat.y <= player.y + player.h && spePlat.y + spePlat.h >= player.y){
+			if (player.vy >= 0) {
+            	if (spePlat.y <= player.y + player.h && player.y + player.h <= spePlat.y + Math.abs(player.vy)) {
+                	player.y = spePlat.y - player.h;
+                    player.vy = spePlat.vy;
+					grounded = true;
+					collide = true;	
+					//spePlat.color = "white";
+                 } else {
+				 	collide = false;
+				 }
+            }
+            if (player.vy <= 0) {
+                if (spePlat.y + spePlat.h - Math.abs(player.vy) <= player.y && player.y <= spePlat.y + spePlat.h) {
+                    player.y = spePlat.y + spePlat.h;
+                    player.vy = spePlat.vy;
+					collide = true;
+					//spePlat.color = "white";
+                 } else {
+				 	collide = false;
+				 }
+            }
+            if (player.vx >= 0) {
+                if (spePlat.x <= player.x + player.w && player.x + player.w <= spePlat.x + Math.abs(player.vx)) {
+                    player.x = spePlat.x - player.w;
+                    player.vx = spePlat.vx;
+					collide = true;
+					//spePlat.color = "white";
+                 } else {
+				 	collide = false;
+				}
+            }
+            if (player.vx <= 0) {
+                if (spePlat.x + spePlat.w - Math.abs(player.vx) <= player.x && player.x <= spePlat.x +spePlat.w) {
+                    player.x = spePlat.x + spePlat.w;
+                    player.vx = spePlat.vx;
+					collide = true;
+					//spePlat.color = "white";
+                 } else {
+				 	collide = false; 
+				 }
+            }
+		}
+	}
+}
+
+
+function updatePlatforms(){
+	for(var i = 0; i < platforms.length; i++){
+		var plat = platforms[i];
+		
+		for(var j = 0; j < specialPlatforms.length; j++){
+			var spePlat = specialPlatforms[j]; 
+		} 
+	} 
+}
+
+gravity = 0.3;
+var player_color = "white";
+var walking;
+var controlable = true;
+var playerGrowing = false;
+var player = {
+	x: 40,
+	y: ch,
+	h: 30,  
+	w: 10,
+	color: player_color,
+	vx: 0,
+	vy: 0,
+	ax: 0,
+	ay: gravity, 
+	f:0.71,
+	initVX:2,
+	maxVX:10, 
+	jump_v:-7,  
+	draw: function(){
+		ctx.beginPath();
+		ctx.rect(this.x, this.y, this.w, this.h);
+		ctx.fillStyle = player.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx += this.ax;
+		this.vy += this.ay;
+		var dead = false;	
+		
+		if(this.initVX >= this.maxVX){
+			this.initVX = this.maxVX;
+		}
+		
+		if(this.initVX <= -this.maxVX){
+			this.initVX = -this.maxVX; 
+		} 
+		
+		//////Check to see if the player is in the lava pool/////
+		if(this.x >= 400 && this.x <= 689 && this.y >= 550){
+			dead = true;
+		}
+
+		if(player.h >= 42){
+			player.h = 42;
+			window.clearInterval(growing);
+		}
+				
+		if(dead === true){
+			controlable =  false;
+			revive(); 
+		}
+		
+		if(grounded && !walking){
+         	player.vx *= player.f;
+        }
+		
+		//Touching the floor	
+		if ( ( player.y + player.h ) >= canvas.height - 20) {
+            player.y = (canvas.height - 20) - player.h;
+			player.ay = 0;
+			grounded = true;
+        } else {
+			player.ay = 0.3; 
+		}
+		 
+	},
+	grow:function(speed){
+		growing = window.setInterval(function(){
+			playerGrowing = true;
+			player.h += 1;
+		}, speed);
+	},
+	walk_left: function(){
+        if(walking === true){
+            this.vx = -this.initVX; 
+            this.initVX += 0.01;
+        } 
+    },
+    walk_right: function(){
+        if(walking === true){
+            this.vx = this.initVX; 
+			this.initVX += 0.01;
+        }  
+    },
+};
+
+var text = document.getElementById("textBox");
+
+var playerState = 1;
+
+function revive(){
+	var x = 0;
+	//playerState -= 0.1;
+	player.x = 50;
+	setPlayer = window.setInterval(function(){
+		x += 0.005;
+		
+		var rgba = "rgba(255,255,255,1)";
+		var res = rgba.replace("1", x);
+		
+		player.color = res;
+		
+		if(x >= playerState){
+			controlable = true; 
+			window.clearInterval(setPlayer);   
+		}
+	}, 1);
+	dead = false;
+}
+
+
+function playerDisappear(){
+		var x = 1;
+		setPlayer = window.setInterval(function(){
+			x -= 0.005;
+			playerState = x;
+			
+			var rgba = "rgba(255,255,255,1)";
+			var res = rgba.replace("1", x);
+		
+			player.color = res;
+		var life = document.getElementById("life");
+
+		life.innerHTML = "Life Force: " + Math.round(playerState * 100);
+	}, 700);  
+} 
+
+playerDisappear();
+
+//Text Box//
+
+var storyText = ["Well this is new, I've never seen a section quite like this before. (sighs) Lets get this over with.",
+"What?! Lava, everything seems to have changed. But how can I get past this? (thinks) hmmm... Maybe there is an activation device near by.",
+"I can't jump to that next block.", "Let me try using that potion I was given earlier (press P). I'll try getting to that smiling block",
+ "What is this I seem to have srinked, even smaller than my usual self how am I going to solve this? (looks around) Oh a ladder" ,
+  "(press up arrow key) I should be able to get to the next level now", 
+  "(Gets agrivated) So many obtacles! What now! (waits)", 
+  "Oh TRANSPORT, when were they added, I guess the game is changing, nothing is the same anymore. Gotta move fast these are transperent",
+  "Almost there, just a little more, my lifeforce is at " + playerState + ". Better hurry."];  
+
+var next = 0;
+window.setInterval(function(){
+	//$('#pos').css('position', 'absolute');
+	var window_width = $(window).width();
+	var window_height = $(window).height();
+	var textX =  window_width/2;
+    $('#textBox').css('left', textX - textX/2);
+	
+	
+	if(player.x <= 230 && player.y >= 550){
+		text.innerHTML = storyText[0]; 
+	} else if(player.x <= 630 && player.x > 235 &&  player.y >= 480){
+		text.innerHTML = storyText[1]; 
+	} else if (player.x > 700 && player.y >= 470){ 
+		text.innerHTML = storyText[2]; 
+		next++;
+		console.log(next);
+		if(next >= 50){
+			text.innerHTML = storyText[3];
+			next = 50;
+		}
+	} else if(player.y <= 322 && player.y >= 230 && player.x <= 430 && player.x >= 360){
+		text.innerHTML = storyText[4];
+		player.h = 20;  
+		player.jump_v = -7;
+	} else if(player.x >= 100 && player.x <= 300 && player.y <= 400 && player.y >= 295){
+		text.innerHTML = storyText[5];		 
+	} else if(player.x <= 180 && player.y <= 300){
+		text.innerHTML = storyText[6];
+		
+		next++;
+		console.log(next);
+		if(next >= 500){
+			text.innerHTML = storyText[7];
+			next = 500;
+		}
+	} else if(player.x >= 200 && player.y >= 100 && player.y <= 150){
+		text.innerHTML = storyText[8];
+	}
+	
+	if(player.x >= 180 && player.x <= 200 && player.y <= 400 && player.y >= 250){
+		player.vy = 0;   
+	} 
+	
+
+},10);    
+ 
+
+
+//Key functions for player block
+var walk_left;
+var walk_right;
+var jump;
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if (keyPressed[32]){
+		   	if(grounded){
+				player.vy = player.jump_v;
+			}
+       }
+     
+       if(keyPressed[37]){
+	   		//this.vx = -1;
+			walking = true;
+         	walk_left = true;
+        	if(controlable){
+				player.walk_left();  
+			}
+       }
+     
+       if(keyPressed[39]){
+	   		//this.vx = 1;
+         	walking = true;
+        	walk_right = true;
+         	if(controlable){
+				player.walk_right();
+			}
+       }
+	   
+	  	if(keyPressed[80]){
+			if (player.x > 660 && player.y >= 470){
+				player.y = 370;
+				player.jump_v = -10;
+				player.grow(1); 
+				//console.log("growing");
+			}
+		}
+		
+		if(keyPressed[38]){
+			if(player.x >= 180 && player.x <= 200 && player.y <= 480 && player.y >= 250){
+				player.vy -= 3;  
+			}
+		}
+	
+		if(keyPressed[40]){
+			if(player.x >= 180 && player.x <= 200 && player.y <= 480 && player.y >= 250){
+				player.vy += 3;  
+			}
+		}
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 32){
+       		jump = false;
+       }
+       if(code === 37){
+         	walking = false;
+         	walk_left = false;
+			player.initVX = 3;
+       }
+     
+       if(code === 39){ 
+         	walking = false;  
+        	walk_right = false;
+			player.initVX = 2;
+       } 
+       
+       if(code === 40){
+         
+       }
+       
+       if(code === 83){
+         
+       }
+       
+       if(code === 90){
+        
+       }
+
+       if(code === 80){
+
+       }
+   };
+
+
+//////Particles declaration///////
+var particles = [];
+var rain_color = "lightblue";
+var wind = false;
+
+function get_rand_color(){
+	var colors = [red, "black", "white", "lightblue"];
+	
+	var rand_color1 = colors[Math.floor(Math.random() * colors.length)];
+	var rand_color2 = colors[Math.floor(Math.random() * colors.length)];
+	var rand_color_num = Math.floor(Math.random() * colors.length);
+	
+	if(rand_color_num <= 0 && rand_color_num <= 1){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(0 + " " + 1);
+	} else if(rand_color_num <= 1 && rand_color_num <= 2){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(1 + " " + 2);
+	} else if(rand_color_num <= 2 && rand_color_num <= 3){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(2 + " " + 3);
+	} else if(rand_color_num <= 3 && rand_color_num <= 4){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(3 + " " + 4);
+	}
+	
+	console.log(colors.length);
+}
+
+
+function start(){
+	window.requestAnimFrame(start);
+	
+	ctx.clearRect(0,0,cw, ch);
+
+	drawPlatforms();
+	updatePlatforms();
+	checkPlatCollision();
+	
+	drawSpecialPlatforms();
+	updateSpecialPlatforms();
+	checkSpecialPlatCollision();
+	
+	map.draw();
+	
+	player.draw();  
+	player.update();
+	
+	drawRain();
+	animateRain();
+	
+}  
+
+start(); 
+
+//Particle declareration////
+var rain2 = new Audio("http://www.subsidence.org/Assets/Sounds/rain.mp3");
+var thunder = new Audio("http://www.ghservices.com/gregh/fairligh/examples/thunder.wav");
+
+var rainDuration = 0;
+window.setInterval(function(){
+	rainDuration += 500;
+	rain2.play();
+	
+	if(rainDuration >= 5000){
+		rain2.currentTime = 0;
+		rainDuration = 0;
+	}
+	
+	var randnum = randNum(0,10);
+	if(randnum <= 9 && randnum >= 8.6){
+		thunder.currentTime = 0;
+		thunder.play();
+		$("canvas").css("background-color", "white");
+	} else {
+		$("canvas").css("background-color", "rgb(100,106,104)");
+		return;
+	}
+}, 500); 
+
+window.setInterval(function(){
+	particles.push({
+		x:randNum(400, 680),
+		y:randNum(560, ch),
+		radius: 2,
+		h:randNum(4,10),
+		w:randNum(0.1, 1),
+		vy:0,
+		vx:0,
+		ay:gravity - 0.2,
+		f:0,	
+		color: "#FF6100",
+		type:"lava",
+	});
+	
+	particles.push({
+		x:randNum(40, cw-40),
+		y:randNum(30, 200),
+		radius: 2,
+		h:randNum(4,10),
+		w:randNum(0.1, 1),
+		vy:0,
+		vx:0,
+		ay:gravity - 0.2,
+		f:0,	
+		color: "black",
+	});
+}, 1);
+
+
+////////Drawing the Particles///////////////////////
+function drawRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		ctx.beginPath();
+		ctx.rect(rain.x, rain.y, rain.w, rain.h);	
+		//ctx.arc(rain.x, rain.y, rain.radius, 0, Math.PI * 2)
+		ctx.fillStyle =  rain.color;
+		ctx.fill();
+	}
+}
+
+
+////////Animating the particles///////////////////
+function animateRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		
+		rain.x += rain.vx;
+		rain.y += rain.vy;
+		rain.vy += rain.ay;
+		
+		
+		if(rain.x <= player.x + player.w  && rain.x + rain.w  >= player.x &&
+		rain.y <= player.y + player.h && rain.y + rain.h >= player.y){
+          	rain.ay = 0;
+			rain.color = player.color;
+			rain.h = 1;
+			rain.w = 2;
+			
+		}
+		
+		if((rain.y + rain.h) >= ch - 40 && rain.type == "lava"){
+			rain.ay = 0;
+			rain.vy = -1.0;
+			
+			rain.y = ch - 23;
+			
+			rain.h = 0.2;
+			rain.w = 7;
+		}
+		
+		if((rain.y + rain.h) >= ch - 40 && rain.type != "lava"){
+			rain.ay = 0;
+			rain.vy = -1.0;
+			
+			rain.y = ch - 20;
+			
+			rain.h = 0.2;
+			rain.w = 7;
+		}
+		
+		if(rain.type == "lava"){
+			rain.h += 3;
+		}
+		
+		
+		for(var j = 0; j < specialPlatforms.length; j++){
+			var spePlat = specialPlatforms[j];
+			
+			
+			if((rain.y + rain.h) >= spePlat.y && rain.color == "black" && spePlat.x === 0){
+				rain.ay = 0;
+				rain.vy = -0.01;
+			
+				rain.y = spePlat.y-0.1;
+			
+				rain.h = 0.2;
+				rain.w = 7;
+			}
+		}
+	}
+}
+
+var p_remove = 10; //Number of Particles to remove
+//Wait 1 second til function  starts removing particles
+window.setTimeout(function(){
+	window.setInterval(function(){
+		p_remove += 5; //increase the number of particles removed by 5 every half a second 
+    	particles.splice(0, p_remove);//remove the particles every half a second
+		
+		if(p_remove >= 70){
+			p_remove -= 10; 
+			
+			if(p_remove <= 50){
+				p_remove += 5;
+			} 
+		}
+		//Regulate the number of particles being removed so not too much or too little is removed
+		
+	}, 500);  
+}, 1000); 
+
+</script>
+</body>
+</html>

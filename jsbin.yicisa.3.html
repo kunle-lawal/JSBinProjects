@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/yicisa/3/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+	
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+canvas{
+	width:80%;
+    background-color: black;
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    z-index:-1;
+}
+</style>
+</head>
+<body>
+	<canvas id="canvas" width="3300px" height="3300px"></canvas>
+<script id="jsbin-javascript">
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;
+var map_w = cw * 4;
+var map_h = ch * 4;
+var numOfPackets = 0;
+
+//canvas.style.width = "1600px";
+$(window).resize(function() {
+  $("#canvas").height($("#canvas").width());
+});
+
+$(window).resize();
+
+var zoom = {
+  zoom:false,
+  scale: 1,
+};
+
+var offset = {
+  speedx: 9,
+  speedy: 9,
+  maxSpeed: 10,
+  offSetting: false,
+  directionX: 0,
+  directionY: 0,
+
+  gaugeSpeed: function(){
+    if(offset.speedx > offset.maxSpeed){
+      offset.speedx = this.maxSpeed;
+    } else {
+      offset.speedx += 0.1;
+    }
+
+    if(offset.speedy > offset.maxSpeed){
+      offset.speedy = this.maxSpeed;
+    } else {
+      offset.speedy += 0.1;
+    }
+  },
+};
+
+//Here we will update the virtual player's position
+var vPlayer = {
+    x: cw/2,
+    y: ch/2,
+    worldx:randNum(-map_w, map_w),
+    worldy:randNum(-map_h, map_h), 
+    vx:0,
+    vy:0,    
+    update: function(){
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+};
+
+//Random number Generator
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+function randVal(x, y){
+  var rand = randNum(1, 3);
+  if(rand < 2){
+    return y;
+  } else {
+    return x;
+  }
+}
+
+//Getting elements by ID for UI/UX
+function GID(id){
+  return document.getElementById(id);
+}
+
+//Make a random color
+function randColor(){
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+//Get the distance between object1 and object2
+function return_distance(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+
+    return d;
+}
+
+//Get the angle of object1 against object2
+function return_angle(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    
+    var angle = Math.atan2(dy, dx);
+    return angle;
+}
+
+function checkCollisionObjects(object1, objects){
+  for (var i = 0; i < objects.length; i++) {
+    var obj = objects[i];
+    var object1ToObject2 = return_distance(object1.x, object1.y, obj.x, obj.y);
+    if (object1ToObject2 < (object1.r) + obj.r) { 
+      return true;
+    }
+  }
+  return false;
+}
+
+//Request animation frame for rendering
+window.requestAnimFrame = ( function() {
+  return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function( callback ) {
+          window.setTimeout( callback, 1000 / 60 );
+        };
+})();
+
+
+///////Player Script////////
+//The player object.
+var player = {
+    single:true,
+    x: vPlayer.x,
+    y: vPlayer.y,
+    r: 100,
+    vx: 100,
+    vy: -200,
+	g:0, 
+    color: "rgba(155, 155, 155, 1)",
+    left:false,
+    right:false,
+    up:false,
+    down:false,
+    energy:50,
+    energy_output:0.005,
+    chargeSpeed:0.2,
+    mass: 5,
+    pull_rad:50,
+    max_storage:200,
+    charging:false,
+
+    draw: function(){
+      ctx.save();
+      ctx.translate((offset.directionX), (offset.directionY));
+
+      //ctx.lineWidth = 5;
+
+      /*ctx.beginPath();
+      ctx.arc(vPlayer.x, vPlayer.y, this.r * 2, 0, (2 * Math.PI));
+      //ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+      ctx.fillStyle = "transparent"; 
+      ctx.strokeStyle = 'rgba(230, 100, 0, 0.5)';
+      ctx.stroke();
+      ctx.fill();*/
+
+      ctx.beginPath();
+      ctx.arc(this.x - (offset.directionX), this.y - (offset.directionY), this.r, 0, (2 * Math.PI));
+      //ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+      ctx.fillStyle = this.color; 
+      ctx.fill();
+      ctx.restore();
+    },
+    
+    
+    update: function(){
+		this.x += this.vx; 
+        this.y += this.vy;
+		//this.vy += this.g;
+		
+      /*if(this.left){
+        offset.directionX -= offset.speedx;
+          vPlayer.x += offset.speedx;
+
+          vPlayer.worldx -= 1;
+          player.energy -= player.energy_output;
+      }
+      if(this.up){
+        offset.directionY -= offset.speedy;
+          vPlayer.y += offset.speedy;
+
+          vPlayer.worldy += 1;
+          player.energy -= player.energy_output;
+      }
+      if(this.right){
+        offset.directionX += offset.speedx; 
+          vPlayer.x -= offset.speedx;
+
+          vPlayer.worldx -= 1;
+          player.energy -= player.energy_output;
+      }
+      if(this.down){
+        offset.directionY += offset.speedy;
+          vPlayer.y -= offset.speedy; 
+          
+          vPlayer.worldy -= 1;
+          player.energy -= player.energy_output;
+      }*/
+		if(player.y + player.r >= ch){
+			player.vy = -player.vy;
+		}
+		
+		if(player.y - player.r  <= 0){
+			player.vy = -player.vy;
+		}
+		
+		if(player.x + player.r >= cw){
+			player.vx = -player.vx;
+		}
+		
+		if(player.x - player.r  <= 0){
+			player.vx = -player.vx;
+		}
+		
+  },
+};
+
+window.setInterval(function(){
+	//console.log(ch);
+}, 400);
+    //console.log(": " + upgrade_value);
+
+var keyPressed = [];
+window.onkeydown = function(e){
+  e = e || window.event;
+  keyPressed[e.keyCode] = true;
+  e.preventDefault();
+  if(keyPressed[37] || keyPressed[65]){
+    offset.offSetting = true;
+    player.right = true;
+  }
+
+  if(keyPressed[38] || keyPressed[87]){
+    offset.offSetting = true;
+    player.down = true;
+  }
+
+  if(keyPressed[39] || keyPressed[68]){
+    offset.offSetting = true;
+    player.left = true;
+  }
+
+  if(keyPressed[40]|| keyPressed[83]){
+    offset.offSetting = true;
+    player.up = true;
+  }
+
+  if(keyPressed[70] && player.energy > 0 && !energytransport.sendingEnergy){
+    energytransport.absorbEnergy(player, player.energy * 0.5);
+    energytransport.sendingEnergy = true;
+  }
+
+  if(keyPressed[70]){
+    console.log(zoom.scale);
+    zoom.scale = 10;
+  }
+
+  if(keyPressed[71]){
+    console.log(zoom.scale);
+    zoom.scale = -10;
+  }
+ 
+  if(keyPressed[82]){
+    player.respawn();
+  }
+};
+
+window.onkeyup = function(e){
+  e = e || window.event;
+  var code = e.which || e.keyCode;
+  keyPressed[e.keyCode] = false;
+  e.preventDefault();
+  if(code === 37 || code === 65){ 
+    offset.offSetting = false;
+    player.right = false;
+    vPlayer.vx = 0;
+    offset.directionX -= 0;
+  }
+        
+  if(code === 38 || code === 87){
+    offset.offSetting = false;
+    player.down = false; 
+    vPlayer.vy = 0;
+    offset.directionY -= 0;
+  }
+     
+  if(code === 39 || code === 68){ 
+    offset.offSetting = false;
+    player.left = false;
+    vPlayer.vx = 0;
+    offset.directionX += 0; 
+  } 
+        
+  if(code === 40 || code === 83){
+    offset.offSetting = false;
+    player.up = false;
+    vPlayer.vy = 0;
+    offset.directionY += 0;
+  }
+};
+
+//////End Player Script///////
+
+/////Cell Script////////
+var cell = {
+  single:true,
+	x: vPlayer.x,
+  y: vPlayer.y,
+	energy:100,
+	collect_rad:0,
+	color: "rgba(104, 155, 205, 0.3)",
+	og_r:900,
+	r: 900 + zoom.scale,
+	vx:0,
+	vy:0,	
+
+  playerHoldingCenter: {
+    single:true,
+    x:cw/2,
+    y: ch/2,
+    r: player.r * 4,
+    color: "rgba(255, 255, 255, 0.4)",
+  },
+
+	draw: function(){
+		ctx.save();
+		ctx.translate((offset.directionX), (offset.directionY));
+
+		ctx.lineWidth = 5;
+
+			// set line color
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.og_r, 0, (2 * Math.PI));
+		ctx.fillStyle = this.color;
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+		ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+		ctx.stroke();
+		ctx.fill();
+	
+		//Player holding section
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.playerHoldingCenter.r, 0, (2 * Math.PI));
+		ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+		ctx.fillStyle = this.playerHoldingCenter.color;
+		ctx.stroke();
+		ctx.fill();
+
+		ctx.restore();
+	},
+
+	update: function(){ 
+		this.x += this.vx;
+		this.y += this.vy;
+
+		this.collect_rad = this.r + 200;
+	},
+};
+
+//////End Cell Script/////// 
+
+
+function start(){
+  window.requestAnimFrame(start);
+    ctx.clearRect(0,0,map_w, map_h);
+
+    player.draw(); 
+    player.update();
+
+   // cell.draw();
+    //cell.update(); 
+
+   /* bot_draw();
+    bot_update();
+    
+    update_packets();
+
+    energytransport.draw();
+
+    UI.update();*/
+}
+
+start();
+</script>
+</body> 
+</html>

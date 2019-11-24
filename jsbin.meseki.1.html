@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/meseki/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+    <head>
+        <title>WHEN PIGS FLY!!!!!</title>
+        <link rel="stylesheet" type="text/css" href="main.css" />
+         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script src="http://js.leapmotion.com/0.3.0-beta2/leap.min.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css" />
+    </head>
+    <body>
+        <!--<div id="mainMenu">
+            <p class="mainText">Welcome To When pigs fly!</p><br />
+            <p class="subText">Click "Start" To begin<br />Click "Help" for Controls and Rules<br /> Click "Credits"  for the Credits"</p>-->
+        </div>
+        <div id="levelOneMenu"></div>
+        <div id="levelTwoMenu"></div>
+        <div id="levelThreeMenu"></div>
+        <div id="levelFourMenu"></div>
+        <div id="levelFiveMenu"></div>
+        <canvas id="canvas" width="1200" height="800"></canvas>
+        <script type="text/javascript" src="utilities.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+
+
+<script type="text/javascript">
+
+//hide the other menus
+//jQuery
+$(document).ready(function(){
+
+    $("#levelOneMenu").hide();
+    $("#levelTwoMenu").hide();
+    $("#levelThreeMenu").hide();
+    $("#levelFourMenu").hide();
+    $("#levelFiveMenu").hide();
+
+})
+
+$(document).ready(function(){
+    $("#start").click(){
+
+    }
+});
+
+</script>
+<script type="text/javascript">
+/*
+l1:3 balls 
+pig is 20x10
+FPS is 100
+*/
+
+
+
+
+// Get the canvas element
+var canvas = document.getElementById( "canvas" );
+// Get our 2D context for drawing
+var ctx = canvas.getContext( "2d" );
+
+// Frames-per-second
+var FPS = 120;
+
+//make the end point!
+var end = {
+x: 10,//Math.radom()*1200 + 1,
+y: 10,//Math.radom()*1200 + 1,
+h:20,
+w:20,
+color:"blue",
+vx:0,
+vy:0,
+ax:0,
+ay:0,
+drawEnd: function(){
+    //Draw the pig onto the screen
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+},
+updateEnd: function(){
+    //Update the pig's movement 
+    this.x += this.vx;
+    //Velocity in the x direction
+    this.y += this.vy;
+    //Velocity in the y direction
+    this.vx += this.ax;
+    //Acceleration in the x direction
+    this.vy += this.ay;
+    //Acceleration in the y direction 
+}
+};
+
+//make pig
+var pig = {
+x: 600,
+y: 400,
+h:20,
+w:10,
+speed:100,
+color:"#FF5AEA",
+vx:0,
+vy:0,
+ax:0,
+ay:0,
+drawPig: function(){
+    //Draw the pig onto the screen
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+},
+updatePig: function(){
+    //Update the pig's movement 
+    this.x += this.vx;
+    //Velocity in the x direction
+    this.y += this.vy;
+    //Velocity in the y direction
+    this.vx += this.ax;
+    //Acceleration in the x direction
+    this.vy += this.ay;
+    //Acceleration in the y direction 
+    //collision detection
+
+    //with balls
+/*
+if (pig.x < p.x + p.radius){
+alert("you lost!");
+}
+if (pig.y < p.y + p.radius){
+alert("you lost!");
+}
+if (pig.x < p.y + p.radius){
+alert("you lost!");
+}
+if (pig.y < p.x + p.radius){
+alert("you lost!");
+*/
+
+
+
+//with edge
+if(pig.x<canvas.width){
+
+
+
+}
+if(pig.y<canvas.width){
+
+
+}
+
+if(pig.x<canvas.height){
+
+
+}
+
+if(pig.y<canvas.height){
+
+
+}
+
+//with end
+if (pig.x < end.x + end.width  && pig.x + pig.width  > end.x &&
+    pig.y < end.y + end.height && pig.y + pig.height > end.y) 
+{
+
+alert("Testing");
+
+}
+
+
+//add all of the event listeners
+      //onkeydown events to allow the manipulation of the pig object
+ //i use an array so I can push multiple key at a time
+ var keyPressed = [];
+ window.onkeydown = function(e){ 
+    e = e || window.event;  
+    keyPressed[e.keyCode] = true;
+    e.preventDefault(); 
+
+if(keyPressed[32]){
+    //This will make the "pig fly up" when the spacebar is pushed
+    //pig.vy -= 1;
+}
+
+if(keyPressed[37/*left arrow*/]){
+    pig.x -= 10;
+
+}
+
+if(keyPressed[38/*up arrow*/]){
+    //add code for what happens when the up arrow is pushed
+pig.y -= 10;
+}
+
+if(keyPressed[39/*right arrow*/]){
+    //add code for what happens when the right arrow is pushed
+    pig.x += 10;
+}
+
+if(keyPressed[40/*down arrow*/]){
+    //add code for what happens when the down arrow is pushed
+    pig.y += 10;
+}
+
+};
+}
+};
+
+
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+
+// Particle Array
+var particles = [];
+for ( var i = 0; i < 3; i++ ) {
+    particles.push({
+        // Create random values for each of these:
+        x: randNum( 30, canvas.width - 30 ),
+        y: randNum( 30, canvas.height - 30 ),
+        vx: randNum( -200, 200 ),
+        vy: randNum( -200, 200 ),
+        ax: randNum( -150, 150 ),
+        ay: randNum( -150, 150 ),
+        radius: 30,
+        color: "rgba(0,255,0,0.65)"
+    });
+}
+
+// Game loop draw function
+function draw() {
+    ctx.clearRect( 0, 0, canvas.width, canvas.height );
+
+    for ( var i = 0; i < particles.length; i++ ) {
+        var p = particles[i];
+        ctx.beginPath();
+        ctx.arc( p.x, p.y, p.radius, 0, 2 * Math.PI );
+        ctx.fillStyle = p.color;
+        ctx.fill();
+    }
+
+}
+
+// Game loop update function
+function update() {
+    for ( var i = 0; i < particles.length; i++ ) {
+        var p = particles[i];
+
+        // Update code here:
+p.vx += p.ax / FPS;
+p.vy += p.ay / FPS;
+p.x += p.vx / FPS;
+p.y += p.vy / FPS;
+
+        if ( ( p.x - p.radius ) < 0 ) {
+            p.x = p.radius;
+            p.vx = -p.vx;
+        }
+        if ( ( p.x + p.radius ) > canvas.width ) {
+            p.x = canvas.width -p.radius;
+            p.vx = -p.vx;
+        }
+        if ( ( p.y - p.radius ) < 0 ) {
+            p.y = p.radius;
+            p.vy = -p.vy;
+        }
+        if ( ( p.y + p.radius ) > canvas.height ) {
+            p.y = canvas.height - p.radius;
+            p.vy = -p.vy;
+        }
+
+}
+}
+
+function render(){
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
+     window.requestAnimationFrame(render);
+
+     draw();
+     update();
+     pig.drawPig();
+     pig.updatePig();
+     end.drawEnd();
+     end.updateEnd();
+  }
+
+
+  render();
+
+
+</script>
+
+    <style type="text/css">
+
+#canvas {
+    background: black;
+    display: block;
+    margin: 15px auto;
+    float:bottom;
+    background-color:purple;
+}
+button{
+    float:bottom;
+}
+html{
+
+}
+    </style>

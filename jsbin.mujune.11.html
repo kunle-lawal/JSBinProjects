@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/mujune/11/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+
+* { margin: 0; padding: 0;}
+
+html, body {
+    width:  100%;
+    height: 100%;
+    margin: 0px;
+    overflow:hidden;
+} 
+
+canvas{
+    width:  100%;
+    height: 100%;
+	background-color: white; 
+	position: absolute;
+	top:0;
+	left:0; 
+	right:0;
+	bottom:0;
+	margin:auto;
+	border:1px solid transparent;
+    z-index:-1;
+}
+</style>
+</head> 
+<body>
+    <canvas id="canvas" width="1600" height="1600">Eat the Gems!</canvas> 
+<script id="jsbin-javascript">
+$(window).resize(function() {
+    $("#canvas").height($("#canvas").width());
+});
+$(window).resize(); 
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+
+var map_w = cw * 2;
+var map_h = ch * 2;
+
+// how far offset the canvas is
+var offsetX = 0; 
+var offsetY = 0;
+
+//Offset speed/ direction
+var ofx =  10;
+var ofy = 10;  
+
+//Random number Generator
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+//Getting elements by ID for UI/UX
+function GID(id){
+  return document.getElementById(id);
+}
+
+//Make a random color
+function randColor(){
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+//Get the distance between object1 and object2
+function return_distance(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+
+    return d;  
+}
+
+//Get the angle of object1 against object2
+function return_angle(object1_x, object1_y, object2_x, object2_y){
+    var dx = object1_x - object2_x;
+    var dy = object1_y - object2_y;
+    
+    var angle = Math.atan2(dy, dx);
+    return angle;
+}
+
+//Request animation frame for rendering
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+//Here we will update the canvas position
+var viewport = {
+    x: cw/2,
+    y: ch/2,
+    vx:0,
+    vy:0,
+    update: function(){
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+};
+
+function map_grid(){ 
+   ctx.save();
+   //ctx.translate((offsetX/1.2), (offsetY/1.2));
+   ctx.lineWidth = 2;
+  for (var x = -map_w; x < map_w; x += 100) {
+    ctx.moveTo(x, -map_h);
+    ctx.lineTo(x, map_h);
+  } 
+
+  for (var y = -map_h; y < map_h; y += 100) {
+      ctx.moveTo(-map_w, y);
+      ctx.lineTo(map_w, y);
+  }
+  ctx.strokeStyle = "#ddd";
+  ctx.stroke();
+  ctx.restore();
+}
+
+//The player object.
+var player = {
+	x: cw/2, 
+	y: ch/2,
+    r: 5,
+    m: 1,
+	color: "black",
+	vx: 0,
+	vy: 0,
+    left:false,
+    right:false,
+    up:false,
+    down:false,
+	draw: function(){
+        ctx.save();
+        ctx.translate((offsetX), (offsetY));
+		ctx.beginPath();
+        ctx.arc(this.x - (offsetX), this.y - (offsetY), this.r, 0, (2 * Math.PI));
+		//ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+		ctx.fillStyle = this.color; 
+		ctx.fill();
+        ctx.restore();
+        
+        //this.x =  viewport.x;
+        //this.y = viewport.y;
+	},
+    
+    
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+        
+        if(this.left){
+				offsetX -= ofx;
+        }
+			if(this.up){
+				offsetY -= ofx;
+            }
+			if(this.right){
+				offsetX += ofx; 
+            }
+			if(this.down){
+				offsetY += ofx;
+            }
+	},
+};
+
+//Create an array to store all gems
+var gems = [];
+
+//Push 10 gems into the array
+for(var x = 0; x < 350; x++){
+    gems.push({
+      x:randNum(-map_w, map_w),
+      y:randNum(-map_h, map_h),
+      r:randNum(2, 6),
+      vx:0,
+      vy:0,
+      color:randColor(),
+      mass:randNum(1, 5),
+    });
+}
+
+function draw_gems(){
+    ctx.save();
+    ctx.translate((offsetX), (offsetY));
+    // clear the viewport
+    ctx.clearRect(-offsetX, -offsetY, cw,ch); 
+    
+    // draw the other stuff
+    var l = gems.length;
+    for (var i = 0; i < l; i++) {
+        var gem = gems[i];
+        gem.x += gem.vx;
+        gem.y += gem.vy;
+        
+        //var angle_ = return_angle(viewport.x, viewport.y, gem.x, gem.y);
+        
+        // we should really only draw the things that intersect the viewport!
+        // but I am lazy so we are drawing everything here
+        ctx.beginPath();
+        ctx.arc(gem.x, gem.y, gem.r, 0, (2 * Math.PI));
+        //ctx.fillRect(gem.x, gem.y, 8, 8);
+        ctx.fillStyle = gem.color;
+        ctx.fill();
+         
+        //gem.vx = Math.cos(angle_) * 1;
+        //gem.vy = Math.sin(angle_) * 1;
+    } 
+    console.log("View X: " + viewport.x + " View Y: " + viewport.y);
+    ctx.restore();
+}
+
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault();      
+       if(keyPressed[37] || keyPressed[65]){
+           player.right = true;
+          //offsetX += ofx; 
+          //player.vx = -1; 
+          viewport.vx = -5;
+       }
+       
+       if(keyPressed[38]|| keyPressed[87]){ 
+		   player.down = true; 
+          //offsetY += ofy;
+          //player.vy = -1;
+          viewport.vy = -5;
+       }
+       
+       if(keyPressed[39]|| keyPressed[68]){
+           player.left = true;
+          //offsetX -= ofx;
+          //player.vx = +1; 
+          viewport.vx = +5;
+       }
+		
+	   if(keyPressed[40]|| keyPressed[83]){
+           player.up = true;
+          //offsetY -= ofy;
+          //player.vy = +1;
+          viewport.vy = +5;
+	   }
+       //console.log("offsetX: " + offsetX + " offsetY: " + offsetY);
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 37 || code === 65){ 
+           player.right = false;
+          //offsetX += ofx;
+            //player.vx = 0;
+           viewport.vx = 0;
+       }
+        
+       if(code === 38 || code === 87){
+       	   player.down = false; 
+           //offsetY += ofx;
+           //player.vy = 0;
+           viewport.vy = 0;
+       }
+     
+       if(code === 39 || code === 68){ 
+       	   player.left = false;
+          //offsetX -= ofx;
+          // player.vx = 0;
+           viewport.vx = 0;
+       } 
+        
+       if(code === 40 || code === 83){
+            player.up = false;
+          //offsetY -= ofx;
+           //player.vy = 0;
+           viewport.vy = 0;
+       }
+   };
+
+function start(){
+	window.requestAnimFrame(start);
+    ctx.clearRect(0,0,cw, ch); 
+    
+    draw_gems();
+    
+    map_grid();
+    
+    player.draw();
+    player.update();
+    
+    viewport.update();
+}
+
+start();
+
+</script>
+</body>
+</html>

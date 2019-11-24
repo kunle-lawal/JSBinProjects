@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/zubugo/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-compat-git.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta charset="utf-8">
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <title>Top 5</title>
+<style id="jsbin-css">
+#circ {
+    transition:all 0.7s;
+    border-radius:100%;
+    width:100px;
+    height:100px;
+    position:absolute;
+    top:0px;
+    left:0;
+    right:0;
+    bottom:10px;
+    margin:auto;
+    opacity:0.5;
+}
+
+#circ1{
+    transition:all 0.7s;
+    border-radius:100%;
+    width:300px;
+    height:300px;
+    position:absolute;
+    top:0px; 
+    left:0px;
+    right:0;
+    bottom:10px;
+    margin:auto;
+    background-color:black;
+    opacity:0.1;
+}
+
+#circ2{
+    transition:all 0.7s;
+    border-radius:100%;
+    width:200px;
+    height:100px;
+    position:absolute;
+    top:0px; 
+    left:0px;
+    right:0;
+    bottom:10px;
+    margin:auto;
+    background-color:black;
+    opacity:0.3;
+}
+
+#eye2{
+    margin-left:10px;
+    border:1px solid none;
+    position:absolute;
+    top:0px; 
+    left:800px;
+    right:0;
+    bottom:0px;
+    margin:auto;
+    width:300px;
+}
+</style>
+</head>
+<body>
+    <div>
+      <div id="circ"></div>
+      <div id="circ2"></div>
+      <div id="circ1"></div> 
+    </div>
+
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function ranColor() {
+    var num = Math.floor(Math.random() * Math.pow(2,24));
+    return '#' + ('00000' + num.toString(16)).substr(-6);
+}
+
+window.setTimeout(function(){
+    window.setInterval(function(){
+        var rand = Math.ceil(randNum(-1, 5)); 
+        var rand_deg = randNum(1, 4);
+        var rand_wdth = randNum(1, 100);
+        
+        $("#circ").css("transform","rotate(" + rand_deg + "deg)");
+        $("#circ2").css("width",rand_wdth + "px");
+        $("#circ1").css("height",rand_wdth + "px");
+        $("#circ").css("background-color", ranColor());
+    
+        window.setTimeout(function(){
+          $("#circ" + rand).css("transform","rotate(-" + rand_deg + "deg)");
+      }, 1100);
+    }, 1000);
+}, 10 * 1);
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/marilu/7/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-compat-git.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta charset="utf-8">
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <title>Top 5</title>
+<style id="jsbin-css">
+*{
+    font-family: Calibri, Candara, Segoe, 'Segoe UI', Optima, Arial, sans-serif !important;
+    text-decoration: none;
+    transition:all 1s;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body{
+    background-color:#f2f2f2;
+}
+
+#login{
+    border:5px solid #1fda9a;
+    border-radius:10px;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:60%;
+    height:30%;
+    background-color:white;
+    display:none;
+    z-index:2;
+}
+
+#login img{
+    position:absolute;
+    top:-10px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+}
+
+#login input{
+    font-size:30px;
+    text-align:center;
+    width:300px;
+    height:50px;
+    position:absolute;
+    top:100px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    border:2px solid #1fda9a;
+    border-radius:10px;
+}
+
+#page_cover{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    border:1px solid none;
+    display:none;
+    z-index:1;
+}
+
+#page_container{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    border:1px solid none;
+    z-index:-1;
+}
+
+#button{
+    text-align:center;
+    border:1px solid none;
+    padding:10px;
+    width:100px;
+    cursor:pointer;
+    border-radius:10px;
+    font-size:15px;
+    position:absolute;
+    top:45px;
+    left:80%;
+    border:1px solid #222222;
+}
+
+#button:hover{
+    border:3px solid #222222;
+    opacity:0.7;
+    background-color:#1fda9a;
+    border-radius:15px;
+}
+
+h1{
+    text-align:center;
+    font-size:70px;
+    margin-top:40px;
+}
+
+#top5_container{
+    width:50%;
+    height:550px;
+    position:absolute;
+    top:100px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    padding:10px;
+    border:2px inset none;
+    border-radius:5px;
+}
+
+.students{
+    background-color:#1fda9a;
+    color:#222222;
+    height:13.6%;
+    margin:12px;
+    padding:10px;
+    cursor:pointer;
+    transition:all 1s;
+    border-radius:5px;
+    opacity:0.8;
+}
+
+.students:hover{
+    opacity:0.9;
+    height:13.6%;
+    padding:5px;
+    border:3px solid #1fda9a;
+    width:90% !important;
+}
+
+#student0{
+    position:absolute;
+    top:-440px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:90%
+}
+
+#student1{
+    position:absolute;
+    top:-220px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:75%;
+}
+
+#student2{
+    position:absolute;
+    top:0px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:65%;
+}
+
+#student3{
+    position:absolute;
+    top:220px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:55%;
+}
+
+#student4{
+    position:absolute;
+    top:440px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:45%;
+}
+
+.name{
+    text-align:center;
+    font-size:50px;
+    border:1px solid none;
+    width:43%;
+    height:98%;
+    margin-top:6px;
+    font-weight:900;
+}
+
+.points{
+    color:rgb(238, 75, 62);
+    text-align:center;
+    font-size:40px;
+    border:1px solid none;
+    width:23%;
+    height:98%;
+    float:right;
+    position:relative;
+    top:-70.5px;
+}
+
+#canvas{
+    background-color:gray;
+    border:1px solid white;
+    position:absolute;
+    border:1px solid none;
+    left:0px;
+    top:0px;
+    bottom:0px;
+    right:0px;
+    margin:auto; 
+}
+</style>
+</head>
+<body id="body">
+   <div id="login">
+     <img src="https://cdn4.iconfinder.com/data/icons/general24/png/128/administrator.png" alt="Admin">
+     <input class = "pass" type="password" id="pass_word" placeholder="Password">
+   </div>
+    
+  <div id="page_cover"></div>  
+     <div id="page_container">
+       <div id="butto"></div>   
+       <h1>Top 5 Student</h1>
+       <div id="top5_container">
+         <div class="students" id="student0">
+            <div class="name">Ali</div> 
+            <div class="points">63%</div>
+         </div>
+        
+         <div class="students" id="student1">
+            <div class="name">Max</div>
+            <div class="points">41%</div>
+         </div>
+      
+         <div class="students" id="student2">
+            <div class="name">Elizabeth</div>
+            <div class="points">34%</div>
+         </div>
+        
+         <div class="students" id="student3">
+            <div class="name">Abdah</div>
+            <div class="points">24%</div>
+         </div>
+        
+         <div class="students" id="student4">
+            <div class="name">Kiva</div>
+            <div class="points">17%</div>
+         </div>
+     </div>
+         <div></div>
+  </div>
+    
+  <div>
+    <div></div>
+  </div>
+<script id="jsbin-javascript">
+$("#button").click(function(){
+    $("#page_cover").css("display", "block");
+    $("#page_container").css("opacity", "0.02");
+    $("#login").css("display", "block");
+});
+
+$("#page_cover").dblclick(function(){
+    $("#page_cover").css("display", "none");
+    $("#page_container").css("opacity", "1");
+    $("#login").css("display", "none");
+});
+
+var messagesRef = new Firebase('https://brilliant-fire-8407.firebaseio.com/-Joqa-ut1uAbAP2FAG5S/-Jt_oyYyRb6X3vLr7rvx');
+
+//messagesRef.push({password:"ypp.truth"});
+var key = $("#pass_word");
+var pass;
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+window.setTimeout(function(){
+    window.setInterval(function(){
+        var rand = Math.ceil(randNum(-1, 5)); 
+        var rand_deg = randNum(1, 4);
+        var rand_wdth = randNum(45, 90);
+        var rand_move = randNum(-200, 200);
+        
+        $("#student" + rand).css("transform","rotate(" + rand_deg + "deg)");
+        $("#student" + rand).css("width",rand_wdth + "%");
+        $("#student" + rand).css("left",rand_move + "px");
+    
+        window.setTimeout(function(){
+        
+        $("#student" + rand).css("transform","rotate(-" + rand_deg + "deg)");
+      }, 1100);
+    }, 1000);
+}, 10 * 1);
+
+var keyword;
+key.keypress(function (e) {
+   if (e.keyCode == 13) {
+      pass = key.val();
+      messagesRef.on('value', function (snapshot) {
+         //GET DATA
+         var data = snapshot.val();
+         keyword = data.password;
+         console.log(keyword);
+         if(keyword === pass){
+             $("#pass_word").css("border", "3px solid #222222");
+             $("#pass_word").css("background-color", "#1fda9a");
+             
+             window.setTimeout(function(){
+                 $("#pass_word").css("background-color", "#ffffff");
+                 $("#pass_word").css("border", "3px solid #1fda9a");
+             }, 400);
+             
+             window.setTimeout(function(){
+                 $("#page_cover").css("display", "none");
+                 $("#page_container").css("opacity", "1");
+                 $("#login").css("display", "none");
+                 
+                 key.val("");
+             }, 1000);
+         } else {
+             $("#pass_word").css("background-color", "rgb(238, 75, 62)");
+             $("#pass_word").css("border", "3px solid #222222");
+             window.setTimeout(function(){
+                 $("#pass_word").css("background-color", "#ffffff");
+                 $("#pass_word").css("border", "3px solid #1fda9a");
+             }, 400);
+         }
+      });
+   }
+});                                                                                  
+</script>
+</body>
+</html>

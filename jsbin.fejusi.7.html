@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fejusi/7/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-git.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    overflow:hidden;
+    background-color:#eeeeee;
+}
+
+#sleep{
+    border:3px solid black;
+    border-radius:100%; 
+    width:500px;
+    height:500px;
+    position:absolute;
+    top:-10px;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    transition:all 0.7s; 
+}
+
+#circ{
+    width:10px;
+    height:10px;
+    border-radius:100%;
+    border:8px solid black;
+    opacity:1;
+    background-color:white;
+}
+
+.line{ 
+    border:1px solid #000000;
+    width:0%;
+    height:0px;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    transition:all 1s; 
+    opacity:0.3
+}
+</style>
+</head>
+<body>
+  <div id="j">
+      <div class="line" id="line1"></div>
+      <div class="line" id="line2"></div>
+      <div class="line" id="line3"></div>
+      <div class="line" id="line4"></div>
+      <div class="line" id="line5"></div>
+      <div class="line" id="line6"></div>
+      <div class="line" id="line7"></div>
+      <div class="line" id="line8"></div>
+      <div class="line" id="line9"></div>
+      <div class="line" id="line10"></div>
+      <div class="line" id="line11"></div>
+      <div class="line" id="line12"></div>
+      <div class="line" id="line13"></div>
+      <div class="line" id="line14"></div>
+      <div class="line" id="line15"></div>
+      <div class="line" id="circ"></div>
+  </div>
+<script id="jsbin-javascript">
+function GID(id){
+  return document.getElementById(id);
+}
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+//retruns a random hex color
+function ranColor() {
+    var num = Math.floor(Math.random() * Math.pow(2,24));
+    return '#' + ('00000' + num.toString(16)).substr(-6);
+}
+
+function pickNum(x, y){
+    var ranNum = Math.ceil(randNum(0, 2));
+    console.log(ranNum);
+    if(ranNum == 1){
+        return "#ff5555";
+    } else if(ranNum == 2){
+        return "#aaaaaa";
+    }
+}
+
+var color = ranColor();
+window.setTimeout(function(){
+    window.setInterval(function(){
+        pickNum(360, -360);
+        var rand_line = Math.ceil(randNum(0, 16)); 
+        var rand = Math.ceil(randNum(-50, 50)); 
+        var rand_deg = randNum(-360, 360);
+        var ran = randNum(1, 3);
+        var rand_size = randNum(1, 570);
+        var rand_size2 = randNum(100, 130);
+        $("#line" + rand_line).css("width", rand_size + "px");
+        $("#line" + rand_line).css("height", rand_size + "px");
+        $("#line" + rand_line).css("transform","rotate(" + -rand_deg + "deg)");
+        
+        //$("#sleep").css("transform","rotate(" + rand_deg + "deg)");
+        $("#line" + rand_line).css("background-color", ranColor());
+        
+        window.setTimeout(function(){
+            
+            
+        }, 1100);
+    }, 70);
+}, 10 * 1);
+
+/*function tilt(mouse_location){
+    var orgin =  window.innerWidth / 2;
+    
+    $("#sleep").css("transform","rotate(" + (orgin-mouse_location) + "deg)");
+    console.log(orgin-mouse_location);
+}
+window.onmousemove = function(e){
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    var x = e.clientX;
+    tilt(x);
+    
+   //console.log("X: " + e.clientX + " Y: " + e.clientY);
+};  */
+</script>
+</body>
+</html>

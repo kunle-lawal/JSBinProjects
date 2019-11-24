@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/pekuza/10/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<style type="text/css" href="style.css"></style>
+<link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:black;
+  width:100%;
+}
+canvas{
+  /*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  background-repeat: no-repeat;
+  background-size:100% 100%;*/
+	position:relative;
+	top: 50%;
+    left: 50%;
+    margin-left: -405px;
+	border:1px solid transparent;
+	border-left:1px inset black;
+	border-right:1px inset black;
+}
+
+#textBox{
+	background-color:white;
+	border-left:1px inset yellow;
+	border-right:1px inset black;
+	border-top:1px inset red;
+	border-bottom:1px inset green;
+	text-align:center;
+ 	width:50%;
+  	position:relative;
+	opacity:0.8;
+	color:rgb(100,106,104);
+	font-size:20px;
+	padding-left:20px;
+	padding-right:20px;
+	padding-bottom:2px;
+}
+
+
+ul{
+	list-style:none;
+	margin-left:17%;
+}
+
+ul li{
+	display:inline-block;
+	border:1px solid white;
+	width:65px;
+	height:46px;
+	padding-left:0px;
+	padding:20px;
+	font-size:20px;
+	border-radius:5px;
+	margin:10px;
+	cursor:pointer;
+	text-align:center;
+}
+
+#life{
+	margin-left: 30%;
+	border: 1px dotted green;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="600">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+var randColor = getRandomColor();
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 ); 
+				};
+})();
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+
+
+var balls = [];
+
+window.setInterval(function(){
+	balls.push({
+		x:randNum(0,cw),
+		y:randNum(0, 40),
+		ax:0,
+		r:2,
+		h:10,
+		w:5,
+		color: "blue",
+		vx:0,
+		vy:2,
+		ay:0, 
+	});
+	balls.push({
+		x:randNum(51,51),
+		y:randNum(0, 40), 
+		ax:0,
+		r:2,
+		h:2,
+		w:2,
+		color: "lightblue",
+		vx:0,
+		vy:2,
+		ay:0, 
+	});
+}, 1);
+
+function drawBalls(){
+	for(var i = 0; i < balls.length; i++){
+		var b = balls[i];
+		ctx.beginPath();
+		ctx.rect(b.x, b.y, b.w, b.h);
+		ctx.fillStyle = b.color;
+		ctx.fill();
+	}
+}
+
+function animateBalls(){
+	for(var i = 0; i < balls.length; i++){
+		var b = balls[i];
+		b.x += b.vx;
+		b.y += b.vy;
+		b.vx += b.ax;
+		b.vy += b.ay;
+	}
+}
+
+
+var centerX = cw/2;
+var centerY = ch/2;
+var angle = 0;
+var radius = 0;
+var speed = 0.01;
+var x1 = 10, y1 = 10;
+var ball = {
+	x:cw/2,
+	y:ch/1.1,
+	ax:0,
+	w:400,
+	h:5,
+	color: "green",
+	vx:0,
+	vy:0,
+	ay:0,
+	
+	draw: function(){
+		
+		var color = getRandomColor();
+		
+		//ctx.fillStyle = "rgba(220,220,220,1)";
+		//ctx.fillRect(0, 0, cw, ch);
+	
+		ctx.fillStyle = this.color;
+		ctx.beginPath();
+		ctx.rect(this.x, this.y, this.w, this.h);
+		ctx.fill();
+		
+		/*ctx.strokeStyle = "green";
+		ctx.beginPath();
+		ctx.moveTo(cw/2, ch/2);
+		ctx.lineTo(this.x, this.y);  
+		ctx.stroke();
+		
+		ctx.strokeStyle = "black";
+		ctx.beginPath();
+		ctx.moveTo(100, 200);
+		ctx.lineTo(x1, y1); 
+		ctx.stroke();*/
+		
+		//x1 += 0.1;
+		//y1 += 0.1;
+		
+		/*ctx.strokeStyle = "black";
+		ctx.beginPath();
+		ctx.moveTo(this.r, this.y);
+		ctx.lineTo(this.x, this.r);  
+		ctx.stroke();
+		
+		/*ctx.strokeStyle = "black";
+		ctx.beginPath();
+		ctx.moveTo(this.x, this.y);
+		ctx.lineTo(cw, this.y);  
+		ctx.stroke();
+		
+		ctx.strokeStyle = "black";
+		ctx.beginPath();
+		ctx.moveTo(this.x, this.y);
+		ctx.lineTo(this.x, ch);  
+		ctx.stroke();*/
+	},
+	
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx += this.ax;
+		this.vy += this.ay;
+		 
+		
+		if ( ( this.x) <= 0 ) { 
+            this.x = 0;
+            this.vx = -this.vx/ 2;
+        }
+        if ( ( this.x + this.w ) >= cw ) {
+            this.x = cw -this.w;
+            this.vx = -this.vx/2;
+        }
+        if ( ( this.y - this.h ) <= 0 ) {
+            this.y = this.h;
+            this.vy = -this.vy/2; 
+        }
+        if ( ( this.y + this.h ) >= ch ) {
+            this.y = ch - this.h;
+            this.vy = -this.vy/2;
+        }
+		
+		for(var i = 0; i < balls.length; i++){
+			var b = balls[i];
+			
+			if(this.x <= b.x + b.w  && this.x + this.w  >= b.x && this.y <= b.y + b.h && this.y + this.h >= b.y){
+				//console.log("collide");
+				b.vy = -b.vy;
+			}
+		}
+		
+	}
+};
+
+/*window.onmousemove = function(e){
+  	e = e || window.event;
+   var position = [e.clientX || e.pageX, e.clientY || e.pageY];  
+    
+	var dx = ball.x - position[0];
+   var dy = ball.y - position[1];
+   var angle = Math.atan2(dy, dx);
+
+   ball.vx = -Math.cos(angle) * 10;
+   ball.vy = -Math.sin(angle) * 10;
+	
+	//ball.x = position[0];
+	//ball.y = position[1]; 
+    
+};*/
+
+var keyPressed = [];
+
+window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if (keyPressed[32]){
+		   	
+       }
+     
+       if(keyPressed[37]){
+	   		ball.vx -= 1.7;
+       }
+     
+       if(keyPressed[39]){
+	   		ball.vx += 1.7;
+       }
+	   
+	  	if(keyPressed[80]){
+			
+		}
+		
+		if(keyPressed[38]){
+			//ball.vy -= 1;
+		}
+	
+		if(keyPressed[40]){
+			//ball.vy += 1; 
+		}
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 32){
+       		
+       }
+       if(code === 37){
+         	ball.vx = 0;
+       }
+     
+       if(code === 39){ 
+         	ball.vx = 0;
+       } 
+       
+       if(code === 40){
+       
+       }
+       
+       if(code === 83){
+         
+       }
+       
+       if(code === 90){
+        
+       }
+
+       if(code === 80){
+
+       }
+   };
+
+
+
+var x = 0, y = 0;
+
+function render(){
+	window.requestAnimationFrame(render);
+	
+	ctx.clearRect(0, 0, cw, ch);
+	
+	ball.draw();
+	ball.update();
+	
+	drawBalls();
+	animateBalls();
+}
+
+
+render();
+
+
+
+/*window.setInterval(function(){
+	x += 20;
+	y += 20;
+	
+	ctx.strokeStyle = "red";
+	ctx.beginPath();
+	ctx.moveTo(x, 0);
+	ctx.lineTo(x, ch);
+	
+	ctx.moveTo(0, y);
+	ctx.lineTo(cw, y);
+	ctx.stroke();
+	
+	if(x >= cw){
+		x = 0;
+	}
+	
+	if(y >= ch){
+		y = 0;
+	}
+}, 1000/20)
+*/
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

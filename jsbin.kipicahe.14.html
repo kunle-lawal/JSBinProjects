@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/kipicahe/14/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-git2.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:rgb(100,106,104);
+  width:100%;
+  height:100%;
+}
+canvas{
+  background-color:gray;
+  position:absolute;
+  margin-left:-0.47%;
+  margin-top:-0.47%;
+}
+
+#pos{
+  background-color:red;
+  width:100px;
+  position:absolute;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" width="1550" height="500px">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+  
+  <div id="pos"> Position </div>
+<script id="jsbin-javascript">
+////////////Get position on the page///////////////////////
+function getPosition(){
+  window.onmousemove = function(e){
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    //$("#pos").style.left = position[0] - 10;
+    
+    //$("#pos").style.top = position[1] - 60;   
+    
+    $('#pos').css('position', 'absolute');
+    $('#pos').css('top', position[1]); //or wherever you want it
+    $('#pos').css('left', position[0] + 10);
+    
+    var pos = document.getElementById("pos");
+    
+    pos.innerHTML = "x: " + e.clientX + " y: " + e.clientY;
+  };  
+}
+
+getPosition();
+///////////////////////////////////////////////////////////////////
+
+var keyPressed = [];
+var collide;
+var player;
+var obs1; 
+var obs2;
+var obs3;
+var obs4;
+var grounded = true;
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width; 
+var ch = canvas.height; 
+
+function getSquareColision(object1, object2){
+  if(object1.x < object2.x + object2.width  && object1.x + object1.width  > object2.x &&
+		object1.y < object2.y + object2.height && object1.y + object1.height > object2.y){
+    colliding = true;
+  } else {
+    
+  }
+}
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}
+
+//The platforms
+var platformsX = [247, 366, 538, 604, 57, 6255, 800, 1010, 1145];
+var platformsY = [58, 417, 300, 102, 240, 423, 306, 129, 351];
+
+var randX = platformsX[Math.floor(Math.random() * platformsX.length)];
+var randY = platformsY[Math.floor(Math.random() * platformsY.length)];
+
+var platforms = [];
+  for(var i = 0; i < 9; i++){
+    for(var i = 0; i < platformsX.length; i++){
+      for(var i = 0; i < platformsY.length; i++){
+        platforms.push({
+        x: platformsX[i], 
+        y: platformsY[i],
+        w: randNum(50, 200),
+        h: randNum(3, 10),
+        vx: 0, 
+        vy: 0,
+        dy:30,
+        dx:30,
+        color: "black"
+      });
+    }
+      
+   }
+    
+  }
+  
+function platDraw(){
+  for(var i = 0; i < platforms.length; i++){
+    var plat = platforms[i];
+      ctx.beginPath();
+      ctx.rect(plat.x, plat.y, plat.w, plat.h);
+      ctx.fillStyle = plat.color;
+      ctx.fill();
+  }
+}
+
+
+function platUpdate(){
+  for(var i = 0; i < platforms.length; i++){
+    var plat = platforms[i];
+      
+    //Animating the moving platforms
+    plat.x += plat.vx;
+    plat.y += plat.vy;
+    
+    //Collision detection 
+    if ( ( plat.x ) <= 0 ) {
+            plat.x = 0;
+            plat.vx = 0;
+        }
+        if ( ( plat.x + plat.w ) >= cw) {
+            plat.x = cw - plat.w;
+            plat.vx = 0;
+        }
+        if ( ( plat.y ) <= 0 ) {
+            plat.y = 0; 
+            plat.vy = 0;
+        }
+        if ( ( plat.y + plat.h ) >= ch ) {
+            plat.y = ch - plat.h;
+            plat.vy = 0;
+        }
+        if(plat.x <= player.x + player.w  && plat.x + plat.w  >= player.x &&
+		plat.y <= player.y + player.h && plat.y + plat.h >= player.y){
+          plat.color = "#99FF33";
+          platGrounded = true;
+          grounded = true;
+          player.y = (plat.y - player.h);
+          player.ay = 0;
+        } else {
+           plat.color = "black";
+           
+        }
+       
+  }
+}
+
+
+//platforms(53, 394, 20, 50, 0, 0, "green");
+
+var player = {
+  x:1,
+  y:0,
+  h:10,
+  maxH:75.75,
+  minH:4,
+  w:10,
+  vx:0,
+  vy:0,
+  ax:0,
+  ay:0.7,
+  f:0.4,
+  jumping: false,
+  color:"blue",
+  walking: false,
+  draw2: function(){
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  },
+  playerUpdate: function(){
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vx += this.ax;
+    this.vy += this.ay;
+    this.w = this.h;
+   
+        if ( ( this.x ) <= 0 ) {
+            this.x = (cw - this.w) - 1 ;
+        }
+        if ( ( this.x + this.w ) >= canvas.width) {
+            this.x = 0 + 1;
+        }
+        if ( ( this.y ) <= 0 ) {
+            this.y = 0; 
+            //this.vy = 0;
+        }
+        //Touching the floor
+        if ( ( this.y + this.h ) >= canvas.height ) {
+            this.y = canvas.height - this.h;
+            grounded = true;
+        } else {
+            grounded = false;
+        }
+        
+        if(!grounded){
+            this.jumping = true;
+            this.ay = 1;
+        }
+        
+        if(grounded){
+            this.jumping = false;
+            this.ay = 0;
+        }
+    
+        if(this.walking === false){
+            this.vx *= this.f;
+        }
+        
+        if(this.h > this.maxH + 10){
+          this.h = this.maxH;
+        }
+    
+        if(this.h >= (30)){
+          this.ay = 4;
+        } else if(this.h < 8){
+          this.ay = 0.5;
+        }
+        
+  },
+    walk_left: function(){
+        if(this.walking === true){
+            this.vx = -10; 
+              
+        }
+    },
+    walk_right: function(){
+        if(this.walking === true){
+            this.vx = 10;
+              
+        }
+    },
+    
+  grow: function(){
+      this.h = this.h * 1.5;
+
+    if(this.h >= this.maxH + 10){
+      this.h = this.maxH;
+      return;
+    }
+  },
+  shrink: function(){
+      this.h = this.h/1.5;
+  
+    if(this.h <= this.minH){
+      this.h = this.minH; 
+      return;
+    }
+  }
+
+    //collision detection soon 
+};
+
+
+var obs1 = {
+  x:126,
+  y:408,
+  h:12,
+  w:50,
+  vx:0,
+  vy:0,
+  ax:0,
+  ay:0,
+  f:0.4,
+  color:"purple",
+  draw: function(){
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  },
+  update: function(){
+    if(this.x <= player.x + player.w  && this.x + this.w  >= player.x &&
+		this.y <= player.y + player.h && this.y + this.h >= player.y){
+          grounded = true;
+          player.y = this.y - player.h;
+          player.ay = 0;
+        } else {
+           
+        }
+  }
+};
+
+
+var obs2 = {
+  x:283,
+  y:313,
+  h:14,
+  w:80,
+  vx:0,
+  vy:3,
+  ax:0,
+  ay:0,
+  f:0.4,
+  color:"orange",
+  draw: function(){
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  },
+  update: function(){
+    this.y += this.vy;
+    
+    if(this.y >= 400){
+      this.vy = -this.vy;
+    } 
+    if(this.y <= 220){
+      this.vy = -this.vy;
+    }
+    
+    if(this.x <= player.x + player.w  && this.x + this.w  >= player.x &&
+		this.y <= player.y + player.h && this.y + this.h >= player.y){
+          grounded = true;
+          player.y = this.y - player.h;
+          player.ay = 0;
+        } else {
+           
+        }
+    
+  }
+};
+
+
+var obs3 = {
+  x:464,
+  y:193,
+  h:8,
+  w:140,
+  vx:0,
+  vy:0,
+  ax:0,
+  ay:0.5,
+  f:0.4,
+  color:"lightblue",
+  draw: function(){
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  },
+  update: function(){
+    this.x += this.vx;
+    this.y += this.vy;  
+    
+    if(this.x <= player.x + player.w  && this.x + this.w  >= player.x &&
+		this.y <= player.y + player.h && this.y + this.h >= player.y){
+          grounded = true;
+          player.y = this.y - player.h;
+          player.ay = 0;
+          player.vx = this.vx;
+     } else {
+           
+     }
+  },
+  runPath: function(){
+    function moveRight(){
+      obs3.vx = 6;
+    }
+    function moveLeft(){
+      obs3.vx = -6;
+    }
+    function moveUp(){
+      obs3.vy = -6;
+    }
+    function moveDown(){
+      obs3.vy = 6;
+    }
+    function stop(){
+      obs3.vx = 0;
+      obs3.vy = 0;
+    }
+
+     
+      if(this.x >= 780){
+        moveLeft();
+      }
+      
+      if(this.x <= 464){
+        moveRight();
+      }
+      
+    }
+};
+
+
+
+var obs4 = {
+   x:40,
+  y:30,
+  h:20,
+  w:20,
+  vx:0,
+  vy:0,
+  ax:0,
+  ay:0.5,
+  f:0.4,
+  color:"black",
+  draw3: function(){
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  },
+};
+
+
+var goal = {
+  x:cw - 100,
+  y:100,
+  h:10,
+  w:100,
+  vx:0,
+  vy:0,
+  ax:0,
+  ay:0.5,
+  f:0.4,
+  color:"green",
+  draw: function(){
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  },
+  update: function(){
+      if ( ( this.x ) <= 0 ) {
+            this.x = 0 ;
+        }
+        if ( ( this.x + this.w ) >= canvas.width) {
+            this.x = cw - this.w;
+        }
+        if ( ( this.y ) <= 0 ) {
+            this.y = 0; 
+            this.vy = 10;
+        }
+        //Touching the floor
+        if ( ( this.y + this.h ) >= canvas.height ) {
+            this.y = canvas.height - this.h;
+        }
+    
+        if(this.x <= player.x + player.w  && this.x + this.w  >= player.x &&
+		this.y <= player.y + player.h && this.y + this.h >= player.y){
+          grounded = true;
+          player.y = this.y - player.h;
+          player.ay = 0;
+        } else {
+           
+        }
+  }
+};
+
+var enemies = [];
+  for(var i = 0; i < 1; i++){
+    enemies.push({
+      x:randNum(cw, 100),
+      y:randNum(ch, 10),
+      h:randNum(40, 100),
+      w:randNum(5, 15),
+      vx:0,
+      vy:0,
+      ax:0,
+      ay:0.5,
+      f:0.4,
+      color:"lightgreen",
+    });
+}
+
+  function drawEnemies(){
+    for(var i = 0; i < enemies.length; i++){
+      var enem = enemies[i];
+      ctx.beginPath();
+      ctx.rect(enem.x, enem.y, enem.w, enem.h);
+      ctx.fillStyle = enem.color;
+      ctx.fill();
+    }  
+  }
+  function updateEnemies(){
+    for(var i = 0; i< enemies.length; i++){
+      var enem = enemies[i]; 
+      enem.x += enem.vx;
+      enem.y += enem.vy;
+      if ( ( enem.x ) <= 0 ) {
+            enem.x = 0 ;
+        }
+        if ( ( enem.x + enem.w ) >= canvas.width) {
+            enem.x = cw - enem.w;
+        }
+        if ( ( enem.y ) <= 0 ) {
+            enem.y = 0; 
+            enem.vy = 10;
+        }
+        //Touching the floor
+        if ( ( enem.y + enem.h ) >= canvas.height ) {
+            enem.y = canvas.height - enem.h;
+        }
+    
+        if(enem.x <= player.x + player.w  && enem.x + enem.w  >= player.x &&
+		enem.y <= player.y + player.h && enem.y + enem.h >= player.y){
+          grounded = true;
+          player.y = enem.y - player.h;
+          player.ay = 0;
+        } else {
+           
+        }
+    
+        if(player.x < (enem.x - 100)){
+          enem.vx = -5;
+        } else if(player.x >= (enem.x - 50) && player.x <= (this.x + 50)){
+          enem.vx = 0;
+        }
+    
+        if(player.x > (enem.x + 100)){
+          enem.vx = 5;
+        } else if(player.x >= (enem.x - 50) && player.x <= (enem.x + 50)){
+          enem.vx = 0;
+        }
+    }
+      
+    }
+
+var bullets = [];
+var shoot;
+function drawBullets(){
+  for(var i = 0; i < bullets.length; i++){
+      var blet = bullets[i];
+      ctx.beginPath();
+      ctx.rect(blet.x, blet.y, blet.w, blet.h);
+      ctx.fillStyle = blet.color;
+      ctx.fill();
+  }
+}
+
+function updateBullets(){
+  for(var i = 0; i < bullets.length; i++){
+   for(var j = 0; j< enemies.length; j++){
+    var blet = bullets[i];
+    var enem = enemies[j];
+    blet.x += blet.vx;
+    blet.vx += blet.ax;
+    
+    if(bullets.length >= 20){
+      bullets.splice(0, bullets.length);
+    }
+    
+    if(player.x > enem.x){
+       blet.vx = -20;
+    } 
+    
+    if(blet.x <= enem.x + enem.w  && blet.x + blet.w  >= enem.x &&
+		blet.y <= enem.y + enem.h && blet.y + blet.h >= enem.y){
+          if(player.x > enem.x){
+            enem.x = enem.x - 30;
+          }
+          
+          if(player.x < enem.x){
+            enem.x = enem.x + 30;
+          }
+    } 
+   }
+  }
+}
+//Key functions for player block
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if (keyPressed[32]){
+           if(grounded){
+             player.vy = -16.5;
+           }
+       }
+     
+       if(keyPressed[37]){
+         player.walking = true;
+         player.walk_left(); 
+       }
+     
+       if(keyPressed[38]){
+         player.grow();
+       }
+     
+       if(keyPressed[39]){
+         player.walking = true;
+         player.walk_right();
+       }
+     
+       if(keyPressed[40]){
+         player.shrink();
+       }
+       
+       if(keyPressed[90]){
+         shoot = true;
+           if(shoot === true){
+              bullets.push({
+                x: player.x,
+                y: player.y,
+                w:3,
+                h:3,
+                vx:20,
+                ax:0,
+                color:"red",
+              });
+            }
+       }
+ 
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode;
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 32){
+         player.vy += 1;
+       }
+       
+       if(code === 37){
+         player.walking = false;
+         
+       }
+       
+       if(code === 38){
+         player.vy = 0;
+       }
+     
+       if(code === 39){ 
+         player.walking = false;  
+       }
+       
+       if(code === 40){
+         player.vy = 0;
+       }
+       
+       if(code === 83){
+         
+       }
+       
+       if(code === 90){
+         shoot = false;
+       }
+   };
+
+
+
+function draw(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);  
+  player.draw2();
+}
+
+function update(){
+  player.playerUpdate();
+}
+
+function tick(){
+  draw();
+  update();
+  
+  platDraw();
+  platUpdate();
+  
+  goal.draw();
+  goal.update();
+  
+  obs1.draw();
+  obs1.update();
+  
+  obs2.draw();
+  obs2.update();
+  
+  obs3.draw();
+  obs3.update();
+  obs3.runPath();
+  
+  drawEnemies();
+  updateEnemies();
+  
+  drawBullets();
+  updateBullets();
+}
+/*function tick2(){
+  platforms.draw();
+  platforms.animate();
+}
+window.setInterval(function(){
+  //tick2(); 
+  tick();
+}, 1000/fps);*/
+
+function render(){
+  window.requestAnimationFrame(render);
+  
+  tick();
+}
+
+render(); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

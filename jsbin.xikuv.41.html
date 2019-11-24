@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/xikuv/41/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.1/processing-api.min.js"></script>
+<script src="https://fb.me/react-with-addons-0.11.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-git2.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:rgb(100,106,104);
+  width:100%;
+}
+canvas{
+  /*background-image:url("http://images8.alphacoders.com/290/290957.jpg");
+  background-repeat: no-repeat;
+  background-size:100% 100%;*/
+	background-color:rgb(100,106,104);
+	position:relative;
+	top: 50%;
+    left: 50%;
+    margin-left: -300px;
+	border:1px solid transparent;
+	border-left:1px inset white;
+	border-right:1px inset black;
+}
+
+#pos{
+  background-color:red;
+  width:100px;
+  position:relative;
+}
+
+ul{
+	list-style:none;
+	margin-left:17%;
+}
+
+ul li{
+	display:inline-block;
+	border:1px solid white;
+	width:65px;
+	height:46px;
+	padding-left:0px;
+	padding:20px;
+	font-size:20px;
+	border-radius:5px;
+	margin:10px;
+	cursor:pointer;
+	text-align:center;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="500px">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+  
+  <div id="pos"> Position </div>
+<script id="jsbin-javascript">
+////////////Get position on the page///////////////////////
+function getPosition(){
+  window.onmousemove = function(e){
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    //$("#pos").style.left = position[0] - 10;
+    
+    //$("#pos").style.top = position[1] - 60;   
+    
+    $('#pos').css('position', 'absolute');
+    $('#pos').css('top', position[1]); //or wherever you want it
+    $('#pos').css('left', position[0] + 10);
+    
+    var pos = document.getElementById("pos");
+		pos.innerHTML = "x: " + e.clientX + " y: " + e.clientY;
+	  
+	/*if((e.clientX >= player.x + player.w) && (e.clientY >= player.y + player.h) && (e.clientX <= player.x + player.w) && (e.clientY <= player.y + player.h)){
+		pos.innerHTML = "Anti-Gravity";
+	} else {
+		pos.innerHTML = "x: " + e.clientX + " y: " + e.clientY;
+	}*/
+  };  
+}
+
+getPosition();
+///////////////////////////////////////////////////////////////////
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+var enemies = [];
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var cw = canvas.width;
+var ch = canvas.height;
+var walking;
+
+var player_speed = "#bd8348";
+var player_fly = "#667f91";
+var player_jump = "#14e0c3";
+var player_white = "white";
+
+var player = {
+	x: cw/2,
+	y: ch - 70,
+	h: 30,
+	w: 10,
+	color: "yellow",
+	vx: 0,
+	maxVX:5,
+	vy: 0,
+	ax: 0,
+	ay: 0.3,
+	f:0.6,
+	jump_v:-5,
+	strong:false,
+	draw: function(){
+		ctx.beginPath();
+		ctx.rect(this.x, this.y, this.w, this.h);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx += this.ax;
+		this.vy += this.ay;
+		
+		if ( ( this.x ) <= 0 ) {
+            this.x = (cw - this.w) - 1 ;
+        }
+		
+        if ( ( this.x + this.w ) >= canvas.width) {
+            this.x = 0 + 1;
+        }
+        if ( ( this.y ) <= 0 ) {
+            this.y = 0; 
+            this.vy = -this.vy/2;
+        }
+        //Touching the floor
+        if ( ( this.y + this.h ) >= canvas.height ) {
+            this.y = canvas.height - this.h;
+            grounded = true;
+        } else {
+            grounded = false;
+        }
+		
+		if(grounded && !walking){
+          this.vx *= this.f;
+        }		
+		
+		if(this.vx >= this.maxVX){
+			this.vx = this.maxVX;
+		}
+		
+		if(this.vx <= -this.maxVX){
+			this.vx = -this.maxVX;
+		}  
+		
+		var x = 0, y = 0;
+		
+		/*if(this.x >  350){
+			x++;
+			save();
+			ctx.translate(x, y);
+			
+		} else if(this.x <  250){
+			x--;
+			ctx.translate(x, y);
+		} 
+		
+		if(this.y > this.y + 1){
+			y++;
+			ctx.translate(x, y);
+		}*/
+	},
+	power_up:function(omit){
+		if(omit === "no"){
+			return;
+		}
+		
+		if(this.color == player_jump){
+			this.jump_v = -10;
+			this.strong = true;
+		} else {
+			this.strong = false;
+			this.jump_v = -5;
+		}
+		
+		if(this.color == player_speed){
+			this.maxVX = 10;
+		} else {
+			this.maxVX = 5;
+		}
+		
+		if(this.color == player_fly){
+			this.ay = 0;
+			this.strong = true;
+			grounded = true;
+		} else {
+
+			this.ay = 0.3;
+		}
+		
+		if(this.color == player_white){
+			return;
+		} else {
+			//this.jump_v = -5;
+		}
+			
+	},
+	walk_left: function(){
+        if(walking === true){
+            this.vx -= 1.5; 
+              
+        } 
+    },
+    walk_right: function(){
+        if(walking === true){
+            this.vx += 1.5;
+              
+        } 
+    },
+};
+
+
+window.setInterval(function(){
+	//console.log(player.x);
+}, 1000);
+
+//Key functions for player block
+var walk_left;
+var walk_right;
+var jump;
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault(); 
+       if (keyPressed[32]){
+		   	jump = true;
+		   	if(grounded){
+				player.vy = player.jump_v;
+			}
+       }
+     
+       if(keyPressed[37]){
+			walking = true;
+         	walk_left = true;
+        	player.walk_left(); 
+       }
+     
+       if(keyPressed[39]){
+         	walking = true;
+        	walk_right = true;
+         	player.walk_right();
+       }
+     	
+	   if(keyPressed[40]){
+		   if(player.color == player_fly){
+			   player.vy = -player.jump_v;
+		   }
+	   }
+       /*if(keyPressed[32] && keyPressed[37]){
+         	if(grounded){
+				player.vy -= 1.5;
+		  		player.vx = -10;
+			}
+       }
+     
+       if(keyPressed[32] && keyPressed[39]){
+		  	if(grounded){
+				player.vy += 1.5;
+		   		player.vx = 10;
+			}
+       }*/
+       
+       if(keyPressed[90]){
+         
+         }
+
+       if(keyPressed[88]){
+        
+       }
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode;
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 32){
+       		jump = false;
+       }
+       if(code === 37){
+         	walking = false;
+         	walk_left = false;
+       }
+     
+       if(code === 39){ 
+         	walking = false;  
+        	walk_right = false;
+       }
+       
+       if(code === 40){
+         
+       }
+       
+       if(code === 83){
+         
+       }
+       
+       if(code === 90){
+        
+       }
+
+       if(code === 88){
+
+       }
+   };
+
+var blocks = [];
+
+blocks.push({
+	x:50,
+	y:ch,
+	w:30,
+	h:7,
+	color:player_speed,
+});
+
+blocks.push({
+	x:200,
+	y:ch,
+	w:30,
+	h:7,
+	color:player_jump,
+});
+
+blocks.push({
+	x:350,
+	y:ch,
+	w:30,
+	h:7,
+	color:player_fly,
+});
+
+blocks.push({
+	x:500,
+	y:ch,
+	w:30,
+	h:7,
+	color:player_white,
+});
+
+
+function draw_blocks(){
+	for(var i = 0; i < blocks.length; i++){
+		var blck = blocks[i];
+		
+		ctx.beginPath();
+		ctx.rect(blck.x, blck.y, blck.w, blck.h);
+		ctx.fillStyle = blck.color;
+		ctx.fill();
+	}
+}
+
+function update_blocks(){
+	for(var i = 0; i < blocks.length; i++){
+		var blck = blocks[i];
+		blck.y = cw;
+		ctx.rect(blck.x, blck.y, blck.w, blck.h);
+		if ( ( blck.x ) <= 0 ) {
+            blck.x = (cw - blck.w) - 1 ;
+        }
+		
+        if ( ( blck.x + blck.w ) >= canvas.width) {
+            blck.x = 0 + 1;
+        }
+        if ( ( blck.y ) <= 0 ) {
+            blck.y = 0; 
+        } 
+        //Touching the floor
+        if ( ( blck.y + blck.h ) >= canvas.height ) {
+            blck.y = canvas.height - blck.h;
+		}
+		
+		if(blck.x <= player.x + player.w  && blck.x + blck.w  >= player.x &&
+		   blck.y <= player.y + player.h && blck.y + blck.h >= player.y){
+				grounded = true;
+				if(player.strong === true){
+					blck.h -= 1;
+				} else {
+					blck.h -= 0.2;
+				}
+				player.y = player.y - blck.h;
+				if(blck.h <= 2){
+					blck.h = 2;
+					player.color = blck.color;
+				} 
+		} else {
+			if(!grounded){
+				grounded = false;
+			}
+			blck.h += 0.5;
+			if(blck.h >= 7){
+				blck.h = 7;
+			} 
+		}
+	}
+}
+
+
+//////Particles declaration///////
+var particles = [];
+var rain_color = "lightblue";
+var wind = false;
+var red = "#551e25";
+
+function change_color(color, object){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		if (color == "white" && object == particles){
+			rain_color = "white";
+		}
+		if(color == "lightblue" && object == particles){
+			rain_color = "lightblue";
+		}
+		if(color == "black" && object == particles){
+			rain_color = "black";
+		}
+		if(color == red && object == particles){
+			rain_color = red;
+		}
+	}	
+}
+
+//////////////////Changes rain color////////////////
+function white_rain(){
+	change_color("white", particles);
+}
+
+function lightblue_rain(){
+	change_color("lightblue", particles);
+}
+
+function black_rain(){
+	change_color("black", particles);
+}
+
+function red_rain(){
+	change_color(red, particles);
+}
+
+
+function rand_num(max , min){
+	return Math.random() * (max - min) - min;
+}
+
+
+function get_rand_color(){
+	var colors = [red, "black", "white", "lightblue"];
+	
+	var rand_color1 = colors[Math.floor(Math.random() * colors.length)];
+	var rand_color2 = colors[Math.floor(Math.random() * colors.length)];
+	var rand_color_num = Math.floor(Math.random() * colors.length);
+	
+	if(rand_color_num <= 0 && rand_color_num <= 1){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(0 + " " + 1);
+	} else if(rand_color_num <= 1 && rand_color_num <= 2){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(1 + " " + 2);
+	} else if(rand_color_num <= 2 && rand_color_num <= 3){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(2 + " " + 3);
+	} else if(rand_color_num <= 3 && rand_color_num <= 4){
+		change_color(rand_color1, player);
+		change_color(rand_color2, particles);
+		
+		console.log(3 + " " + 4);
+	}
+	
+	console.log(colors.length);
+}
+
+
+function random_rain_change(){
+	for(var  i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		
+		var rand_num = Math.random() * (5 + 1) - 1;
+	
+		if(rand_num <= 2){
+			rain_color = red;
+		} 
+		if(rand_num > 2 && rand_num <= 3){
+			rain_color = "white";
+		} 
+		if(rand_num > 3 && rand_num <= 4){
+			rain_color = "black";
+		} 
+		if(rand_num > 4 && rand_num <= 5){
+			rain_color = "lightblue";
+		}
+	}
+}
+
+window.setInterval(function(){
+	random_rain_change();
+}, randNum(1000 * 60, 1000 * 180));
+
+//Particle declareration////
+	window.setInterval(function(){
+		particles.push({
+			//x:randNum(0, cw),
+			//y:randNum(0, 100),
+			x:randNum(-2 * cw, 2 * cw),
+			y:randNum(0, cw/5),
+			radius: 2,
+			h:randNum(4,10),
+			w:randNum(0.1, 1),
+			vy:0,
+			vx:0,
+			ay:0.1,
+			f:0,	
+			color: rain_color,
+		});
+		
+		
+	}, 1);
+
+////////Drawing the Particles///////////////////////
+function drawRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		ctx.beginPath();
+		ctx.rect(rain.x, rain.y, rain.w, rain.h);	
+		//ctx.arc(rain.x, rain.y, rain.radius, 0, Math.PI * 2)
+		ctx.fillStyle =  rain.color;
+		ctx.fill();
+	}
+}
+
+
+////////Animating the particles///////////////////
+function animateRain(){
+	for(var i = 0; i < particles.length; i++){
+		var rain = particles[i];
+		
+		rain.x += rain.vx;
+		rain.y += rain.vy;
+		rain.vy += rain.ay;
+		
+		
+		if(rain.x <= player.x + player.w  && rain.x + rain.w  >= player.x &&
+		rain.y <= player.y + player.h && rain.y + rain.h >= player.y){
+          	rain.ay = 0;
+			rain.color = player.color;
+			rain.h = 1;
+			rain.w = 2;
+			
+			if(rain_color == "white" && player.color == "black"){
+				rain.color = "gray";
+			}
+		}
+		
+		if((rain.y + rain.h) >= ch + 7){
+			rain.ay = 0.01;
+			rain.vy = -1;
+			
+			rain.y = canvas.height;
+			
+			rain.h = 0.2;
+			rain.w = 7;
+		}
+	}
+}
+
+var p_remove = 10; //Number of Particles to remove
+//Wait 1 second til function  starts removing particles
+window.setTimeout(function(){
+	window.setInterval(function(){
+		p_remove += 5; //increase the number of particles removed by 5 every half a second 
+    	particles.splice(0, p_remove);//remove the particles every half a second
+		
+		if(p_remove >= 70){
+			p_remove -= 10;
+			
+			if(p_remove <= 50){
+				p_remove += 5;
+			} 
+		}
+		//Regulate the number of particles being removed so not too much or too little is removed
+		
+	}, 500);  
+}, 1000); 
+
+window.setInterval(function(){
+	//console.log(particles.length + " | "  + p_remove);
+}, 1000);
+
+function render(){
+	ctx.clearRect(0, 0, cw, ch);
+	window.requestAnimFrame(render);
+	
+	player.draw();
+	player.update();
+	player.power_up("yes");
+	
+	draw_blocks();
+	update_blocks();
+	
+	drawRain();
+	animateRain();
+}
+
+render();
+
+</script>
+</body>
+</html>

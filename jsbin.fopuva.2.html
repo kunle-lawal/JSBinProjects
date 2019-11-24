@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fopuva/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+@import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400);
+*{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+html, body{
+	background-color:#f18db5;
+	margin:auto;
+	height:100%;
+}
+
+#pageContainer_{
+	width:100%;
+	height:100%;
+	text-align:center;
+}
+
+/* The animation code */
+@keyframes grow {
+     0%   {font-size:30px;}
+    25%  {font-size:40px;}
+    50%  {font-size:50px;}
+    100% {font-size:30px;}
+}
+#hbd{
+	text-align:center;
+	font-size:30px;
+	width:70%;
+	height:40%;
+	left:0;
+	right:0;
+	top:0;
+	position:absolute;
+	margin:auto;
+	color:white;
+	animation-name: grow;
+    animation-duration: 1s;
+}
+#gifs{
+	text-align:center;
+	font-size:30px;
+	width:90%;
+	height:100%;
+	left:0;
+	right:0;
+	top:0;
+	position:absolute;
+	margin:auto;
+	margin-top:300px;
+}
+img{
+	width:350px;
+	height:350px;
+	margin-top:10px;
+	display:inline-block;
+}
+</style>
+</head>
+<body>
+	<div id="pageContainer_">
+		<div id="hbd">
+			<h1>Happy Birthday Temi</h1>
+		</div>
+		<div id="gifs">
+			<img src="https://media.giphy.com/media/3o7TKGYmeY2kDqhdU4/giphy.gif" alt="none">
+		<img src="https://media.giphy.com/media/26xBzGOZ4MUr6D4ty/giphy.gif" alt="hbd"> 
+		<img src="https://media.giphy.com/media/6g564lKXZo796/giphy.gif" alt="hbd">
+		<img src="https://media.giphy.com/media/l3vRebb6HyeIgvmQ8/giphy.gif" alt="hbd">
+		</div> 
+	</div>
+</body>
+</html>

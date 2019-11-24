@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fezoqu/7/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+@import 'https://fonts.googleapis.com/css?family=Roboto:300';
+*{
+    font-family: 'Roboto', sans-serif;
+    text-decoration: none;
+	user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	transition:all 1s;
+}
+html, body {
+    text-decoration: none;
+    width:100%;
+    border:1px solid none;
+    margin: 0px;
+	overflow: hidden;
+	background-color:#222;
+	color:#fff;
+}
+
+
+.scene {
+  width: 150px; 
+  height: 150px;
+  perspective: 200px;
+    position: absolute; 
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+}
+
+#lorem{
+    color:white;
+}
+
+.cube {
+	text-align:center;
+    width: 150px;
+	height:150px;
+	font-size:20px;
+	line-height:120px;
+	vertical-align:middle;
+    transform-style: preserve-3d;
+    color:white; !important;
+	background-color:#fff;
+	transform: scaleY(-1);
+}
+
+.cube_face { 
+	opacity:1;
+  width: inherit; 
+  height: inherit;
+  position: absolute;
+    background-color:#f2ddd2 !important;
+	-webkit-box-reflect: below 100000px !important; 
+}
+
+.cube-face-front {
+  transform: translate3d(0, 0, 75px);
+}
+
+.cube-face-back {
+  transform: rotateY(180deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-left {
+  transform: rotateY(-90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-right {
+  transform: rotateY(90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-top {
+  transform: rotateX(90deg) translate3d(0, 0, 75px);
+}
+
+.cube-face-bottom {
+  transform: rotateX(-90deg) translate3d(0, 0, 75px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+    <h2>Wheel Delta value: <span id="wheelvalue">hi</span></h2>
+<div class="scene">
+  <div class="cube" id="cube">
+    <div class=" cube-face-front cubee"><p id="lorem">Face 1</p> </div>
+    <div class=" cube-face-back cubee"><p id="lorem">Face 2</p></div> 
+    <div class=" cube-face-left cubee"><p id="lorem">Face 3</p></div>
+    <div class=" cube-face-right cubee"><p id="lorem">Face 4</p></div>
+    <div class=" cube-face-top cubee"><p id="lorem">Face 5</p></div>
+    <div class=" cube-face-bottom cubee"><p id="lorem">Face 6</p></div>
+          <br><br><br><br>
+  </div>
+</div> 
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+}  
+
+
+	$(".cubee").toggleClass("cube_face");
+
+
+window.setInterval(function(){
+    var rand_deg = randNum(-360, 360);
+    var rand_ang = Math.ceil(randNum(0, 3)); 
+    if(rand_ang == 1){
+        $(".cube").css("transform", "rotateX(" + rand_deg + "deg)");
+    } else if(rand_ang == 2){
+        //$(".cube").css("transform", "rotateZ(" + rand_deg + "deg)");
+    }  else if(rand_ang == 3){
+       $(".cube").css("transform", "rotateY(" + rand_deg + "deg)");   
+    } 
+}, 100000000000000000);
+
+
+/*var xAngle = 0, yAngle = 0;
+document.addEventListener('keydown', function(e) {
+  switch(e.keyCode) {
+
+    case 37: // left
+      yAngle -= 90;
+      break;
+
+    case 38: // up
+      xAngle += 90;
+      break;
+
+    case 39: // right
+      yAngle += 90;
+      break;
+
+    case 40: // down
+      xAngle -= 90;
+      break;
+  }
+
+  $('cube').style.webkitTransform = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg)";
+}, false);*/
+
+
+var xAngle = 0, yAngle = 0;
+var zoom_in = 0;
+var zoom_out = 0;
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     //var rand_deg = randNum(-360, 360);
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault();      
+       if(keyPressed[37]){
+          yAngle -= 90;
+          $(".cube").css("transform", "rotateY(" + yAngle + "deg)");
+       }
+       
+       if(keyPressed[38]){ 
+          xAngle += 90;
+		  $(".cube").css("transform", "rotateX(" + xAngle + "deg)");
+       }
+       
+       if(keyPressed[39]){
+          yAngle += 90;
+	   	  $(".cube").css("transform", "rotateY(" + yAngle + "deg)");
+       }
+		
+	   if(keyPressed[40]){
+          xAngle -= 90;
+		  $(".cube").css("transform", "rotateX(" + xAngle + "deg)");
+	   }
+       
+       if(keyPressed[32]){
+          xAngle -= 90;
+		  $(".cube").css("transform", "rotateX(" + xAngle + "deg)");
+	   }
+};
+
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode;
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 37){
+           
+       }
+       
+       if(code === 38){
+       	   
+       }
+     
+       if(code === 39){ 
+       	   
+       } 
+       
+       if(code === 40){
+             
+       }
+   };
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

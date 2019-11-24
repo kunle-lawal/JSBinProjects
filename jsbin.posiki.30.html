@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/posiki/30/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/jquery-3.0.0-alpha1.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+@import url(http://fonts.googleapis.com/css?family=Indie+Flower);
+
+body{
+    /*overflow:hidden;*/
+}
+
+canvas{
+	background-color: black; 
+	position: absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	border:1px solid transparent;
+    z-index:-1;
+}
+
+.highscore{
+    width:200px;
+    text-align:center;
+    padding:10px;
+    background-color:yellow;
+    color:red;
+    font-size:30px;
+    font-weight:900;
+    font-family: 'Indie Flower', cursive;
+    opacity:0.4;
+}
+</style>
+</head>
+<body>
+  <canvas id="canvas" width="1600" height="800">Your browser doesn't support the canvas element... Sorry ._.</canvas>
+  <div class="highscore">
+      <div id="player">Mass: 200</div>
+      <div id="bot">Mass: 200</div>
+  </div>
+<script id="jsbin-javascript">
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+function GID(id){  
+  return document.getElementById(id);
+}
+
+window.requestAnimFrame = ( function() {
+	return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+})();
+
+/*var PIXEL_RATIO = (function () {
+    var ctx = document.createElement("canvas").getContext("2d"),
+        dpr = window.devicePixelRatio || 1,
+        bsr = ctx.webkitBackingStorePixelRatio ||
+              ctx.mozBackingStorePixelRatio ||
+              ctx.msBackingStorePixelRatio ||
+              ctx.oBackingStorePixelRatio ||
+              ctx.backingStorePixelRatio || 1;
+ 
+    return dpr / bsr;
+})();
+
+
+createHiDPICanvas = function(w, h, ratio) {
+    if (!ratio) { ratio = PIXEL_RATIO; }
+    var can = document.createElement("canvas");
+    can.width = w * ratio;
+    can.height = h * ratio;
+    can.style.width = w + "px";
+    can.style.height = h + "px";
+    can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+    return can;
+};*/
+
+//Create canvas with the device resolution.
+//var myCanvas = createHiDPICanvas(500, 250);
+
+//Create canvas with a custom resolution.
+//var myCustomCanvas = createHiDPICanvas(500, 200, 4);
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var cw = canvas.width;
+var ch = canvas.height;
+var cell_speed = 10;
+var mouse_move = false;
+var x; 
+var y; 
+var dx;
+var dy; 
+var angle;
+var d; 
+
+function return_distance(x, y, x2, y2){
+    var dx = x - x2;
+    var dy = y - y2;
+    var d = Math.sqrt(dx * dx + dy * dy);
+        
+    var angle_ = Math.atan2(dy, dx);
+
+    return d;  
+}
+
+function return_angle(x, y, x2, y2){
+    var dx = x - x2;
+    var dy = y - y2;
+    
+    var angle = Math.atan2(dy, dx);
+    return angle;
+}
+
+var player = {
+	x: cw/2,
+	y: ch/2,
+    r: 5,
+    m: 1,
+	color: "rgba(255, 255, 255, 0.8)",
+	vx: 0,
+	vy: 0,
+	f:0.71,
+    max_speed:5,
+    speedX:3,
+    speedY:3,
+	draw: function(){
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+		ctx.fillStyle = player.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+        
+        this.speedX += 0.004;
+        this.speedY += 0.004;
+        
+        dx = this.x - x;
+        dy = this.y - y;
+        
+        angle = return_angle(this.x, this.y, x, y);
+        
+        /*var mouse_d = return_distance(this.x, this.y, x, y);
+        var bot_d = return_distance(this.x, this.y, bot.x, bot.y);
+		if(mouse_d >= 20){
+            this.vx = (Math.cos(angle)) * this.speed;
+            this.vy = (Math.sin(angle)) * this.speed; 
+        } else {
+            this.vx *= 0.3;
+            this.vy *= 0.3;
+        }*/
+        
+        GID("player").innerHTML = "Player Mass: " + this.m; 
+        
+        if(player.speedX > player.max_speed){
+            player.speedX = 3;
+        }
+        
+        if(player.speedY > player.max_speed){
+            player.speedY = 3;
+        }
+        /*if ((this.x - this.r) < 0 ) {
+            this.x = this.r;
+            this.vx = -this.vx;
+        } 
+        if ((this.x + this.r) > cw ) {
+            this.x = cw - this.r; 
+            this.vx = -this.vx;
+        }
+        if ((this.y - this.r) < 0) {
+            this.y = this.r;
+            this.vy = -this.vy;
+        }
+        if ((this.y + this.r) > canvas.height ) {
+            this.y = canvas.height - this.r;
+            this.vy = -this.vy;
+        }*/
+	},
+};
+
+//Key functions for player block
+var keyPressed = [];
+   window.onkeydown = function(e){ 
+     e = e || window.event;  
+     keyPressed[e.keyCode] = true;
+     e.preventDefault();      
+       if(keyPressed[37]){
+          player.vx = -player.speedX;
+       }
+       
+       if(keyPressed[38]){
+		  player.vy = -player.speedY;
+       }
+       
+       if(keyPressed[39]){
+	   	  player.vx = player.speedX;
+       }
+		
+	   if(keyPressed[40]){
+		  player.vy = player.speedY;
+	   }
+};
+
+//player.y =  (platforms[i].y + platforms[i].h) + 300;
+   window.onkeyup = function(e){
+     e = e || window.event;
+     var code = e.which || e.keyCode; 
+     keyPressed[e.keyCode] = false;
+     e.preventDefault();
+       if(code === 37){
+           player.vx *= 0;
+           player.speedX = 3;
+       }
+        
+       if(code === 38){
+       	   player.vy *= 0;
+           player.speedY = 3;
+       }
+     
+       if(code === 39){ 
+       	   player.vx *= 0;
+           player.speedX = 3;
+       } 
+        
+       if(code === 40){
+           player.vy *= 0;
+           player.speedY = 3;
+       }
+   };
+
+window.onmousemove = function(e){
+    mouse_move = true;
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    x = e.clientX;
+    y = e.clientY;
+     
+   //console.log("X: " + e.clientX + " Y: " + e.clientY);
+};  
+
+function move_away(){
+    bot.vx = -bot.vx;
+    bot.vy = -bot.vy;
+    var x = randNum(100, cw);
+    var y = randNum(0, ch);
+    
+    var angle = return_angle(bot.x, bot.y, x, y);
+    bot_move(angle);
+}
+
+
+function bot_move(angle_){
+    bot.vx = Math.cos(angle_) * bot.speed;
+    bot.vy = Math.sin(angle_) * bot.speed;
+}
+
+var bot = {
+	x: cw/2,
+	y: ch/2,
+    r: 5,
+    m: 1,
+	color: "yellow", 
+	vx: randNum(-5, 5),
+	vy: randNum(-5, 5),
+	f: 0.71, 
+    speed: -5,
+	draw: function(){
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.r, 0, (2 * Math.PI));
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	},
+	update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
+
+        GID("bot").innerHTML = "Bot Mass: " + this.m;
+        
+        if ((this.x - this.r) < 0 ) {
+            this.x = this.r;
+            this.vx = -this.vx;
+        } 
+        if ((this.x + this.r) > cw ) {
+            this.x = cw - this.r; 
+            this.vx = -this.vx;
+        }
+        if ((this.y - this.r) < 0) {
+            this.y = this.r; 
+            this.vy = -this.vy;
+        }
+        if ((this.y + this.r) > ch ) {
+            this.y = ch - this.r;
+            this.vy = -this.vy;
+        }
+	},
+};
+
+var ang = 0;
+window.setInterval(function(){
+    bot.vx = Math.cos(randNum(-360, 360)) * bot.speed;
+    bot.vy = Math.sin(randNum(-360, 360)) * bot.speed;
+}, 1000 * (randNum(1, 7)));
+
+var gems = [];
+for(var i = 0; i < 100; i++){
+    var m = Math.ceil(randNum(2, 7));
+    gems.push({
+        x:randNum(30, cw - 30), 
+        y:randNum(30, ch - 30),
+        color:randColor(),
+        r:this.m,
+        color_:randColor(),
+        pos:i,
+        vx:0,
+        vy:0,
+    });
+} 
+
+var bot_search_rad = 70;
+var player_search_rad = 200;
+window.setInterval(function(){
+    bot_search_rad += 10;
+    if(bot_search_rad > 200){
+        bot_search_rad = 70;
+    }
+    //console.log(bot_search_rad);
+}, 1000 * randNum(1, 1));
+
+
+function randColor(){
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function gradient(){
+    for(var i = 0; i <player_search_rad; i++){
+        ctx.beginPath(); 
+		ctx.arc(player.x, player.y, i , 0, (2 * Math.PI)); 
+		ctx.fillStyle = "rgba(255, 255, 255," + i * 0.00005 + ")"; 
+		ctx.fill();
+    }
+}
+
+//var bot_player_collide = false;
+function draw_gems(){
+    for(var i = 0; i < gems.length; i++){
+        var gem = gems[i];
+        ctx.beginPath();
+        ctx.arc(gem.x, gem.y, gem.r, 0, (2 * Math.PI));
+        ctx.fillStyle = gem.color;
+        ctx.fill();
+        
+        gem.x += gem.vx;
+        gem.y += gem.vy;
+        /*ctx.beginPath();
+		ctx.arc(bot.x, bot.y, bot_search_rad, 0, (2 * Math.PI)); 
+		ctx.fillStyle = "rgba(200, 200, 200, 0.02)";
+		ctx.fill();*/ 
+        
+        var player_d = return_distance(player.x, player.y, gem.x, gem.y);
+        var player_d_ = return_distance(player.x, player.y, bot.x, bot.y);
+        var bot_d = return_distance(bot.x, bot.y, gem.x, gem.y);
+        var angle = return_angle(bot.x, bot.y, gem.x, gem.y);
+        var angle_ = return_angle(player.x, player.y, gem.x, gem.y);
+        
+        if(bot_d < (bot.r + bot_search_rad) + gem.r){
+            bot_move(angle);
+        } else {
+            //wander();
+        }
+        
+        if (player_d < (player.r) + gem.r) {
+            gems.splice(gem.pos, 1, 0);    
+            player.m += gem.r;
+            player.r += 0.7; 
+        }
+        
+        if (player_d < (player.r + (player_search_rad - 20)) + (gem.r)) {
+            gem.color = gem.color_;
+            //gem.vx = Math.cos(angle_) * 1;
+            //gem.vy = Math.sin(angle_) * 1; 
+        } else {
+            gem.color = "transparent";
+        }
+        
+        if (player_d_ < (player.r + player_search_rad) + (bot.r)) {
+            bot.color = "rgba(255, 255, 0, player_d_ / 100)";
+        } else {
+            bot.color = "rgba(255, 255, 0, player_d_ / 100)"; 
+        }
+        
+        if (bot_d < bot.r + gem.r) { 
+            gems.splice(gem.pos, 1, 0); 
+            bot.m += gem.r;
+            bot.r += 0.7;
+            bot.speed += 0.025;
+        }
+    }
+}
+
+var gems2 = [];
+var gem_indx_pos = 0;
+window.setInterval(function(){
+    var m = Math.ceil(randNum(2, 7));
+    gems2.push({
+      x:randNum(30, cw - 30), 
+      y:randNum(30, ch - 30),
+      color:"transparent", 
+      r:this.m,
+      color_:randColor(),
+      pos:gem_indx_pos,
+    });
+    gem_indx_pos++;
+}, 500 * (randNum(1, 3))); 
+
+function draw_gems2(){
+    for(var j = 0; j < gems2.length; j++){
+        var gem2 = gems2[j];
+        ctx.beginPath();
+        ctx.arc(gem2.x, gem2.y, gem2.r, 0, (2 * Math.PI));
+        ctx.fillStyle = gem2.color;
+        ctx.fill();
+        
+        var player_d = return_distance(player.x, player.y, gem2.x, gem2.y);
+        var player_d_ = return_distance(player.x, player.y, bot.x, bot.y);
+        var bot_d = return_distance(bot.x, bot.y, gem2.x, gem2.y);
+        var angle = return_angle(bot.x, bot.y, gem2.x, gem2.y);
+        
+        if(bot_d < (bot.r + bot_search_rad) + gem2.r){
+            bot_move(angle);
+        } else {
+            //wander();
+        }
+        
+        if (player_d < (player.r) + gem2.r) { 
+            gems2.splice(gem2.pos, 1, 0);    
+            player.m += gem2.r;
+            player.r += 0.7; 
+        }
+        
+        if (player_d < (player.r + player_search_rad) + (gem2.r)) {
+            gem2.color = gem2.color_;  
+        } else {
+            gem2.color = "transparent";
+        }
+        
+        if (bot_d < bot.r + gem2.r) {
+            gems2.splice(gem2.pos, 1, 0);   
+            bot.m += gem2.r;
+            bot.r += 0.7;
+            bot.speed += 0.025;
+        }
+    }
+}
+
+function start(){
+	window.requestAnimFrame(start);
+	
+	ctx.clearRect(0,0,cw, ch); 
+    
+    draw_gems();
+    draw_gems2();
+
+    bot.draw();  
+	bot.update();
+    
+    gradient();
+    player.draw();  
+	player.update();
+}  
+
+start();
+</script>
+</body>
+</html>

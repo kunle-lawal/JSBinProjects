@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/samizo/7/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+ 
+<html>
+    <head>
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <title>Physics</title>
+          
+        <link rel='stylesheet' href='style.css'/>
+          
+    <style id="jsbin-css">
+body{
+    background-color:black;   
+    width:1500px;
+    height:1000px;
+}
+#canvas{
+    background-color:black;
+    position:absolute;
+    height:80%;
+    border:1px slid red;
+    margin-left:20%;
+    opacity:0.98;
+}
+.lights{
+  cursor:pointer;
+  width:70px;
+}
+</style>
+</head> 
+    <body>
+    <div id=startSimulation><p id=on style="color:blue" onclick= "lightsOn()" class="lights">Lights On</p>
+        </div>
+    <div id=startSimulation><p id=off style="color:blue" onclick= "lightsoff()" class="lights">Lights Off</p>
+        </div>
+        <canvas id="canvas" width=1400px height=800px></canvas>
+        <script type= "text/javascript" src= "script.js"></script>
+        
+    <script id="jsbin-javascript">
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var snd = new Audio("http://moodle.uca.es/message/bell.wav");
+var FPS = 100;
+var text = 0;
+var r = 0, g = 0 ,b = 0; 
+
+function randColor() {
+    var num = Math.floor(Math.random() * Math.pow(2,24)); 
+    return '#' + ('00000' + num.toString(16)).substr(-6); 
+}
+
+var push;
+ 
+var
+    cW = 1400, 
+    cH = 800;
+
+
+function randNum( min, max ) {
+    return Math.random() * ( max - min ) + min;
+} 
+
+
+var pShooter = {
+    x: 0,  
+    y: cH ,
+    radius:1,
+    color: "white", 
+    vx: 10 * randNum(100, 400), 
+    vy: 0 * randNum(100, 500),    
+    ax:0,
+    ay:0,
+    f: 0.5,  
+    draw: function(){ 
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);  
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    },
+    update3: function(){
+        this.vx += this.ax/FPS;
+        this.vy += this.ay/FPS; 
+        this.x += this.vx/FPS;
+        this.y += this.vy/FPS; 
+
+         
+        //this.ay += 100;
+        this.vx += 0;
+        
+        if ( ( this.x - this.radius ) < 0 ) {
+            this.x = this.radius;
+            this.vx = -this.vx ;
+            //this.vx *= this.f;
+        }
+        if ( ( this.x + this.radius ) > canvas.width ) {
+            this.x = canvas.width -this.radius;
+            this.vx = -this.vx ;
+            //this.vx *= this.f; 
+        }
+        if ( ( this.y - this.radius ) < 0 ) {
+            this.y = this.radius; 
+            this.vy = -this.vy ;
+            this.vy *= this.f; 
+        }
+        if ( ( this.y + this.radius ) > canvas.height ) {
+            this.y = canvas.height - this.radius;
+            this.vy = -this.vy ;
+            this.vy *= this.f;
+        }
+        //Collision with the BLOCK//
+        if ( ((this.x + this.radius ) > block.x) && ((this.x - this.radius) < block.x + block.width) && ((this.y + this.radius) > block.y) && ((this.y - this.radius) < block.y + block.height)) {
+            this.vy = -this.vy;
+            this.vx = -this.vx;
+            snd.play(); 
+        }
+        /*if(){
+            this.x = (block.x + block.width) + this.radius;
+            this.vx = -this.vx; 
+        }
+        if(){
+            this.y = block.y - this.radius;
+            this.vy = -this.vy; 
+        }
+        if(){
+            this.y = (block.y + block.height) + this.radius;
+            this.vy = -this.vy;    
+        }*/
+    }
+};
+
+
+// create particles when the canvas is clicked
+var particles = []; 
+    window.setInterval(function(){
+        if(true){
+        particles.push({
+        x:pShooter.x + 20,
+        y:pShooter.y + 20, 
+        vy:randNum(100, 400),    
+        vx:randNum(100, 400), 
+        ax:0, 
+        ay:0,
+        radius:1,    
+        f: randNum(1, 1), 
+        color: "#6D9BF1"
+        });
+    }    
+    },1);
+    
+
+//Draws on the canvas 
+function draw(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pShooter.draw();
+        block.draw2();
+    for(var i = 0; i < particles.length; i++){
+        var p = particles[i];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+    }
+}
+ 
+/*function circleToCircleCollisionDetection(circle1, circle2) {
+    for(var i = 0; i < particles.length; i++){
+        var dx = particles.x - pShooter.x;
+        var dy = particles.y - pShooter.y;
+        var D = Math.sqrt((dx * dx) + (dy * dy)); 
+    
+    
+        var distanceBetweencenters = D;
+        var sumOfRadius = particles.radius + pShooter.radius;
+    
+    
+        if (distanceBetweencenters > sumOfRadius) {
+            console.log('circles are disjoint externally');
+        } else if (distanceBetweencenters === sumOfRadius) {
+            console.log('circles are tangent');
+        } else {
+            console.log('circles intersect or they are disjoint internally (one is placed in another)');
+    } 
+        }
+}
+*/
+
+//Updates the animation of the particles
+function update() {
+    for (var i = 0; i < particles.length; i++){
+        var p = particles[i];
+        p.vx += p.ax/FPS;
+        p.vy += p.ay/FPS;
+        p.x += p.vx/FPS;
+        p.y += p.vy/FPS;
+        
+        if(p.radius > 9){
+            p.ay += 1000;    
+        }
+         
+        block.vx += block.ax/FPS;
+        block.vy += block.ay/FPS;
+        block.x += block.vx/FPS;
+        block.y += block.vy/FPS;
+        
+        block.update2();
+         
+        var dx = p.x - pShooter.x;
+        var dy = p.y - pShooter.y;
+        var D = Math.sqrt((dx * dx) + (dy * dy));
+         
+        var distanceBetweencenters = D;
+        var sumOfRadius = p.radius + pShooter.radius;
+         
+         
+         
+        var rx = p.x - p.x;
+        var ry = p.y- p.y;
+        var R = Math.sqrt((rx * rx) + (ry * ry));
+        
+        var DBC = R;
+        var SOR = p.radius + p.radius;
+        //Made Gravity :P  
+        p.ay += 100;  
+       // p.vx += 0; 
+         
+        
+        /*Made wind force :P
+        p.vx -= 10;*/
+        
+         if ( ( p.x - p.radius ) < 0 ) {
+            p.x = p.radius;
+            p.vx = -p.vx;
+            p.y = 100;  
+            p.vx *= p.f;
+        }
+        if ( ( p.x + p.radius ) > canvas.width ) {
+            p.x = canvas.width -p.radius;
+            p.vx = -p.vx;
+            p.vx *= p.f;
+        }
+        if ( ( p.y - p.radius ) < 0 ) {
+            p.y = p.radius;
+            p.vy = -p.vy;
+            p.vy *= p.f; 
+        }
+        if ( ( p.y + p.radius ) > canvas.height ) {
+            p.y = canvas.height - p.radius;
+            p.vy -= 2000;
+            p.color = "red"; 
+            p.vx *= randNum(0.3, 0.3);
+            p.vy *= randNum(0.3, 0.3); 
+            //p.vx *= 0;
+            
+            if (distanceBetweencenters <= sumOfRadius) {
+                p.vy = -2000;        
+            }
+        } 
+
+            
+        if ( ((p.x + p.radius ) >= block.x) && ((p.x - p.radius) <= block.x + block.width) && ((p.y + p.radius) >= block.y) && ((p.y - p.radius) <= block.y + block.height)) {
+            block.color="rgb(242, 74, 74)";
+            p.ay = 0;
+            p.vx = 0;  
+            p.vy = 0; 
+            snd.play();
+        } else if (( ((p.x + p.radius ) >= block.x) && ((p.x - p.radius) <= block.x + block.width) && ((p.y + p.radius) >= block.y) && ((p.y - p.radius) <= block.y + block.height)) === false){
+            block.color = "red";     
+        }
+    /*if(distanceBetweencenters <= sumOfRadius) { 
+            p.vy = 0;  
+            pShooter.vy = -pShooter.vy;
+            p.vx = -2000; 
+    }*/
+    if (distanceBetweencenters > sumOfRadius) {
+            //console.log('circles are disjoint externally');
+        } else if (distanceBetweencenters === sumOfRadius) {
+            //p.vx = -p.vx;  
+            console.log('circles are tangent');
+        } else {
+            //p.vx = -p.vx;
+            //p.vy = -p.vy;
+            p.x =  (pShooter.x + pShooter.radius);
+            p.y = (pShooter.y + pShooter.radius);
+            //pShooter.vx = -pShooter.vx;
+            //pShooter.vy = -pShooter.vy;
+            
+    }
+    //if(distanceBetweencenters === sumOfRadius) {  
+            //p.vy = -p.vy;  
+            //p.vx = -p.vx; 
+    //}
+    if(DBC >= SOR){
+        console.log("Yes!");
+    }
+
+
+
+        /*if(Math.sqrt(Math.pow(p.x - pShooter.x) + Math.pow(p.y - pShooter.y)) <= (p.radius + pShooter.radius)){
+            
+            console.log("hi"); 
+        }  */
+
+       /* if(((p.x + p.radius) >= block.x) && ((p.x + p.radius) <= block.x + block.width)){
+            block.vy -= 2000;
+            console.log("found it!"); 
+        }*/
+        
+    }   
+    
+    
+}
+
+var block = {
+    x: cW - 800,
+    y: 400,
+    height:100, 
+    width:100,
+    vx: 0,
+    vy:0,
+    ay:0,
+    ax:0,
+    color: "red",
+    draw2: function(){
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = this.color;
+        //ctx.rotate(20*Math.PI/180);
+        // draw your object
+        ctx.fill();
+        
+        //ctx.restore();
+        //ctx.save();
+    },
+    update2: function(){
+        block.vx += block.ax/FPS;
+        block.vy += block.ay/FPS;
+        block.x += block.vx;
+        block.y += block.ay;
+        
+        block.vx = 0; 
+        
+         /*if(((p.x + p.radius) >= block.x) && ((p.x + p.radius) <= block.x + block.width)){
+            block.vy -= 2000;
+            console.log("found it!"); */
+        //}
+        
+    }
+};
+
+
+
+
+function render() {
+    window.requestAnimationFrame(render);
+    
+    draw();
+    update();
+    pShooter.update3();
+    block.update2();
+  //circleToCircleCollisionDetection(pShooter, particles);
+}
+render();
+
+/*window.setInterval(function(){
+    tick();    
+}, 500/FPS);*/
+
+
+/*window.onmousemove = function(e){
+    e = e || window.event;
+    var position = [e.clientX || e.pageX, e.clientY || e.pageY];
+    
+    pShooter.x = position[0] - 10;
+    
+    pShooter.y = position[1] - 60;
+    
+}; */
+
+var value;
+
+function lightsOn(){
+  value = 1;
+  $('body').css("background-color", "white");
+}
+
+function lightsoff(){
+  value = 2;
+  $('body').css("background-color", "black");
+}
+
+$("#off").hide();
+
+window.setInterval(function(){
+  if(value === 1){
+    $("#on").hide();
+  } else {
+    $("#on").fadeIn("slow");
+  }
+  
+  if(value === 2){
+    $("#off").hide();
+  } else {
+    $("#off").fadeIn("slow");
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

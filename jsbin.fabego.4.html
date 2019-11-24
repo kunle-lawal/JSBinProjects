@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by Happy-Loman (http://jsbin.com/fabego/4/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<link href="https://code.jquery.com/ui/1.9.2/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<link href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<link href="https://code.jquery.com/ui/jquery-ui-git.css" rel="stylesheet" type="text/css" />
+<script src="https://code.jquery.com/jquery-git.js"></script>
+<script src="https://code.jquery.com/ui/jquery-ui-git.js"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-compat-git.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+body{
+  background-color:white;
+  overflow:hidden;
+  color:#000000;
+  font-family: 'Hoefler Text', 'Baskerville Old Face', Garamond, 'Times New Roman', serif;
+  opacity:0.9;
+}
+
+
+#title{
+  margin-bottom:-5.8%;
+  text-align:center;
+  font-size:40px;
+}
+
+
+
+
+#month{
+  border:1px solid none;
+  width:826px;
+  margin-left:-1%;
+  margin-top:7%;
+  margin-bottom:-9%;
+  text-align:center;
+  font-size:30px;
+  color:#00f0f0
+}
+
+
+#days{
+  border:1px solid none;
+  width:976px;
+  margin-left:0.5%;
+  margin-top:10%;
+  margin-bottom:-7%;
+  cursor:pointer;
+}
+
+
+.day{
+  border-left:1px solid #FF9900;
+  border-top:1px solid #FF9900;
+  list-style: none;
+  display: inline-block;
+  text-align:center;
+  width:80px;
+  margin-left:8.3px;
+}
+
+#dates{
+  border:1px solid none;
+  width:808px;
+  margin-top:8.5%;
+}
+
+
+.date{
+  border-right:1px solid #000080;
+  border-bottom:1px solid #000080;
+  list-style: none;
+  display: inline-block;
+  text-align:center;
+  width:80px;
+  height:80px;
+  margin:8.3px;
+  position:relative;
+  transition:all 0.6s;
+}
+
+
+.date:hover{
+  border:1px solid #FF9900;
+  cursor:pointer;
+   /*transform*/
+  -webkit-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  -moz-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  -ms-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  -o-transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  transform:perspective(800px) rotate3d(1, 0, 0, 10deg);
+  
+
+  -webkit-box-shadow: 24px 24px 5px 1px rgba(255, 255, 255, 0.75);
+  -moz-box-shadow: 24px 24px 5px 1px rgba(255, 255, 255, 0.75);
+  box-shadow: 14px 14px 5px 1px rgba(255, 255, 255, 0.15);
+  opacity:0.9;
+}
+</style>
+</head>
+<body>
+  <div>
+    <h1 id="title">Calander.0</h1>
+  </div>
+  <div>
+    <div id="cal_container">
+      <h3 id="month"><span id="month_">Month</span> <span id="year">Year</span></h3>
+      <ul id="days">
+        <li class="day">Sunday</li>
+        <li class="day">Monday</li>
+        <li class="day" style="margin-left:16px;">Tueday</li>
+        <li class="day" style="margin-left:16px;">Wednesday</li>
+        <li class="day" style="margin-left:17px;">Thursday</li>
+        <li class="day" style="margin-left:17px;">Friday</li>
+        <li class="day" style="margin-left:16px;">Saturday</li>
+      </ul>
+      
+      <ul id="dates">
+        <div id="date0" class="date">W</div>
+        <li id="date1" class="date">2</li>
+        <li id="date2" class="date">3</li>
+        <li id="date3" class="date">4</li>
+        <li id="date4" class="date">5</li>
+        <li id="date5" class="date">6</li>
+        <li id="date6" class="date">7</li>
+        <li id="date7" class="date">1</li>
+        <li id="date8" class="date">1</li>
+        <li id="date9" class="date">1</li>
+        <li id="date10" class="date">1</li>
+        <li id="date11" class="date">1</li>
+        <li id="date12" class="date">1</li>
+        <li id="date13" class="date">1</li>
+        <li id="date14" class="date">1</li>
+        <li id="date15" class="date">1</li>
+        <li id="date16" class="date">1</li>
+        <li id="date17" class="date">1</li>
+        <li id="date18" class="date">1</li>
+        <li id="date19" class="date">1</li>
+        <li id="date20" class="date">1</li>
+        <li id="date21" class="date">1</li>
+        <li id="date22" class="date">1</li>
+        <li id="date23" class="date">1</li>
+        <li id="date24" class="date">1</li>
+        <li id="date25" class="date">1</li>
+        <li id="date26" class="date">1</li>
+        <li id="date27" class="date">1</li>
+        <li id="date28" class="date">1</li>
+        <li id="date29" class="date">1</li>
+        <li id="date30" class="date">1</li>
+        <li id="date31" class="date">1</li>
+        <li id="date32" class="date">1</li>
+        <li id="date33" class="date">1</li>
+        <li id="date34" class="date">1</li>
+        <li id="date35" class="date">1</li>
+        <li id="date36" class="date">1</li>
+        <li id="date37" class="date">1</li>
+        <li id="date38" class="date">1</li>
+        <li id="date39" class="date">1</li>
+        <li id="date40" class="date">1</li>
+        <li id="date41" class="date">1</li>
+      </ul>
+    </div>
+  </div>
+<script id="jsbin-javascript">
+var start_day = 0;
+var end_day = 0;
+
+
+function clear_top(){
+  for(var j = 0; j < start_day; j++){
+    //document.getElementById("date" + j).innerHTML = j + 1;
+    document.getElementById("date" + j).style.opacity = "0";
+  }
+}
+
+function clear_bottom(end_day){
+  var n = 0;
+  for(var j = (end_day + start_day); j <= 41; j++){
+    n++;
+    //document.getElementById("date" + j).innerHTML = j + 1;
+    if(n > 7){
+      document.getElementById("date" + (j)).style.opacity = "0";
+    } else {
+      document.getElementById("date" + (j)).innerHTML = n;
+      document.getElementById("date" + (j)).style.opacity = "0.3";
+    }
+    document.getElementById("date" + (j)).style.cursor = "auto";
+  }
+}
+
+function generate_cal(end_day){
+  clear_top();
+  
+  for(var i = 1; i <= end_day; i++){
+    document.getElementById("date" + (i + (start_day - 1))).innerHTML = i;
+  }
+  
+  clear_bottom(end_day);
+}
+
+//Start by generating calender
+
+
+function set_Date(date, month, year){
+  var months = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  document.getElementById("date" + (date + (start_day - 1))).style.border = "1px solid #FF9900";
+  //document.getElementById("date" + (date + (start_day - 1))).style.cursor = "crosshair";
+  document.getElementById("month_").innerHTML = months[month];
+  document.getElementById("year").innerHTML = year;
+}
+
+function unset_date(date){
+  document.getElementById("date" + (date + start_day - 1)).style.border = "1px solid white";
+  for(var i = 1; i <= date; i++){
+    document.getElementById("date" + (i + start_day - 1)).style.borderRight = "1px solid red";
+    document.getElementById("date" + (i + start_day - 1)).style.borderBottom = "1px solid red";
+  }
+}
+
+
+var d = new Date();
+var day = d.getDate();  
+var temp_date = day - 1;
+setInterval(function () {
+  var d = new Date();
+  var day = d.getDate();   
+  var month = d.getUTCMonth(); 
+  var year = d.getUTCFullYear(); 
+  
+  if(month == 1){
+    end_day = 28;
+  }else if (month == 3 || month == 5 || month == 8 || month == 10){
+    end_day = 30;
+  } else {
+    end_day = 31;
+  }
+console.log(end_day); 
+console.log(month); 
+  if(day!= temp_date){
+    generate_cal(end_day);
+    unset_date(temp_date);
+    set_Date(day, month, year);
+    temp_date = day;
+  }
+}, 1);
+
+
+</script>
+</body>
+</html>
